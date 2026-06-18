@@ -1,0 +1,110 @@
+{
+  "project": "example-reconstruction",
+  "source_image": "source.png",
+  "canvas": {
+    "width": 1600,
+    "height": 900,
+    "background": "#ffffff"
+  },
+  "classification": {
+    "layout_topology": "panel-composite",
+    "complexity": "high",
+    "style_type": "benchmark-color",
+    "reconstruction_mode": "C+B",
+    "reconstruction_intent": "editable-layout",
+    "notes": "Reconstruct panels and text; crop dense maps and screenshots."
+  },
+  "panels": [
+    {
+      "id": "panel-left",
+      "label": "Data Source",
+      "x": 20,
+      "y": 20,
+      "w": 500,
+      "h": 860,
+      "strategy": "panel-wise rebuild"
+    },
+    {
+      "id": "panel-center",
+      "label": "Evaluation",
+      "x": 550,
+      "y": 20,
+      "w": 500,
+      "h": 860,
+      "strategy": "panel-wise rebuild"
+    },
+    {
+      "id": "panel-right",
+      "label": "Model",
+      "x": 1080,
+      "y": 20,
+      "w": 500,
+      "h": 860,
+      "strategy": "hybrid rebuild"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-map-example",
+      "file": "assets/asset-map-example.png",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "w": 280,
+        "h": 220
+      },
+      "x": 80,
+      "y": 180,
+      "w": 280,
+      "h": 220,
+      "pad": 4,
+      "panel_id": "panel-left",
+      "kind": "map",
+      "decision": "crop",
+      "description": "Example map thumbnail"
+    }
+  ],
+  "elements": [
+    {
+      "type": "rect",
+      "id": "panel-left-outline",
+      "panel_id": "panel-left",
+      "class": "panel",
+      "decision": "redraw",
+      "x": 20,
+      "y": 20,
+      "w": 500,
+      "h": 860,
+      "rx": 18,
+      "fill": "#ffffff",
+      "stroke": "#2b5f9e",
+      "stroke_width": 2
+    },
+    {
+      "type": "text",
+      "id": "panel-left-title",
+      "panel_id": "panel-left",
+      "class": "title",
+      "decision": "retype",
+      "x": 270,
+      "y": 70,
+      "text": "Data Source",
+      "font_size": 36,
+      "font_weight": "700",
+      "font_family": "Georgia",
+      "fill": "#2b5f9e"
+    },
+    {
+      "type": "image",
+      "id": "image-map-example",
+      "panel_id": "panel-left",
+      "class": "asset",
+      "decision": "embed",
+      "asset_id": "asset-map-example",
+      "x": 80,
+      "y": 180,
+      "w": 280,
+      "h": 220
+    }
+  ]
+}
