@@ -33,7 +33,31 @@ If an infographic only survives as a PNG or screenshot, FigEdit can recover much
 
 ## Examples
 
-The current test set covers slide-layout decomposition, simple icon systems, full vector redraws, asset-heavy figures, mixed reconstructions, and formula-rich diagrams. Before-and-after images are being prepared for the repository.
+Each image below compares the source figure with the FigEdit reconstruction.
+
+### 1. Slide-layout decomposition
+
+![Original and reconstructed generative AI history infographic](./assets/examples/01-slide-layout.png)
+
+### 2. Mixed icons and diagram structure
+
+![Original and reconstructed Skill Compiler architecture diagram](./assets/examples/02-icon-diagram.png)
+
+### 3. Full vector redraw
+
+![Original and reconstructed Parallel Loops paper figure](./assets/examples/03-vector-redraw.png)
+
+### 4. Asset-heavy reconstruction
+
+![Original and reconstructed virtual try-on data pipeline](./assets/examples/04-raster-assets.png)
+
+### 5. Mixed-element reconstruction
+
+![Original and reconstructed TransitBench infographic](./assets/examples/05-mixed-reconstruction.png)
+
+### 6. Formula-rich reconstruction
+
+![Original and reconstructed AST method figure with mathematical notation](./assets/examples/06-formula-reconstruction.png)
 
 ## Why a hybrid approach?
 

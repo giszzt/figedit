@@ -20,7 +20,31 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 
 ## 效果案例
 
-案例图正在整理。现有测试覆盖 PPT 结构拆解、简洁图标、全矢量重绘、大量图片裁切、多要素混合重构和公式复现等类型。
+下面均为原图与 FigEdit 重建结果的对比。
+
+### 案例一：PPT 结构拆解
+
+![生成式 AI 发展史信息图的原图与重建结果](./assets/examples/01-slide-layout.png)
+
+### 案例二：图标与结构混合图
+
+![Skill Compiler 架构图的原图与重建结果](./assets/examples/02-icon-diagram.png)
+
+### 案例三：全矢量重绘
+
+![Parallel Loops 论文图的原图与重建结果](./assets/examples/03-vector-redraw.png)
+
+### 案例四：大量图片资产裁切
+
+![虚拟试衣数据流程图的原图与重建结果](./assets/examples/04-raster-assets.png)
+
+### 案例五：多要素混合重构
+
+![TransitBench 信息图的原图与重建结果](./assets/examples/05-mixed-reconstruction.png)
+
+### 案例六：复杂公式复现
+
+![包含大量公式的 AST 方法图原图与重建结果](./assets/examples/06-formula-reconstruction.png)
 
 ## 为什么用它？
 
