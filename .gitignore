@@ -1,0 +1,21 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Skill runtime artifacts (per-task inputs/outputs live in the user's workspace, never here)
+work_dir/
+output_dir/
+*.trace.json
+*.math_report.json
+
+# Authoring scratch (diagram sources etc. — not shipped)
+docs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
