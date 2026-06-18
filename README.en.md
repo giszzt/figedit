@@ -39,6 +39,8 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 ![Original and reconstructed generative AI history infographic](./assets/examples/01-slide-layout.png)
 
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/genai-history/)
+
 ### 2. Mixed icons and diagram structure
 
 ![Original and reconstructed Skill Compiler architecture diagram](./assets/examples/02-icon-diagram.png)
@@ -46,6 +48,8 @@ Each image below compares the source figure with the FigEdit reconstruction.
 ### 3. Full vector redraw
 
 ![Original and reconstructed Parallel Loops paper figure](./assets/examples/03-vector-redraw.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/parallel-loops/)
 
 ### 4. Asset-heavy reconstruction
 
@@ -58,6 +62,16 @@ Each image below compares the source figure with the FigEdit reconstruction.
 ### 6. Formula-rich reconstruction
 
 ![Original and reconstructed AST method figure with mathematical notation](./assets/examples/06-formula-reconstruction.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/ast-reveal/)
+
+### 7. Mixed formulas and raster evidence
+
+![Original Camera Grid Rendering figure](./assets/examples/camera-grid-rendering/source.png)
+
+![Reconstructed Camera Grid Rendering figure](./assets/examples/camera-grid-rendering/preview.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/camera-grid-rendering/)
 
 ## Why a hybrid approach?
 
@@ -182,7 +196,8 @@ figedit/
 ├── scripts/            # Measurement, composition, export, and audit tools
 ├── references/         # Reconstruction policies and authoring guidance
 ├── templates/          # Manifest schema and task templates
-└── examples/           # Example prompts
+├── examples/           # Example prompts
+└── assets/examples/    # Complete downloadable reconstruction cases
 ```
 
 ## Dependencies

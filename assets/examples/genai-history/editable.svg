@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1672" height="941" viewBox="0 0 1672 941">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="1672" height="941" fill="#fefefe"/>
+  <g id="background">
+    <rect id="accent-blue" x="32" y="18" width="17" height="71" rx="0" ry="0" fill="#1f66c9" stroke="none" stroke-width="0"/>
+    <rect id="accent-red" x="32" y="92" width="17" height="27" rx="0" ry="0" fill="#d52b35" stroke="none" stroke-width="0"/>
+    <rect id="stage-1-card" x="24" y="188" width="294" height="319" rx="17" ry="17" fill="#ffffff" stroke="#c5d7f4" stroke-width="1.5"/>
+    <rect id="stage-2-card" x="372" y="188" width="281" height="319" rx="17" ry="17" fill="#ffffff" stroke="#c5d7f4" stroke-width="1.5"/>
+    <rect id="stage-3-card" x="705" y="188" width="268" height="319" rx="17" ry="17" fill="#ffffff" stroke="#c5d7f4" stroke-width="1.5"/>
+    <rect id="stage-4-card" x="1026" y="188" width="279" height="319" rx="17" ry="17" fill="#ffffff" stroke="#c5d7f4" stroke-width="1.5"/>
+    <rect id="stage-5-card" x="1355" y="188" width="290" height="319" rx="17" ry="17" fill="#ffffff" stroke="#c5d7f4" stroke-width="1.5"/>
+    <rect id="tech-main-shell" x="24" y="538" width="1620" height="256" rx="14" ry="14" fill="#ffffff" stroke="#397ee1" stroke-width="1.5"/>
+    <rect id="tech-rule-card" x="55" y="610" width="267" height="123" rx="14" ry="14" fill="#fbfdff" stroke="#bdd1f1" stroke-width="1.5"/>
+    <rect id="tech-stats-card" x="369" y="610" width="253" height="123" rx="14" ry="14" fill="#fbfdff" stroke="#bdd1f1" stroke-width="1.5"/>
+    <rect id="tech-deep-card" x="670" y="610" width="263" height="123" rx="14" ry="14" fill="#fbfdff" stroke="#bdd1f1" stroke-width="1.5"/>
+    <rect id="tech-foundation-card" x="981" y="610" width="268" height="123" rx="14" ry="14" fill="#fbfdff" stroke="#bdd1f1" stroke-width="1.5"/>
+    <rect id="tech-multimodal-card" x="1300" y="610" width="319" height="134" rx="14" ry="14" fill="#fbfdff" stroke="#bdd1f1" stroke-width="1.5"/>
+    <rect id="feature-shell" x="24" y="827" width="1620" height="82" rx="14" ry="14" fill="#fbfdff" stroke="#94b7ed" stroke-width="1.5"/>
+  </g>
+  <g id="assets">
+    <image id="building-image" href="assets/building.png" x="1340" y="16" width="302" height="122" preserveAspectRatio="xMidYMid meet"/>
+    <image id="stage1-image" href="assets/stage1_visual.png" x="50" y="283" width="250" height="132" preserveAspectRatio="xMidYMid meet"/>
+    <image id="stage2-image" href="assets/stage2_visual.png" x="388" y="286" width="250" height="126" preserveAspectRatio="xMidYMid meet"/>
+    <image id="stage3-image" href="assets/stage3_visual.png" x="714" y="295" width="232" height="91" preserveAspectRatio="xMidYMid meet"/>
+    <image id="stage4-image" href="assets/stage4_visual.png" x="1034" y="282" width="255" height="112" preserveAspectRatio="xMidYMid meet"/>
+    <image id="stage5-image" href="assets/stage5_visual.png" x="1371" y="284" width="244" height="133" preserveAspectRatio="xMidYMid meet"/>
+    <image id="tech-rule-icon" href="assets/tech_rule.png" x="78" y="625" width="82" height="87" preserveAspectRatio="xMidYMid meet"/>
+    <image id="tech-stats-icon" href="assets/tech_stats.png" x="387" y="626" width="84" height="83" preserveAspectRatio="xMidYMid meet"/>
+    <image id="tech-deep-icon" href="assets/tech_deep.png" x="681" y="626" width="82" height="82" preserveAspectRatio="xMidYMid meet"/>
+    <image id="tech-foundation-icon" href="assets/tech_foundation.png" x="994" y="625" width="78" height="83" preserveAspectRatio="xMidYMid meet"/>
+    <image id="tech-multimodal-icons" href="assets/tech_multimodal.png" x="1324" y="625" width="230" height="61" preserveAspectRatio="xMidYMid meet"/>
+    <image id="feature-chart" href="assets/feature_chart.png" x="1188" y="837" width="68" height="61" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+  <g id="sections">
+    <polygon id="tech-tab" points="24,538 301,538 264,582 24,582" fill="#0754b9" stroke="#0754b9" stroke-width="1"/>
+    <polygon id="feature-tab" points="24,827 276,827 258,866 226,909 24,909" fill="#0761c9" stroke="#0761c9" stroke-width="1"/>
+  </g>
+  <g id="icons">
+    <circle id="stage-1-number-bg" cx="76" cy="221" r="25" fill="#0751b5" stroke="#0751b5" stroke-width="1"/>
+    <circle id="stage-2-number-bg" cx="424" cy="221" r="25" fill="#0751b5" stroke="#0751b5" stroke-width="1"/>
+    <circle id="stage-3-number-bg" cx="757" cy="221" r="25" fill="#0751b5" stroke="#0751b5" stroke-width="1"/>
+    <circle id="stage-4-number-bg" cx="1078" cy="221" r="25" fill="#0751b5" stroke="#0751b5" stroke-width="1"/>
+    <circle id="stage-5-number-bg" cx="1407" cy="221" r="25" fill="#0751b5" stroke="#0751b5" stroke-width="1"/>
+    <circle id="tech-timeline-dot-1" cx="189" cy="762" r="8" fill="#3f82dd" stroke="#3f82dd" stroke-width="1"/>
+    <circle id="tech-timeline-dot-2" cx="498" cy="762" r="8" fill="#3f82dd" stroke="#3f82dd" stroke-width="1"/>
+    <circle id="tech-timeline-dot-3" cx="807" cy="762" r="8" fill="#3f82dd" stroke="#3f82dd" stroke-width="1"/>
+    <circle id="tech-timeline-dot-4" cx="1117" cy="762" r="8" fill="#3f82dd" stroke="#3f82dd" stroke-width="1"/>
+    <circle id="tech-timeline-dot-5" cx="1452" cy="762" r="8" fill="#3f82dd" stroke="#3f82dd" stroke-width="1"/>
+    <circle id="feature-star-ring" cx="73" cy="868" r="24" fill="none" stroke="#ffffff" stroke-width="3"/>
+    <polygon id="feature-star" points="73,850 78,861 90,862 81,870 84,882 73,875 62,882 65,870 56,862 68,861" fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+    <rect id="feature-db-body" x="344" y="850" width="38" height="36" rx="0" ry="0" fill="#1761bd" stroke="#1761bd" stroke-width="1"/>
+    <ellipse id="feature-db-top" cx="363" cy="850" rx="19" ry="6" fill="#2f77d2" stroke="#ffffff" stroke-width="1.5"/>
+    <ellipse id="feature-db-mid-1" cx="363" cy="862" rx="19" ry="6" fill="#1761bd" stroke="#ffffff" stroke-width="1.5"/>
+    <ellipse id="feature-db-mid-2" cx="363" cy="874" rx="19" ry="6" fill="#1761bd" stroke="#ffffff" stroke-width="1.5"/>
+    <ellipse id="feature-db-bottom" cx="363" cy="886" rx="19" ry="6" fill="#1761bd" stroke="#ffffff" stroke-width="1.5"/>
+    <polygon id="feature-cube-left" points="738,866 750,859 762,866 762,881 750,888 738,881" fill="#1556af" stroke="#ffffff" stroke-width="1"/>
+    <polygon id="feature-cube-right" points="763,866 775,859 787,866 787,881 775,888 763,881" fill="#236bc5" stroke="#ffffff" stroke-width="1"/>
+    <polygon id="feature-cube-top" points="750,846 762,839 774,846 774,861 762,868 750,861" fill="#0d4a9f" stroke="#ffffff" stroke-width="1"/>
+  </g>
+  <g id="connectors">
+    <line id="header-rule" x1="32" y1="143" x2="1644" y2="143" stroke="#1558bc" stroke-width="4" />
+    <line id="stage-1-divider" x1="41" y1="430" x2="301" y2="430" stroke="#8fb5ef" stroke-width="1.5" stroke-dasharray="4 4" />
+    <line id="stage-2-divider" x1="389" y1="430" x2="636" y2="430" stroke="#8fb5ef" stroke-width="1.5" stroke-dasharray="4 4" />
+    <line id="stage-3-divider" x1="722" y1="430" x2="956" y2="430" stroke="#8fb5ef" stroke-width="1.5" stroke-dasharray="4 4" />
+    <line id="stage-4-divider" x1="1043" y1="430" x2="1288" y2="430" stroke="#8fb5ef" stroke-width="1.5" stroke-dasharray="4 4" />
+    <line id="stage-5-divider" x1="1372" y1="430" x2="1628" y2="430" stroke="#8fb5ef" stroke-width="1.5" stroke-dasharray="4 4" />
+    <polygon id="stage-arrow-1" points="326,230 351,230 351,223 367,241.5 351,260 351,253 326,253" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="stage-arrow-2" points="659,230 684,230 684,223 700,241.5 684,260 684,253 659,253" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="stage-arrow-3" points="978,230 1003,230 1003,223 1019,241.5 1003,260 1003,253 978,253" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="stage-arrow-4" points="1310,230 1335,230 1335,223 1351,241.5 1335,260 1335,253 1310,253" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="tech-arrow-1" points="326,654 348,654 348,647 364,663.5 348,680 348,673 326,673" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="tech-arrow-2" points="626,654 648,654 648,647 664,663.5 648,680 648,673 626,673" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="tech-arrow-3" points="938,654 960,654 960,647 976,663.5 960,680 960,673 938,673" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <polygon id="tech-arrow-4" points="1254,654 1276,654 1276,647 1292,663.5 1276,680 1276,673 1254,673" fill="#2b69c9" stroke="#2b69c9" stroke-width="1"/>
+    <line id="tech-timeline" x1="55" y1="762" x2="1607" y2="762" stroke="#478be8" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-end)"/>
+    <line id="feature-sep-1" x1="694" y1="845" x2="694" y2="894" stroke="#9aafd1" stroke-width="1.5" />
+    <line id="feature-sep-2" x1="1144" y1="845" x2="1144" y2="894" stroke="#9aafd1" stroke-width="1.5" />
+  </g>
+  <g id="texts">
+    <text id="main-title" x="80" y="76" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="62" font-weight="700" fill="#073887" text-anchor="start"><tspan x="80" dy="0">生成式AI发展史</tspan></text>
+    <text id="subtitle" x="82" y="129" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="31" font-weight="400" fill="#5b6473" text-anchor="start"><tspan x="82" dy="0">从规则生成到大模型与多模态智能</tspan></text>
+    <text id="stage-1-number" x="76" y="232" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="76" dy="0">1</tspan></text>
+    <text id="stage-1-title" x="124" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="124" dy="0">萌芽探索期</tspan></text>
+    <text id="stage-1-years" x="115" y="262" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="115" dy="0">(1950s—1990s)</tspan></text>
+    <text id="stage-1-caption" x="41" y="472" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="18" font-weight="500" fill="#121827" text-anchor="start"><tspan x="41" dy="0">图灵思想、专家系统、规则生成</tspan></text>
+    <text id="stage-2-number" x="424" y="232" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="424" dy="0">2</tspan></text>
+    <text id="stage-2-title" x="472" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="472" dy="0">统计学习期</tspan></text>
+    <text id="stage-2-years" x="463" y="262" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="463" dy="0">(1990s—2013)</tspan></text>
+    <text id="stage-2-caption" x="389" y="472" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="18" font-weight="500" fill="#121827" text-anchor="start"><tspan x="389" dy="0">概率模型、机器学习、数据驱动</tspan></text>
+    <text id="stage-3-number" x="757" y="232" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="757" dy="0">3</tspan></text>
+    <text id="stage-3-title" x="805" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="805" dy="0">深度生成期</tspan></text>
+    <text id="stage-3-years" x="796" y="262" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="796" dy="0">(2014—2017)</tspan></text>
+    <text id="stage-3-caption" x="722" y="472" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="18" font-weight="500" fill="#121827" text-anchor="start"><tspan x="722" dy="0">VAE、GAN、生成能力跃升</tspan></text>
+    <text id="stage-4-number" x="1078" y="232" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="1078" dy="0">4</tspan></text>
+    <text id="stage-4-title" x="1126" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="1126" dy="0">大模型奠基期</tspan></text>
+    <text id="stage-4-years" x="1117" y="262" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="1117" dy="0">(2017—2020)</tspan></text>
+    <text id="stage-4-caption" x="1043" y="472" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="18" font-weight="500" fill="#121827" text-anchor="start"><tspan x="1043" dy="0">Transformer、预训练、规模化</tspan></text>
+    <text id="stage-5-number" x="1407" y="232" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="1407" dy="0">5</tspan></text>
+    <text id="stage-5-title" x="1455" y="228" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="1455" dy="0">爆发应用期</tspan></text>
+    <text id="stage-5-years" x="1446" y="262" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#07377f" text-anchor="start"><tspan x="1446" dy="0">(2021—至今)</tspan></text>
+    <text id="stage3-vae" x="779" y="408" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="21" font-weight="500" fill="#101827" text-anchor="middle"><tspan x="779" dy="0">VAE</tspan></text>
+    <text id="stage3-gan" x="911" y="408" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="21" font-weight="500" fill="#101827" text-anchor="middle"><tspan x="911" dy="0">GAN</tspan></text>
+    <text id="stage4-transformer" x="1107" y="417" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="19" font-weight="500" fill="#101827" text-anchor="middle"><tspan x="1107" dy="0">Transformer</tspan></text>
+    <text id="stage5-caption-1" x="1499" y="465" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="500" fill="#121827" text-anchor="middle"><tspan x="1499" dy="0">大语言模型、扩散模型、</tspan></text>
+    <text id="stage5-caption-2" x="1499" y="492" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="500" fill="#121827" text-anchor="middle"><tspan x="1499" dy="0">多模态、智能体</tspan></text>
+    <text id="tech-tab-title" x="55" y="573" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="30" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="55" dy="0">技术演进主线</tspan></text>
+    <text id="tech-rule-title" x="175" y="665" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#111111" text-anchor="start"><tspan x="175" dy="0">规则系统</tspan></text>
+    <text id="tech-rule-subtitle" x="176" y="701" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="400" fill="#172033" text-anchor="start"><tspan x="176" dy="0">规则系统</tspan></text>
+    <text id="tech-stats-title" x="489" y="665" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#111111" text-anchor="start"><tspan x="489" dy="0">统计模型</tspan></text>
+    <text id="tech-stats-subtitle" x="490" y="701" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="400" fill="#172033" text-anchor="start"><tspan x="490" dy="0">统计模型</tspan></text>
+    <text id="tech-deep-title" x="790" y="665" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="24" font-weight="700" fill="#111111" text-anchor="start"><tspan x="790" dy="0">深度生成模型</tspan></text>
+    <text id="tech-deep-subtitle" x="791" y="701" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="400" fill="#172033" text-anchor="start"><tspan x="791" dy="0">GAN · VAE</tspan></text>
+    <text id="tech-foundation-title" x="1101" y="665" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="27" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1101" dy="0">基础大模型</tspan></text>
+    <text id="tech-foundation-subtitle" x="1102" y="701" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="20" font-weight="400" fill="#172033" text-anchor="start"><tspan x="1102" dy="0">Transformer · LLM</tspan></text>
+    <text id="tech-multimodal-title" x="1459" y="708" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="25" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1459" dy="0">多模态与Agent应用</tspan></text>
+    <text id="tech-multimodal-subtitle" x="1459" y="737" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="19" font-weight="400" fill="#172033" text-anchor="middle"><tspan x="1459" dy="0">文生文 · 文生图 · 智能助手</tspan></text>
+    <text id="feature-title" x="110" y="883" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="31" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="110" dy="0">阶段特征</tspan></text>
+    <text id="feature-text-1" x="404" y="881" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="23" font-weight="500" fill="#123f88" text-anchor="start"><tspan x="404" dy="0">从规则驱动到数据驱动</tspan></text>
+    <text id="feature-text-2" x="797" y="881" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="23" font-weight="500" fill="#123f88" text-anchor="start"><tspan x="797" dy="0">从单任务模型到通用基础模型</tspan></text>
+    <text id="feature-text-3" x="1270" y="881" font-family="&quot;Microsoft YaHei&quot;, &quot;Noto Sans CJK SC&quot;, sans-serif" font-size="23" font-weight="500" fill="#123f88" text-anchor="start"><tspan x="1270" dy="0">从技术探索走向产业落地</tspan></text>
+  </g>
+</svg>

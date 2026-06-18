@@ -1,0 +1,463 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1720" height="818" viewBox="0 0 1720 818">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="1720" height="818" fill="#ffffff"/>
+  <g id="background">
+    <rect id="panel-left-top" x="7" y="53" width="475" height="379" rx="22" ry="22" fill="#fdf1f3" stroke="none" stroke-width="1.5"/>
+    <rect id="panel-left-bottom" x="7" y="448" width="475" height="361" rx="22" ry="22" fill="#f4faf1" stroke="none" stroke-width="1.5"/>
+    <rect id="panel-middle" x="507" y="55" width="409" height="754" rx="22" ry="22" fill="#f3f6fc" stroke="none" stroke-width="1.5"/>
+    <rect id="panel-right" x="944" y="56" width="767" height="753" rx="22" ry="22" fill="#faf8ed" stroke="none" stroke-width="1.5"/>
+  </g>
+  <g id="sections">
+    <rect id="seq-token-bg-0" x="156" y="140" width="27" height="24" rx="0" ry="0" fill="#e4f4e6" stroke="none" stroke-width="1.5"/>
+    <rect id="seq-token-bg-1" x="185" y="140" width="27" height="24" rx="0" ry="0" fill="#e4effc" stroke="none" stroke-width="1.5"/>
+    <rect id="seq-token-bg-2" x="214" y="140" width="27" height="24" rx="0" ry="0" fill="#f1f1f1" stroke="none" stroke-width="1.5"/>
+    <rect id="seq-token-bg-3" x="243" y="140" width="27" height="24" rx="0" ry="0" fill="#eee7f8" stroke="none" stroke-width="1.5"/>
+    <rect id="seq-block-1" x="63" y="194" width="178" height="39" rx="8" ry="8" fill="#fffaf0" stroke="#e4a51a" stroke-width="2"/>
+    <rect id="seq-block-2" x="63" y="263" width="178" height="39" rx="8" ry="8" fill="#fff8f8" stroke="#df7777" stroke-width="2"/>
+    <rect id="seq-block-3" x="63" y="332" width="178" height="39" rx="8" ry="8" fill="#fff8f8" stroke="#df7777" stroke-width="2"/>
+    <rect id="latency-bar-0" x="325" y="258" width="16" height="12" rx="0" ry="0" fill="#f6b59b" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="latency-bar-1" x="351" y="243" width="16" height="27" rx="0" ry="0" fill="#f6b59b" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="latency-bar-2" x="377" y="218" width="16" height="52" rx="0" ry="0" fill="#cc5058" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="latency-bar-3" x="403" y="188" width="16" height="82" rx="0" ry="0" fill="#cc5058" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="memory-bar-0" x="325" y="407" width="16" height="12" rx="0" ry="0" fill="#f6b59b" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="memory-bar-1" x="351" y="392" width="16" height="27" rx="0" ry="0" fill="#f6b59b" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="memory-bar-2" x="377" y="367" width="16" height="52" rx="0" ry="0" fill="#cc5058" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="memory-bar-3" x="403" y="337" width="16" height="82" rx="0" ry="0" fill="#cc5058" stroke="#b93035" stroke-width="1.5"/>
+    <rect id="plt-token-bg-0" x="15" y="492" width="27" height="24" rx="0" ry="0" fill="#e4f4e6" stroke="none" stroke-width="1.5"/>
+    <rect id="plt-token-bg-1" x="44" y="492" width="27" height="24" rx="0" ry="0" fill="#e4effc" stroke="none" stroke-width="1.5"/>
+    <rect id="plt-token-bg-2" x="73" y="492" width="27" height="24" rx="0" ry="0" fill="#f1f1f1" stroke="none" stroke-width="1.5"/>
+    <rect id="plt-token-bg-3" x="102" y="492" width="27" height="24" rx="0" ry="0" fill="#eee7f8" stroke="none" stroke-width="1.5"/>
+    <rect id="plt-loop-0" x="47" y="558" width="103" height="39" rx="8" ry="8" fill="#fffaf0" stroke="#e6a51b" stroke-width="2"/>
+    <rect id="plt-loop-1" x="170" y="558" width="103" height="39" rx="8" ry="8" fill="#fff8f8" stroke="#df7777" stroke-width="2"/>
+    <rect id="plt-loop-2" x="367" y="558" width="103" height="39" rx="8" ry="8" fill="#fff8f8" stroke="#df7777" stroke-width="2"/>
+    <rect id="attention-block" x="48" y="621" width="423" height="50" rx="8" ry="8" fill="#eaf3fc" stroke="#84afd8" stroke-width="2.5"/>
+    <rect id="constant-card-0" x="19" y="695" width="217" height="100" rx="8" ry="8" fill="#ffffff" stroke="#d7d9d2" stroke-width="2"/>
+    <rect id="constant-card-1" x="254" y="695" width="217" height="100" rx="8" ry="8" fill="#ffffff" stroke="#d7d9d2" stroke-width="2"/>
+    <rect id="gain-card" x="523" y="482" width="180" height="314" rx="14" ry="14" fill="#f7fbff" stroke="#c2d8ec" stroke-width="3"/>
+    <rect id="cost-card" x="722" y="482" width="179" height="314" rx="14" ry="14" fill="#fffafa" stroke="#ebc9c4" stroke-width="3"/>
+    <rect id="loop2-head" x="1136" y="70" width="269" height="67" rx="11" ry="11" fill="#eef7ea" stroke="#c7d8c0" stroke-width="1.5"/>
+    <rect id="loop3-head" x="1424" y="70" width="267" height="67" rx="11" ry="11" fill="#fff0ed" stroke="#e4c2b9" stroke-width="1.5"/>
+    <rect id="evidence-card-0" x="1135" y="152" width="270" height="130" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-1" x="1424" y="152" width="267" height="130" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-2" x="1135" y="296" width="270" height="164" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-3" x="1424" y="296" width="267" height="164" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-4" x="1135" y="476" width="267" height="153" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-5" x="1424" y="476" width="267" height="153" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-6" x="1135" y="646" width="270" height="146" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="evidence-card-7" x="1424" y="646" width="267" height="146" rx="10" ry="10" fill="#ffffff" stroke="#d6d7d0" stroke-width="1.5"/>
+    <rect id="heatmap-1a-0-0" x="1158" y="351" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-0-1" x="1174" y="351" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-0-2" x="1190" y="351" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-0-3" x="1206" y="351" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-0-4" x="1222" y="351" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-1-0" x="1158" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-1-1" x="1174" y="367" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-1-2" x="1190" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-1-3" x="1206" y="367" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-1-4" x="1222" y="367" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-2-0" x="1158" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-2-1" x="1174" y="383" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-2-2" x="1190" y="383" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-2-3" x="1206" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-2-4" x="1222" y="383" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-3-0" x="1158" y="399" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-3-1" x="1174" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-3-2" x="1190" y="399" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-3-3" x="1206" y="399" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-3-4" x="1222" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-4-0" x="1158" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-4-1" x="1174" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-4-2" x="1190" y="415" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-4-3" x="1206" y="415" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1a-4-4" x="1222" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-0-0" x="1297" y="351" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-0-1" x="1313" y="351" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-0-2" x="1329" y="351" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-0-3" x="1345" y="351" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-0-4" x="1361" y="351" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-1-0" x="1297" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-1-1" x="1313" y="367" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-1-2" x="1329" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-1-3" x="1345" y="367" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-1-4" x="1361" y="367" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-2-0" x="1297" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-2-1" x="1313" y="383" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-2-2" x="1329" y="383" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-2-3" x="1345" y="383" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-2-4" x="1361" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-3-0" x="1297" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-3-1" x="1313" y="399" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-3-2" x="1329" y="399" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-3-3" x="1345" y="399" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-3-4" x="1361" y="399" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-4-0" x="1297" y="415" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-4-1" x="1313" y="415" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-4-2" x="1329" y="415" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-4-3" x="1345" y="415" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-1b-4-4" x="1361" y="415" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-0-0" x="1446" y="351" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-0-1" x="1462" y="351" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-0-2" x="1478" y="351" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-0-3" x="1494" y="351" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-0-4" x="1510" y="351" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-1-0" x="1446" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-1-1" x="1462" y="367" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-1-2" x="1478" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-1-3" x="1494" y="367" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-1-4" x="1510" y="367" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-2-0" x="1446" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-2-1" x="1462" y="383" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-2-2" x="1478" y="383" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-2-3" x="1494" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-2-4" x="1510" y="383" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-3-0" x="1446" y="399" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-3-1" x="1462" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-3-2" x="1478" y="399" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-3-3" x="1494" y="399" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-3-4" x="1510" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-4-0" x="1446" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-4-1" x="1462" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-4-2" x="1478" y="415" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-4-3" x="1494" y="415" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2a-4-4" x="1510" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-0-0" x="1580" y="351" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-0-1" x="1596" y="351" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-0-2" x="1612" y="351" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-0-3" x="1628" y="351" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-0-4" x="1644" y="351" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-1-0" x="1580" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-1-1" x="1596" y="367" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-1-2" x="1612" y="367" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-1-3" x="1628" y="367" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-1-4" x="1644" y="367" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-2-0" x="1580" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-2-1" x="1596" y="383" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-2-2" x="1612" y="383" width="16" height="16" rx="0" ry="0" fill="#f8d45a" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-2-3" x="1628" y="383" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-2-4" x="1644" y="383" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-3-0" x="1580" y="399" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-3-1" x="1596" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-3-2" x="1612" y="399" width="16" height="16" rx="0" ry="0" fill="#ed7a63" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-3-3" x="1628" y="399" width="16" height="16" rx="0" ry="0" fill="#f3b34e" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-3-4" x="1644" y="399" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-4-0" x="1580" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-4-1" x="1596" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-4-2" x="1612" y="415" width="16" height="16" rx="0" ry="0" fill="#8a2877" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-4-3" x="1628" y="415" width="16" height="16" rx="0" ry="0" fill="#cf4c70" stroke="none" stroke-width="0"/>
+    <rect id="heatmap-2b-4-4" x="1644" y="415" width="16" height="16" rx="0" ry="0" fill="#54206f" stroke="none" stroke-width="0"/>
+    <rect id="token-many-0" x="1150" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-1" x="1173" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-2" x="1196" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-3" x="1219" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-4" x="1242" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-5" x="1265" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-6" x="1288" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-7" x="1311" y="714" width="17" height="17" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="token-many-8" x="1334" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-many-9" x="1357" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="legend-many-refined" x="1150" y="756" width="16" height="16" rx="0" ry="0" fill="#79a966" stroke="#79a966" stroke-width="1"/>
+    <rect id="legend-many-not" x="1275" y="756" width="16" height="16" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-0" x="1443" y="714" width="17" height="17" rx="0" ry="0" fill="#eb9991" stroke="#eb9991" stroke-width="1"/>
+    <rect id="token-few-1" x="1466" y="714" width="17" height="17" rx="0" ry="0" fill="#eb9991" stroke="#eb9991" stroke-width="1"/>
+    <rect id="token-few-2" x="1489" y="714" width="17" height="17" rx="0" ry="0" fill="#eb9991" stroke="#eb9991" stroke-width="1"/>
+    <rect id="token-few-3" x="1512" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-4" x="1535" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-5" x="1558" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-6" x="1581" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-7" x="1604" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-8" x="1627" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="token-few-9" x="1650" y="714" width="17" height="17" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+    <rect id="legend-few-refined" x="1443" y="756" width="16" height="16" rx="0" ry="0" fill="#eb9991" stroke="#eb9991" stroke-width="1"/>
+    <rect id="legend-few-not" x="1568" y="756" width="16" height="16" rx="0" ry="0" fill="#f4f4f4" stroke="#c7c7c7" stroke-width="1"/>
+  </g>
+  <g id="icons">
+    <circle id="constant-dot-0-0" cx="46" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-0-1" cx="98" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-0-2" cx="150" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-0-3" cx="203" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-1-0" cx="281" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-1-1" cx="333" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-1-2" cx="385" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <circle id="constant-dot-1-3" cx="438" cy="757" r="3.5" fill="#3b8156" stroke="#3b8156" stroke-width="1"/>
+    <polygon id="optimal-star" points="681,303 685,312 695,312 687,318 690,328 681,322 672,328 675,318 667,312 677,312" fill="#ffc800" stroke="#ffc800" stroke-width="1"/>
+    <circle id="gain-target-outer" cx="616" cy="520" r="25" fill="none" stroke="#3b74b4" stroke-width="4"/>
+    <circle id="gain-target-mid" cx="616" cy="520" r="15.5" fill="none" stroke="#3b74b4" stroke-width="4"/>
+    <circle id="gain-target-inner" cx="616" cy="520" r="5.75" fill="#3b74b4" stroke="#3b74b4" stroke-width="2"/>
+    <circle id="cost-gear-body" cx="810" cy="520" r="25" fill="#f35b70" stroke="#f35b70" stroke-width="2"/>
+    <rect id="cost-gear-tooth-0" x="804" y="483" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-1" x="826" y="492" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-2" x="835" y="514" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-3" x="826" y="536" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-4" x="804" y="545" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-5" x="782" y="536" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-6" x="773" y="514" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <rect id="cost-gear-tooth-7" x="782" y="492" width="12" height="12" rx="1" ry="1" fill="#f35b70" stroke="#f35b70" stroke-width="1"/>
+    <circle id="cost-gear-hole" cx="810" cy="520" r="12" fill="#ffffff" stroke="#ffffff" stroke-width="1"/>
+    <circle id="coherence-node-0" cx="1236" cy="215" r="5.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+    <circle id="coherence-node-1" cx="1279" cy="190" r="5.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+    <circle id="coherence-target-green-outer" cx="1356" cy="195" r="16" fill="none" stroke="#4d912e" stroke-width="4"/>
+    <circle id="coherence-target-green-mid" cx="1356" cy="195" r="9.92" fill="none" stroke="#4d912e" stroke-width="4"/>
+    <circle id="coherence-target-green-inner" cx="1356" cy="195" r="3.68" fill="#4d912e" stroke="#4d912e" stroke-width="2"/>
+    <circle id="coherence-red-node-1" cx="1503" cy="194" r="6" fill="#c91518" stroke="#111111" stroke-width="1"/>
+    <circle id="coherence-red-node-2" cx="1530" cy="239" r="6" fill="#c91518" stroke="#111111" stroke-width="1"/>
+    <circle id="coherence-target-red-outer" cx="1643" cy="239" r="18" fill="none" stroke="#bd1015" stroke-width="4"/>
+    <circle id="coherence-target-red-mid" cx="1643" cy="239" r="11.16" fill="none" stroke="#bd1015" stroke-width="4"/>
+    <circle id="coherence-target-red-inner" cx="1643" cy="239" r="4.140000000000001" fill="#bd1015" stroke="#bd1015" stroke-width="2"/>
+    <circle id="diverse-scatter-pt-0" cx="1279.2" cy="568.0" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-1" cx="1255.8" cy="574.7" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-2" cx="1269.9" cy="555.0" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-3" cx="1284.4" cy="580.9" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-4" cx="1236.2" cy="564.6" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-5" cx="1299.6" cy="555.9" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-6" cx="1256.9" cy="592.8" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-7" cx="1245.8" cy="542.5" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-8" cx="1318.0" cy="578.9" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-9" cx="1257.6" cy="570.6" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-10" cx="1275.0" cy="559.0" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-11" cx="1274.5" cy="580.4" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-12" cx="1244.6" cy="559.9" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-13" cx="1299.5" cy="563.8" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-14" cx="1246.5" cy="586.4" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-15" cx="1262.4" cy="542.6" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-16" cx="1304.8" cy="586.5" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-17" cx="1214.8" cy="569.4" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-18" cx="1276.0" cy="563.2" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-19" cx="1267.3" cy="577.9" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-20" cx="1254.0" cy="558.0" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-21" cx="1294.8" cy="570.1" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-22" cx="1241.6" cy="579.1" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-23" cx="1276.1" cy="546.0" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-24" cx="1289.4" cy="590.2" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-25" cx="1222.2" cy="559.3" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-26" cx="1316.3" cy="554.5" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-27" cx="1263.7" cy="574.2" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-28" cx="1262.4" cy="558.7" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-29" cx="1287.3" cy="574.0" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-30" cx="1241.9" cy="572.2" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-31" cx="1285.3" cy="551.7" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-32" cx="1274.5" cy="590.2" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-33" cx="1234.1" cy="552.4" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-34" cx="1315.8" cy="565.5" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-35" cx="1232.0" cy="591.6" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-36" cx="1268.0" cy="561.2" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-37" cx="1279.1" cy="575.3" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-38" cx="1246.3" cy="566.9" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-39" cx="1289.4" cy="558.1" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-40" cx="1262.4" cy="587.1" r="2.4" fill="#5dbb8a" stroke="#5dbb8a" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-41" cx="1247.9" cy="549.0" r="2.4" fill="#4d9ac8" stroke="#4d9ac8" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-42" cx="1309.3" cy="574.6" r="2.4" fill="#6c4bb6" stroke="#6c4bb6" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-43" cx="1225.4" cy="581.3" r="2.4" fill="#bb4b9b" stroke="#bb4b9b" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-44" cx="1286.2" cy="538.0" r="2.4" fill="#eb5c68" stroke="#eb5c68" stroke-width="0.5"/>
+    <circle id="diverse-scatter-pt-45" cx="1272.3" cy="574.2" r="2.4" fill="#ef9c38" stroke="#ef9c38" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-0" cx="1561.0" cy="568.0" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-1" cx="1550.6" cy="572.4" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-2" cx="1556.8" cy="559.4" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-3" cx="1563.2" cy="576.5" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-4" cx="1542.0" cy="565.8" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-5" cx="1569.9" cy="560.0" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-6" cx="1551.1" cy="584.3" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-7" cx="1553.7" cy="564.0" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-8" cx="1562.9" cy="570.2" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-9" cx="1547.1" cy="571.3" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-10" cx="1561.0" cy="558.3" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-11" cx="1560.3" cy="580.2" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-12" cx="1541.7" cy="560.6" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-13" cx="1574.4" cy="564.3" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-14" cx="1553.1" cy="571.7" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-15" cx="1555.0" cy="561.5" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-16" cx="1563.4" cy="573.6" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-17" cx="1544.1" cy="568.5" r="2.4" fill="#4c7fb8" stroke="#4c7fb8" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-18" cx="1566.0" cy="559.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-19" cx="1555.3" cy="582.8" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-20" cx="1543.9" cy="555.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-21" cx="1561.0" cy="568.6" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-22" cx="1550.0" cy="571.8" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-23" cx="1558.1" cy="559.6" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-24" cx="1562.0" cy="577.3" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-25" cx="1542.5" cy="564.2" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-26" cx="1571.0" cy="561.7" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-27" cx="1548.8" cy="583.6" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-28" cx="1554.3" cy="563.8" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-29" cx="1562.5" cy="571.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-30" cx="1546.7" cy="570.2" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-31" cx="1562.4" cy="559.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-32" cx="1558.5" cy="580.6" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-33" cx="1542.9" cy="559.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-34" cx="1574.7" cy="566.5" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-35" cx="1552.6" cy="571.3" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-36" cx="1556.0" cy="561.4" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-37" cx="1562.5" cy="574.4" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-38" cx="1544.1" cy="567.1" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-39" cx="1567.3" cy="560.2" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-40" cx="1553.1" cy="582.6" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-41" cx="1545.9" cy="553.7" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-42" cx="1560.8" cy="569.2" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-43" cx="1549.5" cy="571.0" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-44" cx="1559.3" cy="559.9" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+    <circle id="collapsed-scatter-pt-45" cx="1560.6" cy="577.9" r="2.4" fill="#b7b9bc" stroke="#b7b9bc" stroke-width="0.5"/>
+  </g>
+  <g id="connectors">
+    <line id="seq-divider" x1="299" y1="145" x2="299" y2="421" stroke="#c8c8c8" stroke-width="2" stroke-dasharray="8 8" />
+    <line id="seq-block-out-1" x1="241" y1="213" x2="287" y2="213" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="seq-block-down-1" x1="152" y1="233" x2="152" y2="261" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="seq-block-out-2" x1="241" y1="282" x2="287" y2="282" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="seq-block-down-2" x1="152" y1="302" x2="152" y2="330" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="seq-block-out-3" x1="241" y1="351" x2="287" y2="351" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="seq-final-down" x1="152" y1="371" x2="152" y2="392" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="latency-axis-x" x1="305" y1="270" x2="455" y2="270" stroke="#a5a5a5" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="memory-axis-x" x1="305" y1="419" x2="455" y2="419" stroke="#a5a5a5" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <path id="offset-arc" d="M 99 555 C 170 515, 350 515, 421 555" fill="none" stroke="#8056b0" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="plt-loop-down-0" x1="98.5" y1="597" x2="98.5" y2="620" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="plt-loop-down-1" x1="221.5" y1="597" x2="221.5" y2="620" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="plt-loop-down-2" x1="418.5" y1="597" x2="418.5" y2="620" stroke="#444444" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="constant-axis-0" x1="37" y1="773" x2="221" y2="773" stroke="#aaaaaa" stroke-width="1.5" marker-end="url(#arrow-end)"/>
+    <line id="constant-flat-0" x1="46" y1="757" x2="203" y2="757" stroke="#3b8156" stroke-width="3" />
+    <line id="constant-axis-1" x1="272" y1="773" x2="456" y2="773" stroke="#aaaaaa" stroke-width="1.5" marker-end="url(#arrow-end)"/>
+    <line id="constant-flat-1" x1="281" y1="757" x2="438" y2="757" stroke="#3b8156" stroke-width="3" />
+    <line id="legend-gain" x1="567" y1="88" x2="612" y2="88" stroke="#3b74b4" stroke-width="7" />
+    <line id="legend-cost" x1="567" y1="127" x2="612" y2="127" stroke="#cf3c3c" stroke-width="7" />
+    <line id="plot-y" x1="571" y1="180" x2="571" y2="320" stroke="#777777" stroke-width="2" />
+    <line id="plot-x" x1="571" y1="320" x2="901" y2="320" stroke="#777777" stroke-width="2" />
+    <line id="plot-grid-0" x1="571" y1="180" x2="889" y2="180" stroke="#ded9c7" stroke-width="1.5" />
+    <line id="plot-grid-1" x1="571" y1="215" x2="889" y2="215" stroke="#ded9c7" stroke-width="1.5" />
+    <line id="plot-grid-2" x1="571" y1="250" x2="889" y2="250" stroke="#ded9c7" stroke-width="1.5" />
+    <line id="plot-grid-3" x1="571" y1="285" x2="889" y2="285" stroke="#ded9c7" stroke-width="1.5" />
+    <line id="plot-tick-0" x1="595" y1="320" x2="595" y2="329" stroke="#888888" stroke-width="1.5" />
+    <line id="plot-tick-1" x1="681" y1="320" x2="681" y2="329" stroke="#888888" stroke-width="1.5" />
+    <line id="plot-tick-2" x1="767" y1="320" x2="767" y2="329" stroke="#888888" stroke-width="1.5" />
+    <line id="plot-tick-3" x1="853" y1="320" x2="853" y2="329" stroke="#888888" stroke-width="1.5" />
+    <path id="gain-curve" d="M 596 252 C 630 220, 654 190, 680 194 C 717 200, 745 270, 789 289 C 821 304, 844 295, 868 300" fill="none" stroke="#3b74b4" stroke-width="7" />
+    <line id="cost-line" x1="596" y1="276" x2="868" y2="276" stroke="#cf3c3c" stroke-width="7" />
+    <line id="optimal-guide" x1="681" y1="197" x2="681" y2="314" stroke="#b8b8b8" stroke-width="2" />
+    <path id="gain-arrow" d="M 606 391 C 588 371, 579 369, 579 399" fill="none" stroke="#91b86e" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="cost-arrow" d="M 766 391 C 784 371, 793 369, 793 399" fill="none" stroke="#e96674" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="gain-target-arrow" x1="616" y1="520" x2="658" y2="490" stroke="#3b74b4" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="coherence-loop2" d="M 1181 242 C 1208 218, 1210 238, 1236 215 C 1261 193, 1275 210, 1295 188 C 1315 168, 1329 179, 1339 178" fill="none" stroke="#555555" stroke-width="1.8" stroke-dasharray="5 4" />
+    <path id="coherence-green-arrow" d="M 1295 189 C 1317 173, 1331 171, 1340 177" fill="none" stroke="#4d912e" stroke-width="2.5" marker-end="url(#arrow-end)"/>
+    <path id="coherence-loop3" d="M 1450 247 C 1451 201, 1468 181, 1484 203 C 1503 229, 1512 251, 1531 237 C 1554 218, 1570 187, 1593 192 C 1618 198, 1630 220, 1636 232" fill="none" stroke="#111111" stroke-width="1.8" stroke-dasharray="5 4" />
+    <line id="coherence-red-arrow" x1="1628" y1="201" x2="1634" y2="219" stroke="#bd1015" stroke-width="2.5" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-0" x1="1232.8" y1="543.25" x2="1204" y2="523" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-1" x1="1268.0" y1="536.1" x2="1268" y2="510" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-2" x1="1302.1" y1="544.9" x2="1330" y2="526" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-3" x1="1228.4" y1="568.0" x2="1196" y2="568" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-4" x1="1307.6" y1="568.0" x2="1340" y2="568" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-5" x1="1237.75" y1="592.2" x2="1213" y2="612" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-6" x1="1272.4" y1="598.25" x2="1276" y2="623" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="diverse-scatter-ray-7" x1="1299.9" y1="591.1" x2="1326" y2="610" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-0" x1="1492" y1="523" x2="1525.28" y2="546.4" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-1" x1="1556" y1="510" x2="1556.0" y2="540.16" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-2" x1="1618" y1="526" x2="1585.76" y2="547.84" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-3" x1="1484" y1="568" x2="1521.44" y2="568.0" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-4" x1="1628" y1="568" x2="1590.56" y2="568.0" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-5" x1="1501" y1="612" x2="1529.6" y2="589.12" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-6" x1="1564" y1="623" x2="1559.84" y2="594.4" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+    <line id="collapsed-scatter-ray-7" x1="1614" y1="610" x2="1583.84" y2="588.16" stroke="#888888" stroke-width="1.6" marker-end="url(#arrow-end)"/>
+  </g>
+  <g id="texts">
+    <text id="title-left" x="70" y="39" font-family="var(--font-serif)" font-size="29" font-weight="700" fill="#c75b00" text-anchor="start"><tspan x="70" dy="0">1. Why Parallel Loops?</tspan></text>
+    <text id="title-middle" x="552" y="37" font-family="var(--font-serif)" font-size="28" font-weight="700" fill="#3b77ba" text-anchor="start"><tspan x="552" dy="0">2. Gain-Cost Trade-off</tspan></text>
+    <text id="title-right" x="1006" y="39" font-family="var(--font-serif)" font-size="28" font-weight="700" fill="#4d7d20" text-anchor="start"><tspan x="1006" dy="0">3. Why Loop 2?  Evidence from Per-Loop Analysis</tspan></text>
+    <text id="seq-title" x="244" y="82" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#bf5600" text-anchor="middle"><tspan x="244" dy="0">Sequential Looped Transformer (Standard)</tspan></text>
+    <text id="seq-subtitle" x="244" y="118" font-family="var(--font-serif)" font-size="21" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="244" dy="0">Depth grows with loop count r</tspan></text>
+    <text id="input-label" x="68" y="157" font-family="var(--font-serif)" font-size="15" font-weight="700" fill="#111111" text-anchor="start"><tspan x="68" dy="0">Input Tokens</tspan></text>
+    <text id="seq-token-0" x="169" y="159" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#367c4b" text-anchor="middle"><tspan x="169" dy="0">1</tspan></text>
+    <text id="seq-token-1" x="198" y="159" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#3e78b7" text-anchor="middle"><tspan x="198" dy="0">2</tspan></text>
+    <text id="seq-token-2" x="227" y="159" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#666666" text-anchor="middle"><tspan x="227" dy="0">…</tspan></text>
+    <text id="seq-token-3" x="256" y="159" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#7650a8" text-anchor="middle"><tspan x="256" dy="0">N</tspan></text>
+    <text id="seq-loop-label-1" x="18" y="189" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#be6a00" text-anchor="start"><tspan x="18" dy="0">Loop 1</tspan></text>
+    <text id="seq-block-text-1" x="152" y="221" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="152" dy="0">Shared Block</tspan></text>
+    <text id="seq-loop-label-2" x="18" y="258" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#be6a00" text-anchor="start"><tspan x="18" dy="0">Loop 2</tspan></text>
+    <text id="seq-block-text-2" x="152" y="290" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="152" dy="0">Shared Block</tspan></text>
+    <text id="seq-loop-label-3" x="18" y="327" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#be6a00" text-anchor="start"><tspan x="18" dy="0">Loop 3</tspan></text>
+    <text id="seq-block-text-3" x="152" y="359" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="152" dy="0">Shared Block</tspan></text>
+    <text id="seq-ellipsis" x="152" y="414" font-family="var(--font-serif)" font-size="29" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="152" dy="0">…</tspan></text>
+    <text id="latency-title" x="385" y="154" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#a92323" text-anchor="middle"><tspan x="385" dy="0">Inference Time</tspan></text>
+    <text id="latency-subtitle" x="385" y="180" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#a92323" text-anchor="middle"><tspan x="385" dy="0">(Latency)</tspan></text>
+    <g id="latency-propto" class="math formula" data-latex="\propto r" data-math-hash="2758273f17" transform="translate(424 204.258) scale(1.6567751)"><title>\propto r</title><path d="M 3.14672 8.03906 Q 4.83984 8.03906 5.85375 5.57812 Q 4.55109 2.89078 3.14672 2.89078 Q 2.11969 2.89078 1.59797 3.62906 Q 1.04344 4.41656 1.04344 5.46328 Q 1.04344 6.61172 1.59797 7.32047 Q 2.17219 8.03906 3.14672 8.03906 Z M 10.4869 8.05875 L 10.4869 9.41062 L 9.69937 9.41062 Q 8.95125 9.41062 8.39672 9.10547 Q 7.84219 8.82656 7.31063 8.18016 Q 6.99234 7.81266 6.49031 6.94969 Q 5.80125 8.18016 5.1975 8.72484 Q 4.44938 9.38109 3.25828 9.38109 Q 1.87359 9.38109 0.961406 8.34422 Q 0 7.25812 0 5.46328 Q 0 3.74062 0.961406 2.5725 Q 1.81453 1.53562 3.28125 1.53562 Q 4.02938 1.53562 4.58063 1.84406 Q 5.22703 2.18203 5.67 2.76609 Q 6.08016 3.29109 6.49031 3.99656 Q 7.17609 2.76609 7.77984 2.22469 Q 8.53125 1.56844 9.71906 1.56844 L 10.4869 1.56844 L 10.4869 2.91047 L 9.83062 2.91047 Q 8.31469 2.91047 7.12359 5.37141 Q 8.42625 8.05875 9.83062 8.05875 L 10.4869 8.05875 Z M 26.1967 2.01797 Q 25.9112 1.86375 25.5404 1.78172 Q 25.1729 1.69969 24.7529 1.69969 Q 23.2436 1.69969 22.1148 2.84484 Q 20.9893 3.98672 20.6186 5.90625 L 19.4603 11.76 L 17.5736 11.76 L 19.8179 0.275625 L 21.7046 0.275625 L 21.347 2.06062 Q 22.0951 1.06641 23.1353 0.534844 Q 24.1787 0 25.3567 0 Q 25.6651 0 25.9604 0.0360938 Q 26.259 0.0689062 26.5576 0.150937 L 26.1967 2.01797 Z" fill="#a92323"/></g>
+    <text id="memory-title-1" x="385" y="302" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#a92323" text-anchor="middle"><tspan x="385" dy="0">KV Cache</tspan></text>
+    <text id="memory-title-2" x="385" y="329" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#a92323" text-anchor="middle"><tspan x="385" dy="0">Memory</tspan></text>
+    <g id="memory-propto" class="math formula" data-latex="\propto r" data-math-hash="2758273f17" transform="translate(424 352.258) scale(1.6567751)"><title>\propto r</title><path d="M 3.14672 8.03906 Q 4.83984 8.03906 5.85375 5.57812 Q 4.55109 2.89078 3.14672 2.89078 Q 2.11969 2.89078 1.59797 3.62906 Q 1.04344 4.41656 1.04344 5.46328 Q 1.04344 6.61172 1.59797 7.32047 Q 2.17219 8.03906 3.14672 8.03906 Z M 10.4869 8.05875 L 10.4869 9.41062 L 9.69937 9.41062 Q 8.95125 9.41062 8.39672 9.10547 Q 7.84219 8.82656 7.31063 8.18016 Q 6.99234 7.81266 6.49031 6.94969 Q 5.80125 8.18016 5.1975 8.72484 Q 4.44938 9.38109 3.25828 9.38109 Q 1.87359 9.38109 0.961406 8.34422 Q 0 7.25812 0 5.46328 Q 0 3.74062 0.961406 2.5725 Q 1.81453 1.53562 3.28125 1.53562 Q 4.02938 1.53562 4.58063 1.84406 Q 5.22703 2.18203 5.67 2.76609 Q 6.08016 3.29109 6.49031 3.99656 Q 7.17609 2.76609 7.77984 2.22469 Q 8.53125 1.56844 9.71906 1.56844 L 10.4869 1.56844 L 10.4869 2.91047 L 9.83062 2.91047 Q 8.31469 2.91047 7.12359 5.37141 Q 8.42625 8.05875 9.83062 8.05875 L 10.4869 8.05875 Z M 26.1967 2.01797 Q 25.9112 1.86375 25.5404 1.78172 Q 25.1729 1.69969 24.7529 1.69969 Q 23.2436 1.69969 22.1148 2.84484 Q 20.9893 3.98672 20.6186 5.90625 L 19.4603 11.76 L 17.5736 11.76 L 19.8179 0.275625 L 21.7046 0.275625 L 21.347 2.06062 Q 22.0951 1.06641 23.1353 0.534844 Q 24.1787 0 25.3567 0 Q 25.6651 0 25.9604 0.0360938 Q 26.259 0.0689062 26.5576 0.150937 L 26.1967 2.01797 Z" fill="#a92323"/></g>
+    <text id="plt-title" x="244" y="478" font-family="var(--font-serif)" font-size="22" font-weight="700" fill="#5a8b2c" text-anchor="middle"><tspan x="244" dy="0">Parallel Loop Transformer (PLT)</tspan></text>
+    <text id="plt-input-label" x="28" y="534" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="start"><tspan x="28" dy="0">Input Tokens</tspan></text>
+    <text id="plt-token-0" x="28" y="511" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#367c4b" text-anchor="middle"><tspan x="28" dy="0">1</tspan></text>
+    <text id="plt-token-1" x="57" y="511" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#3e78b7" text-anchor="middle"><tspan x="57" dy="0">2</tspan></text>
+    <text id="plt-token-2" x="86" y="511" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#666666" text-anchor="middle"><tspan x="86" dy="0">…</tspan></text>
+    <text id="plt-token-3" x="115" y="511" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#7650a8" text-anchor="middle"><tspan x="115" dy="0">N</tspan></text>
+    <text id="offset-label" x="156" y="516" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#8453b8" text-anchor="start"><tspan x="156" dy="0">Cross-Loop Position Offset</tspan></text>
+    <text id="plt-loop-text-0" x="98.5" y="585" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="98.5" dy="0">Loop 1</tspan></text>
+    <text id="plt-loop-text-1" x="221.5" y="585" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="221.5" dy="0">Loop 2</tspan></text>
+    <text id="plt-loop-text-2" x="418.5" y="585" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="418.5" dy="0">Loop r</tspan></text>
+    <text id="plt-loop-ellipsis" x="319" y="580" font-family="var(--font-serif)" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="319" dy="0">…</tspan></text>
+    <text id="attention-block-label" x="259" y="653" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#3474b7" text-anchor="middle"><tspan x="259" dy="0">Shared-KV Gated Sliding-Window Attention</tspan></text>
+    <text id="constant-title-0" x="127" y="720" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#276b3c" text-anchor="middle"><tspan x="127" dy="0">Near-constant</tspan><tspan x="127" dy="22.5">Latency</tspan></text>
+    <text id="constant-tick-0-0" x="46" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="46" dy="0">1</tspan></text>
+    <text id="constant-tick-0-1" x="98" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="98" dy="0">2</tspan></text>
+    <text id="constant-tick-0-2" x="150" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="150" dy="0">…</tspan></text>
+    <text id="constant-tick-0-3" x="203" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="203" dy="0">r</tspan></text>
+    <text id="constant-title-1" x="362" y="720" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#276b3c" text-anchor="middle"><tspan x="362" dy="0">Near-constant</tspan><tspan x="362" dy="22.5">KV Cache Memory</tspan></text>
+    <text id="constant-tick-1-0" x="281" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="281" dy="0">1</tspan></text>
+    <text id="constant-tick-1-1" x="333" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="333" dy="0">2</tspan></text>
+    <text id="constant-tick-1-2" x="385" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="385" dy="0">…</tspan></text>
+    <text id="constant-tick-1-3" x="438" y="789" font-family="var(--font-serif)" font-size="13" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="438" dy="0">r</tspan></text>
+    <text id="legend-gain-label" x="618" y="95" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="start"><tspan x="618" dy="0">Refinement gain (marginal)</tspan></text>
+    <text id="legend-cost-label" x="618" y="134" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#111111" text-anchor="start"><tspan x="618" dy="0">CLP offset cost</tspan></text>
+    <text id="relative-magnitude" x="522" y="148" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#111111" text-anchor="start"><tspan x="522" dy="0">Relative</tspan><tspan x="522" dy="22.5">Magnitude</tspan></text>
+    <text id="optimal-title" x="681" y="353" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#285489" text-anchor="middle"><tspan x="681" dy="0">Optimal</tspan></text>
+    <text id="optimal-loop" x="681" y="374" font-family="var(--font-serif)" font-size="17" font-weight="700" fill="#285489" text-anchor="middle"><tspan x="681" dy="0">Loop Count</tspan></text>
+    <g id="optimal-r" class="math formula" data-latex="r=2" data-math-hash="a96dc7fdce" transform="translate(659 373.328) scale(1.3746324)"><title>r=2</title><path d="M 6.98063 4.73078 Q 6.74953 4.60594 6.44938 4.53953 Q 6.15188 4.47313 5.81188 4.47313 Q 4.59 4.47313 3.67625 5.40016 Q 2.76516 6.32453 2.465 7.87844 L 1.52734 12.6172 L 0 12.6172 L 1.81688 3.32031 L 3.34422 3.32031 L 3.05469 4.76531 Q 3.66031 3.96047 4.50234 3.53016 Q 5.34703 3.09719 6.30063 3.09719 Q 6.55031 3.09719 6.78938 3.12641 Q 7.03109 3.15297 7.27281 3.21938 L 6.98063 4.73078 Z M 11.5046 4.89813 L 22.1455 4.89813 L 22.1455 6.29266 L 11.5046 6.29266 L 11.5046 4.89813 Z M 11.5046 8.28484 L 22.1455 8.28484 L 22.1455 9.69531 L 11.5046 9.69531 L 11.5046 8.28484 Z M 30.5216 11.2067 L 36.3734 11.2067 L 36.3734 12.6172 L 28.5055 12.6172 L 28.5055 11.2067 Q 29.4591 10.2186 31.106 8.55578 Q 32.7555 6.89031 33.1779 6.40688 Q 33.9827 5.50375 34.3015 4.87688 Q 34.6229 4.25 34.6229 3.64438 Q 34.6229 2.65625 33.9296 2.03469 Q 33.2363 1.41047 32.1234 1.41047 Q 31.3345 1.41047 30.4579 1.68406 Q 29.584 1.95766 28.5879 2.51547 L 28.5879 0.820781 Q 29.5999 0.414375 30.4791 0.207188 Q 31.361 0 32.0915 0 Q 34.0173 0 35.1621 0.964219 Q 36.307 1.92578 36.307 3.53547 Q 36.307 4.30047 36.0201 4.98578 Q 35.7359 5.66844 34.9788 6.59813 Q 34.7716 6.83984 33.6587 7.99 Q 32.5484 9.14016 30.5216 11.2067 Z" fill="#285489"/></g>
+    <g id="gain-cost-left" class="math formula" data-latex="\mathrm{Gain} &gt; \mathrm{Cost}" data-math-hash="e65d6c823f" transform="translate(555 389.355) scale(1.097405)"><title>\mathrm{Gain} &gt; \mathrm{Cost}</title><path d="M 9.70312 11.8041 L 9.70312 8.28 L 6.80344 8.28 L 6.80344 6.82031 L 11.4609 6.82031 L 11.4609 12.4566 Q 10.4344 13.185 9.19406 13.5591 Q 7.95656 13.9331 6.55031 13.9331 Q 3.47344 13.9331 1.73531 12.1359 Q 0 10.3359 0 7.12969 Q 0 3.91219 1.73531 2.115 Q 3.47344 0.317813 6.55031 0.317813 Q 7.83281 0.317813 8.98875 0.635625 Q 10.1447 0.950625 11.1206 1.56656 L 11.1206 3.45656 Q 10.1362 2.62125 9.02812 2.19937 Q 7.92 1.7775 6.69937 1.7775 Q 4.28906 1.7775 3.07969 3.12187 Q 1.87312 4.46625 1.87312 7.12969 Q 1.87312 9.78469 3.07969 11.1291 Q 4.28906 12.4734 6.69937 12.4734 Q 7.63875 12.4734 8.37562 12.3103 Q 9.11531 12.1472 9.70312 11.8041 Z M 19.1092 8.73 Q 17.1489 8.73 16.3923 9.17719 Q 15.6357 9.62438 15.6357 10.7072 Q 15.6357 11.5678 16.2039 12.0741 Q 16.772 12.5775 17.7451 12.5775 Q 19.0923 12.5775 19.9051 11.6241 Q 20.7179 10.6706 20.7179 9.09 L 20.7179 8.73 L 19.1092 8.73 Z M 22.3351 8.06062 L 22.3351 13.6772 L 20.7179 13.6772 L 20.7179 12.1837 Q 20.1639 13.0781 19.337 13.5056 Q 18.5101 13.9331 17.3148 13.9331 Q 15.8045 13.9331 14.9101 13.0838 Q 14.0186 12.2344 14.0186 10.8112 Q 14.0186 9.15188 15.1295 8.30813 Q 16.2432 7.46437 18.4482 7.46437 L 20.7179 7.46437 L 20.7179 7.30406 Q 20.7179 6.1875 19.9839 5.57719 Q 19.2498 4.96687 17.9223 4.96687 Q 17.0786 4.96687 16.277 5.16938 Q 15.4782 5.37187 14.7414 5.77688 L 14.7414 4.28063 Q 15.6273 3.9375 16.4626 3.76875 Q 17.2979 3.59719 18.0882 3.59719 Q 20.2257 3.59719 21.2804 4.70531 Q 22.3351 5.81062 22.3351 8.06062 Z M 25.6648 3.83344 L 27.282 3.83344 L 27.282 13.6772 L 25.6648 13.6772 L 25.6648 3.83344 Z M 25.6648 0 L 27.282 0 L 27.282 2.05031 L 25.6648 2.05031 L 25.6648 0 Z M 38.8501 7.73438 L 38.8501 13.6772 L 37.2329 13.6772 L 37.2329 7.78781 Q 37.2329 6.39 36.6873 5.69813 Q 36.1417 5.00344 35.0532 5.00344 Q 33.7426 5.00344 32.9861 5.83875 Q 32.2295 6.67125 32.2295 8.11406 L 32.2295 13.6772 L 30.6039 13.6772 L 30.6039 3.83344 L 32.2295 3.83344 L 32.2295 5.36344 Q 32.8117 4.47469 33.5964 4.03594 Q 34.3839 3.59719 35.4132 3.59719 Q 37.1092 3.59719 37.9782 4.64625 Q 38.8501 5.69531 38.8501 7.73438 Z M 45.7917 4.81781 L 45.7917 3.2175 L 57.0586 7.30406 L 57.0586 8.76375 L 45.7917 12.8503 L 45.7917 11.25 L 54.8452 8.04375 L 45.7917 4.81781 Z M 74.0668 1.56656 L 74.0668 3.43688 Q 73.1696 2.60156 72.1543 2.19094 Q 71.139 1.7775 69.9971 1.7775 Q 67.7471 1.7775 66.5518 3.15281 Q 65.3565 4.52812 65.3565 7.12969 Q 65.3565 9.72281 66.5518 11.0981 Q 67.7471 12.4734 69.9971 12.4734 Q 71.139 12.4734 72.1543 12.06 Q 73.1696 11.6466 74.0668 10.8112 L 74.0668 12.6675 Q 73.1359 13.3003 72.0925 13.6181 Q 71.0518 13.9331 69.8931 13.9331 Q 66.9118 13.9331 65.1962 12.1106 Q 63.4834 10.2853 63.4834 7.12969 Q 63.4834 3.96562 65.1962 2.14312 Q 66.9118 0.317813 69.8931 0.317813 Q 71.0687 0.317813 72.1093 0.63 Q 73.1528 0.942188 74.0668 1.56656 Z M 80.5518 4.96687 Q 79.2524 4.96687 78.4958 5.98219 Q 77.7393 6.9975 77.7393 8.76375 Q 77.7393 10.53 78.4902 11.5453 Q 79.2439 12.5606 80.5518 12.5606 Q 81.8455 12.5606 82.5993 11.5425 Q 83.3558 10.5216 83.3558 8.76375 Q 83.3558 7.01438 82.5993 5.99062 Q 81.8455 4.96687 80.5518 4.96687 Z M 80.5518 3.59719 Q 82.6611 3.59719 83.8649 4.96969 Q 85.0714 6.33938 85.0714 8.76375 Q 85.0714 11.1797 83.8649 12.5578 Q 82.6611 13.9331 80.5518 13.9331 Q 78.4339 13.9331 77.233 12.5578 Q 76.0349 11.1797 76.0349 8.76375 Q 76.0349 6.33938 77.233 4.96969 Q 78.4339 3.59719 80.5518 3.59719 Z M 94.0254 4.12312 L 94.0254 5.65312 Q 93.342 5.30156 92.6023 5.12719 Q 91.8654 4.95 91.0723 4.95 Q 89.8685 4.95 89.2666 5.31844 Q 88.6648 5.68687 88.6648 6.42656 Q 88.6648 6.98906 89.0951 7.30969 Q 89.5254 7.63031 90.8276 7.92 L 91.3816 8.04375 Q 93.1029 8.41219 93.8285 9.08437 Q 94.5541 9.75656 94.5541 10.9603 Q 94.5541 12.3328 93.4685 13.1344 Q 92.3829 13.9331 90.4845 13.9331 Q 89.6941 13.9331 88.8363 13.7784 Q 87.9785 13.6237 87.0307 13.3172 L 87.0307 11.6466 Q 87.9279 12.1134 88.797 12.3469 Q 89.666 12.5775 90.521 12.5775 Q 91.6629 12.5775 92.276 12.1866 Q 92.892 11.7956 92.892 11.0841 Q 92.892 10.4259 92.4476 10.0744 Q 92.006 9.72281 90.5013 9.39656 L 89.9388 9.26438 Q 88.437 8.94937 87.7676 8.29406 Q 87.101 7.63875 87.101 6.49688 Q 87.101 5.1075 88.0854 4.35375 Q 89.0698 3.59719 90.881 3.59719 Q 91.7754 3.59719 92.5657 3.72937 Q 93.3588 3.85875 94.0254 4.12312 Z M 98.7289 1.03781 L 98.7289 3.83344 L 102.059 3.83344 L 102.059 5.09062 L 98.7289 5.09062 L 98.7289 10.4344 Q 98.7289 11.6381 99.058 11.9812 Q 99.3871 12.3244 100.4 12.3244 L 102.059 12.3244 L 102.059 13.6772 L 100.4 13.6772 Q 98.5264 13.6772 97.8149 12.9797 Q 97.1033 12.2794 97.1033 10.4344 L 97.1033 5.09062 L 95.9164 5.09062 L 95.9164 3.83344 L 97.1033 3.83344 L 97.1033 1.03781 L 98.7289 1.03781 Z" fill="#47731f"/></g>
+    <text id="gain-cost-left-detail" x="611" y="438" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#47731f" text-anchor="middle"><tspan x="611" dy="0">(Productive</tspan><tspan x="611" dy="22.5">Refinement)</tspan></text>
+    <g id="gain-cost-right" class="math formula" data-latex="\mathrm{Gain} &lt; \mathrm{Cost}" data-math-hash="a25d97a904" transform="translate(755 389.355) scale(1.097405)"><title>\mathrm{Gain} &lt; \mathrm{Cost}</title><path d="M 9.70312 11.8041 L 9.70312 8.28 L 6.80344 8.28 L 6.80344 6.82031 L 11.4609 6.82031 L 11.4609 12.4566 Q 10.4344 13.185 9.19406 13.5591 Q 7.95656 13.9331 6.55031 13.9331 Q 3.47344 13.9331 1.73531 12.1359 Q 0 10.3359 0 7.12969 Q 0 3.91219 1.73531 2.115 Q 3.47344 0.317813 6.55031 0.317813 Q 7.83281 0.317813 8.98875 0.635625 Q 10.1447 0.950625 11.1206 1.56656 L 11.1206 3.45656 Q 10.1362 2.62125 9.02812 2.19937 Q 7.92 1.7775 6.69937 1.7775 Q 4.28906 1.7775 3.07969 3.12187 Q 1.87312 4.46625 1.87312 7.12969 Q 1.87312 9.78469 3.07969 11.1291 Q 4.28906 12.4734 6.69937 12.4734 Q 7.63875 12.4734 8.37562 12.3103 Q 9.11531 12.1472 9.70312 11.8041 Z M 19.1092 8.73 Q 17.1489 8.73 16.3923 9.17719 Q 15.6357 9.62438 15.6357 10.7072 Q 15.6357 11.5678 16.2039 12.0741 Q 16.772 12.5775 17.7451 12.5775 Q 19.0923 12.5775 19.9051 11.6241 Q 20.7179 10.6706 20.7179 9.09 L 20.7179 8.73 L 19.1092 8.73 Z M 22.3351 8.06062 L 22.3351 13.6772 L 20.7179 13.6772 L 20.7179 12.1837 Q 20.1639 13.0781 19.337 13.5056 Q 18.5101 13.9331 17.3148 13.9331 Q 15.8045 13.9331 14.9101 13.0838 Q 14.0186 12.2344 14.0186 10.8112 Q 14.0186 9.15188 15.1295 8.30813 Q 16.2432 7.46437 18.4482 7.46437 L 20.7179 7.46437 L 20.7179 7.30406 Q 20.7179 6.1875 19.9839 5.57719 Q 19.2498 4.96687 17.9223 4.96687 Q 17.0786 4.96687 16.277 5.16938 Q 15.4782 5.37187 14.7414 5.77688 L 14.7414 4.28063 Q 15.6273 3.9375 16.4626 3.76875 Q 17.2979 3.59719 18.0882 3.59719 Q 20.2257 3.59719 21.2804 4.70531 Q 22.3351 5.81062 22.3351 8.06062 Z M 25.6648 3.83344 L 27.282 3.83344 L 27.282 13.6772 L 25.6648 13.6772 L 25.6648 3.83344 Z M 25.6648 0 L 27.282 0 L 27.282 2.05031 L 25.6648 2.05031 L 25.6648 0 Z M 38.8501 7.73438 L 38.8501 13.6772 L 37.2329 13.6772 L 37.2329 7.78781 Q 37.2329 6.39 36.6873 5.69813 Q 36.1417 5.00344 35.0532 5.00344 Q 33.7426 5.00344 32.9861 5.83875 Q 32.2295 6.67125 32.2295 8.11406 L 32.2295 13.6772 L 30.6039 13.6772 L 30.6039 3.83344 L 32.2295 3.83344 L 32.2295 5.36344 Q 32.8117 4.47469 33.5964 4.03594 Q 34.3839 3.59719 35.4132 3.59719 Q 37.1092 3.59719 37.9782 4.64625 Q 38.8501 5.69531 38.8501 7.73438 Z M 57.0586 4.81781 L 47.9883 8.04375 L 57.0586 11.25 L 57.0586 12.8503 L 45.7917 8.76375 L 45.7917 7.30406 L 57.0586 3.2175 L 57.0586 4.81781 Z M 74.0668 1.56656 L 74.0668 3.43688 Q 73.1696 2.60156 72.1543 2.19094 Q 71.139 1.7775 69.9971 1.7775 Q 67.7471 1.7775 66.5518 3.15281 Q 65.3565 4.52812 65.3565 7.12969 Q 65.3565 9.72281 66.5518 11.0981 Q 67.7471 12.4734 69.9971 12.4734 Q 71.139 12.4734 72.1543 12.06 Q 73.1696 11.6466 74.0668 10.8112 L 74.0668 12.6675 Q 73.1359 13.3003 72.0925 13.6181 Q 71.0518 13.9331 69.8931 13.9331 Q 66.9118 13.9331 65.1962 12.1106 Q 63.4834 10.2853 63.4834 7.12969 Q 63.4834 3.96562 65.1962 2.14312 Q 66.9118 0.317813 69.8931 0.317813 Q 71.0687 0.317813 72.1093 0.63 Q 73.1528 0.942188 74.0668 1.56656 Z M 80.5518 4.96687 Q 79.2524 4.96687 78.4958 5.98219 Q 77.7393 6.9975 77.7393 8.76375 Q 77.7393 10.53 78.4902 11.5453 Q 79.2439 12.5606 80.5518 12.5606 Q 81.8455 12.5606 82.5993 11.5425 Q 83.3558 10.5216 83.3558 8.76375 Q 83.3558 7.01438 82.5993 5.99062 Q 81.8455 4.96687 80.5518 4.96687 Z M 80.5518 3.59719 Q 82.6611 3.59719 83.8649 4.96969 Q 85.0714 6.33938 85.0714 8.76375 Q 85.0714 11.1797 83.8649 12.5578 Q 82.6611 13.9331 80.5518 13.9331 Q 78.4339 13.9331 77.233 12.5578 Q 76.0349 11.1797 76.0349 8.76375 Q 76.0349 6.33938 77.233 4.96969 Q 78.4339 3.59719 80.5518 3.59719 Z M 94.0254 4.12312 L 94.0254 5.65312 Q 93.342 5.30156 92.6023 5.12719 Q 91.8654 4.95 91.0723 4.95 Q 89.8685 4.95 89.2666 5.31844 Q 88.6648 5.68687 88.6648 6.42656 Q 88.6648 6.98906 89.0951 7.30969 Q 89.5254 7.63031 90.8276 7.92 L 91.3816 8.04375 Q 93.1029 8.41219 93.8285 9.08437 Q 94.5541 9.75656 94.5541 10.9603 Q 94.5541 12.3328 93.4685 13.1344 Q 92.3829 13.9331 90.4845 13.9331 Q 89.6941 13.9331 88.8363 13.7784 Q 87.9785 13.6237 87.0307 13.3172 L 87.0307 11.6466 Q 87.9279 12.1134 88.797 12.3469 Q 89.666 12.5775 90.521 12.5775 Q 91.6629 12.5775 92.276 12.1866 Q 92.892 11.7956 92.892 11.0841 Q 92.892 10.4259 92.4476 10.0744 Q 92.006 9.72281 90.5013 9.39656 L 89.9388 9.26438 Q 88.437 8.94937 87.7676 8.29406 Q 87.101 7.63875 87.101 6.49688 Q 87.101 5.1075 88.0854 4.35375 Q 89.0698 3.59719 90.881 3.59719 Q 91.7754 3.59719 92.5657 3.72937 Q 93.3588 3.85875 94.0254 4.12312 Z M 98.7289 1.03781 L 98.7289 3.83344 L 102.059 3.83344 L 102.059 5.09062 L 98.7289 5.09062 L 98.7289 10.4344 Q 98.7289 11.6381 99.058 11.9812 Q 99.3871 12.3244 100.4 12.3244 L 102.059 12.3244 L 102.059 13.6772 L 100.4 13.6772 Q 98.5264 13.6772 97.8149 12.9797 Q 97.1033 12.2794 97.1033 10.4344 L 97.1033 5.09062 L 95.9164 5.09062 L 95.9164 3.83344 L 97.1033 3.83344 L 97.1033 1.03781 L 98.7289 1.03781 Z" fill="#b4111f"/></g>
+    <text id="gain-cost-right-detail" x="811" y="438" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#b4111f" text-anchor="middle"><tspan x="811" dy="0">(Cost Dominates,</tspan><tspan x="811" dy="22.5">Degradation)</tspan></text>
+    <text id="gain-card-title" x="613" y="574" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#3474b7" text-anchor="middle"><tspan x="613" dy="0">Gain</tspan></text>
+    <text id="gain-card-subtitle" x="613" y="597" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#3474b7" text-anchor="middle"><tspan x="613" dy="0">(Refinement)</tspan></text>
+    <text id="gain-bullets" x="528" y="626" font-family="var(--font-serif)" font-size="16" font-weight="700" fill="#111111" text-anchor="start"><tspan x="528" dy="0">1. Updates become</tspan><tspan x="528" dy="20.0">   more coherent</tspan><tspan x="528" dy="20.0"></tspan><tspan x="528" dy="20.0">2. Information routing</tspan><tspan x="528" dy="20.0">   changes</tspan><tspan x="528" dy="20.0"></tspan><tspan x="528" dy="20.0">3. Output distribution</tspan><tspan x="528" dy="20.0">   shifts</tspan></text>
+    <text id="cost-dollar" x="810" y="528" font-family="var(--font-sans)" font-size="20" font-weight="700" fill="#3b83cf" text-anchor="middle"><tspan x="810" dy="0">$</tspan></text>
+    <text id="cost-card-title" x="810" y="574" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#cf4055" text-anchor="middle"><tspan x="810" dy="0">Cost</tspan></text>
+    <text id="cost-card-subtitle" x="810" y="597" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#cf4055" text-anchor="middle"><tspan x="810" dy="0">(Offset Mismatch)</tspan></text>
+    <text id="cost-bullets" x="727" y="633" font-family="var(--font-serif)" font-size="16" font-weight="700" fill="#111111" text-anchor="start"><tspan x="727" dy="0">1. CLP offsets induce</tspan><tspan x="727" dy="20.0">   boundary mismatch</tspan><tspan x="727" dy="20.0"></tspan><tspan x="727" dy="20.0">2. Mismatch cost</tspan><tspan x="727" dy="20.0">   remains stable across</tspan><tspan x="727" dy="20.0">   loops</tspan></text>
+    <text id="row-label-0" x="1045" y="202" font-family="var(--font-serif)" font-size="24" font-weight="700" fill="#28651c" text-anchor="middle"><tspan x="1045" dy="0">Hidden-state</tspan><tspan x="1045" dy="30.0">Update</tspan><tspan x="1045" dy="30.0">(Coherence)</tspan></text>
+    <text id="row-label-1" x="1045" y="363" font-family="var(--font-serif)" font-size="24" font-weight="700" fill="#28651c" text-anchor="middle"><tspan x="1045" dy="0">Attention</tspan><tspan x="1045" dy="30.0">Routing</tspan><tspan x="1045" dy="30.0">(Change)</tspan></text>
+    <text id="row-label-2" x="1045" y="527" font-family="var(--font-serif)" font-size="24" font-weight="700" fill="#28651c" text-anchor="middle"><tspan x="1045" dy="0">Representation</tspan><tspan x="1045" dy="30.0">Diversity</tspan><tspan x="1045" dy="30.0">(Effective Rank)</tspan></text>
+    <text id="row-label-3" x="1045" y="681" font-family="var(--font-serif)" font-size="24" font-weight="700" fill="#28651c" text-anchor="middle"><tspan x="1045" dy="0">Token-level</tspan><tspan x="1045" dy="30.0">Contribution</tspan><tspan x="1045" dy="30.0">(Coverage)</tspan></text>
+    <text id="loop2-head-title" x="1270" y="101" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#316f1e" text-anchor="middle"><tspan x="1270" dy="0">Loop 2 (1→2)</tspan></text>
+    <text id="loop2-head-subtitle" x="1270" y="126" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#316f1e" text-anchor="middle"><tspan x="1270" dy="0">Productive Refinement ✓</tspan></text>
+    <text id="loop3-head-title" x="1557" y="99" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#a31f22" text-anchor="middle"><tspan x="1557" dy="0">Loop 3 (2→3)</tspan></text>
+    <text id="loop3-head-subtitle" x="1557" y="124" font-family="var(--font-serif)" font-size="20" font-weight="700" fill="#a31f22" text-anchor="middle"><tspan x="1557" dy="0">Redundant / Harmful ×</tspan></text>
+    <text id="coherence-start" x="1185" y="258" font-family="var(--font-serif)" font-size="12" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1185" dy="0">Start</tspan><tspan x="1185" dy="15.0">(Loop 1)</tspan></text>
+    <text id="coherence-after2" x="1350" y="230" font-family="var(--font-serif)" font-size="12" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1350" dy="0">After Loop 2</tspan></text>
+    <text id="coherence-after3" x="1641" y="278" font-family="var(--font-serif)" font-size="12" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1641" dy="0">After Loop 3</tspan></text>
+    <text id="attention-change" x="1270" y="320" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1270" dy="0">Strong change in</tspan><tspan x="1270" dy="22.5">attention patterns</tspan></text>
+    <g id="heatmap-neq" class="math formula" data-latex="\neq" data-math-hash="01a502f8cd" transform="translate(1248 361) scale(2.1383017)"><title>\neq</title><path d="M 0 4.15547 L 10.1798 4.15547 L 13.5548 0 L 15.2002 1.34578 L 12.9094 4.15547 L 16.9003 4.15547 L 16.9003 6.37031 L 11.0995 6.37031 L 8.53031 9.53438 L 16.9003 9.53438 L 16.9003 11.7745 L 6.69937 11.7745 L 3.29484 15.9005 L 1.64953 14.5547 L 3.94453 11.7745 L 0 11.7745 L 0 9.53438 L 5.77547 9.53438 L 8.34469 6.37031 L 0 6.37031 L 0 4.15547 Z" fill="#111111"/></g>
+    <text id="heatmap-loop1" x="1198" y="451" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1198" dy="0">Loop 1</tspan></text>
+    <text id="heatmap-loop2" x="1337" y="451" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1337" dy="0">Loop 2</tspan></text>
+    <text id="attention-similar" x="1557" y="320" font-family="var(--font-serif)" font-size="18" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1557" dy="0">Attention patterns</tspan><tspan x="1557" dy="22.5">become similar</tspan></text>
+    <g id="heatmap-approx" class="math formula" data-latex="\approx" data-math-hash="baf1f8e194" transform="translate(1535 367.03) scale(2.2484791)"><title>\approx</title><path d="M 16.9003 5.13 L 16.9003 7.48828 Q 15.5166 8.51766 14.3353 8.97328 Q 13.1583 9.42891 11.88 9.42891 Q 10.4287 9.42891 8.505 8.64844 Q 8.37422 8.59781 8.28141 8.55984 Q 8.20125 8.53031 8.00297 8.45437 Q 5.96109 7.64859 4.72078 7.64859 Q 3.56062 7.64859 2.42578 8.15062 Q 1.29094 8.64844 0 9.75797 L 0 7.39969 Q 1.38375 6.37031 2.565 5.91469 Q 3.74625 5.45906 5.02453 5.45906 Q 6.47578 5.45906 8.41219 6.23953 Q 8.55563 6.30281 8.62312 6.32812 Q 8.70328 6.35766 8.90156 6.43359 Q 10.9434 7.23937 12.1838 7.23937 Q 13.3144 7.23937 14.4281 6.74578 Q 15.5461 6.25219 16.9003 5.13 Z M 16.9003 0 L 16.9003 2.34984 Q 15.5166 3.39187 14.3353 3.8475 Q 13.1583 4.29891 11.88 4.29891 Q 10.4287 4.29891 8.505 3.52266 Q 8.37422 3.46781 8.28141 3.42984 Q 8.20125 3.40453 8.00297 3.32437 Q 5.96109 2.51859 4.72078 2.51859 Q 3.56062 2.51859 2.42578 3.02062 Q 1.29094 3.52266 0 4.61531 L 0 2.26969 Q 1.38375 1.24031 2.565 0.788906 Q 3.74625 0.333281 5.02453 0.333281 Q 6.47578 0.333281 8.41219 1.10953 Q 8.54297 1.16016 8.61047 1.18969 Q 8.70328 1.22766 8.90156 1.30781 Q 10.9434 2.10938 12.1838 2.10938 Q 13.3144 2.10938 14.4281 1.61578 Q 15.5461 1.12219 16.9003 0 Z" fill="#111111"/></g>
+    <text id="heatmap2-loop1" x="1486" y="451" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1486" dy="0">Loop 1</tspan></text>
+    <text id="heatmap2-loop2" x="1620" y="451" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1620" dy="0">Loop 2</tspan></text>
+    <text id="diversity-increase-title" x="1270" y="499" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1270" dy="0">Diversity Increases</tspan></text>
+    <text id="diversity-decrease-title" x="1557" y="499" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1557" dy="0">Diversity Decrease</tspan></text>
+    <text id="token-many-title" x="1270" y="676" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1270" dy="0">Many Tokens are</tspan><tspan x="1270" dy="23.75">Refined</tspan></text>
+    <text id="legend-many-refined-text" x="1173" y="771" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1173" dy="0">Refined</tspan></text>
+    <text id="legend-many-not-text" x="1298" y="771" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1298" dy="0">Not Refined</tspan></text>
+    <text id="token-few-title" x="1557" y="676" font-family="var(--font-serif)" font-size="19" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1557" dy="0">Only Few Tokens Bring</tspan><tspan x="1557" dy="23.75">Additional Change</tspan></text>
+    <text id="legend-few-refined-text" x="1466" y="771" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1466" dy="0">Refined</tspan></text>
+    <text id="legend-few-not-text" x="1591" y="771" font-family="var(--font-serif)" font-size="14" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1591" dy="0">Not Refined</tspan></text>
+  </g>
+</svg>
