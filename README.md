@@ -26,6 +26,8 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 
 ![生成式 AI 发展史信息图的原图与重建结果](./assets/examples/01-slide-layout.png)
 
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/genai-history/)
+
 ### 案例二：图标与结构混合图
 
 ![Skill Compiler 架构图的原图与重建结果](./assets/examples/02-icon-diagram.png)
@@ -33,6 +35,8 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 ### 案例三：全矢量重绘
 
 ![Parallel Loops 论文图的原图与重建结果](./assets/examples/03-vector-redraw.png)
+
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/parallel-loops/)
 
 ### 案例四：大量图片资产裁切
 
@@ -45,6 +49,16 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 ### 案例六：复杂公式复现
 
 ![包含大量公式的 AST 方法图原图与重建结果](./assets/examples/06-formula-reconstruction.png)
+
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/ast-reveal/)
+
+### 案例七：公式与图片资产混合重建
+
+![Camera Grid Rendering 原图](./assets/examples/camera-grid-rendering/source.png)
+
+![Camera Grid Rendering 重建结果](./assets/examples/camera-grid-rendering/preview.png)
+
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/camera-grid-rendering/)
 
 ## 为什么用它？
 
@@ -183,7 +197,8 @@ figedit/
 ├── scripts/            # 测量、组装、PPTX 导出、审计等脚本
 ├── references/         # 决策参考文档（分类、决策矩阵、SVG 规范、公式等）
 ├── templates/          # Manifest schema 与模板
-└── examples/           # 示例提示词
+├── examples/           # 示例提示词
+└── assets/examples/    # 可下载的完整重建案例
 ```
 
 ## 依赖
