@@ -1,14 +1,38 @@
-# FigEdit
+<div align="center">
+  <img src="./assets/figedit-logo.png" alt="FigEdit Logo" width="220">
 
-**Turn raster figures into editable SVG and native PowerPoint files.**
+  <h1>FigEdit · 图易编</h1>
 
-[中文](./README.md)
+  <p><strong>Make flattened figures editable again.</strong></p>
+
+  <p>Rebuild screenshots, paper figures, diagrams, and AI-generated graphics as editable SVG and native PowerPoint.</p>
+
+  <p>
+    <a href="./README.md">中文</a> ·
+    <a href="./README.en.md">English</a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Agent-Skill-4B5563?style=flat-square" alt="Agent Skill">
+    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
+    <img src="https://img.shields.io/badge/Output-SVG%20%7C%20PPTX-2563EB?style=flat-square" alt="SVG and PPTX output">
+    <img src="https://img.shields.io/badge/OCR-PP--OCRv6-16A34A?style=flat-square" alt="PP-OCRv6">
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-F97316?style=flat-square" alt="MIT License"></a>
+  </p>
+
+  <p>
+    <a href="#examples">Examples</a> ·
+    <a href="#quick-start">Quick start</a> ·
+    <a href="#how-it-works">How it works</a> ·
+    <a href="#acknowledgments-and-third-party-code">Acknowledgments</a>
+  </p>
+</div>
 
 ---
 
 ## What it does
 
-FigEdit is an agent skill for rebuilding flattened images as editable graphics packages. Give it a screenshot, a paper figure, an AI-generated slide, a technical architecture diagram, or almost any other raster graphic. It separates the image into meaningful parts and reconstructs each part in the form that is most useful to edit:
+FigEdit, also known in Chinese as 图易编, is an agent skill for rebuilding flattened images as editable graphics packages. Give it a screenshot, a paper figure, an AI-generated slide, a technical architecture diagram, or almost any other raster graphic. It separates the image into meaningful parts and reconstructs each part in the form that is most useful to edit:
 
 - labels become real text;
 - panels, borders, arrows, and connectors become vector shapes;

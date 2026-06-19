@@ -1,14 +1,38 @@
-# FigEdit
+<div align="center">
+  <img src="./assets/figedit-logo.png" alt="FigEdit 图易编 Logo" width="220">
 
-**把任何栅格图片变成可编辑的 SVG + PowerPoint 文件。**
+  <h1>FigEdit · 图易编</h1>
 
-[English](./README.en.md)
+  <p><strong>让压平的图，重新可编辑。</strong></p>
+
+  <p>把截图、论文配图、流程图和 AI 生成图片重建为可编辑 SVG 与原生 PowerPoint。</p>
+
+  <p>
+    <a href="./README.md">中文</a> ·
+    <a href="./README.en.md">English</a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Agent-Skill-4B5563?style=flat-square" alt="Agent Skill">
+    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
+    <img src="https://img.shields.io/badge/Output-SVG%20%7C%20PPTX-2563EB?style=flat-square" alt="SVG and PPTX output">
+    <img src="https://img.shields.io/badge/OCR-PP--OCRv6-16A34A?style=flat-square" alt="PP-OCRv6">
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-F97316?style=flat-square" alt="MIT License"></a>
+  </p>
+
+  <p>
+    <a href="#效果案例">效果案例</a> ·
+    <a href="#快速开始">快速开始</a> ·
+    <a href="#工作原理">工作原理</a> ·
+    <a href="#致谢与第三方代码">致谢</a>
+  </p>
+</div>
 
 ---
 
 ## 这是什么
 
-FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成的幻灯片、技术架构图、或者任何图片格式的图形，它会把图片拆解重建成可编辑的矢量图形包——文字变成真正的文字，形状变成矢量形状，公式变成可编辑的方程，图标和照片作为可替换的图片资产保留。
+FigEdit（中文名「图易编」）是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成的幻灯片、技术架构图、或者任何图片格式的图形，它会把图片拆解重建成可编辑的矢量图形包——文字变成真正的文字，形状变成矢量形状，公式变成可编辑的方程，图标和照片作为可替换的图片资产保留。
 
 ## 应用场景
 
