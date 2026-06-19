@@ -45,6 +45,8 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 ![Original and reconstructed Skill Compiler architecture diagram](./assets/examples/02-icon-diagram.png)
 
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/skill-compiler/)
+
 ### 3. Full vector redraw
 
 ![Original and reconstructed Parallel Loops paper figure](./assets/examples/03-vector-redraw.png)
@@ -55,9 +57,13 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 ![Original and reconstructed virtual try-on data pipeline](./assets/examples/04-raster-assets.png)
 
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/tryon-pipeline/)
+
 ### 5. Mixed-element reconstruction
 
 ![Original and reconstructed TransitBench infographic](./assets/examples/05-mixed-reconstruction.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/transitlm/)
 
 ### 6. Formula-rich reconstruction
 
@@ -192,6 +198,7 @@ figedit/
 ├── README.md           # Chinese introduction
 ├── README.en.md        # English introduction
 ├── LICENSE
+├── THIRD_PARTY_NOTICES.md
 ├── requirements.txt
 ├── scripts/            # Measurement, composition, export, and audit tools
 ├── references/         # Reconstruction policies and authoring guidance
@@ -218,6 +225,12 @@ figedit/
 
 Issues and improvements are welcome, especially for complex layouts, formula export, OCR correction, and PowerPoint compatibility.
 
+## Acknowledgments and third-party code
+
+FigEdit's native SVG-to-PPTX export layer is adapted from [PPT Master](https://github.com/hugohe3/ppt-master). Thanks to Hugo He for open-sourcing its native, element-by-element editable PowerPoint conversion work. FigEdit extends and integrates that work for single-figure reconstruction, manifest-driven assets, editable equations, and reconstruction quality checks.
+
+PPT Master is licensed under the MIT License. Its copyright notice, complete license text, and a description of the integration are preserved in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). FigEdit is an independent project and is not affiliated with or endorsed by PPT Master or its author.
+
 ## License
 
-[MIT](./LICENSE)
+FigEdit's original code is available under the [MIT License](./LICENSE). Third-party components remain under their respective licenses; see [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).

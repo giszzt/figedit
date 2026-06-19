@@ -32,6 +32,8 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 
 ![Skill Compiler 架构图的原图与重建结果](./assets/examples/02-icon-diagram.png)
 
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/skill-compiler/)
+
 ### 案例三：全矢量重绘
 
 ![Parallel Loops 论文图的原图与重建结果](./assets/examples/03-vector-redraw.png)
@@ -42,9 +44,13 @@ FigEdit 是一个 AI Agent Skill。给它一张截图、论文配图、AI 生成
 
 ![虚拟试衣数据流程图的原图与重建结果](./assets/examples/04-raster-assets.png)
 
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/tryon-pipeline/)
+
 ### 案例五：多要素混合重构
 
 ![TransitBench 信息图的原图与重建结果](./assets/examples/05-mixed-reconstruction.png)
+
+[查看并下载完整案例：原图、SVG、PPTX、Manifest 与质量报告](./assets/examples/transitlm/)
 
 ### 案例六：复杂公式复现
 
@@ -193,6 +199,7 @@ figedit/
 ├── SKILL.md            # Skill 入口，完整工作流参考
 ├── README.md
 ├── LICENSE
+├── THIRD_PARTY_NOTICES.md
 ├── requirements.txt
 ├── scripts/            # 测量、组装、PPTX 导出、审计等脚本
 ├── references/         # 决策参考文档（分类、决策矩阵、SVG 规范、公式等）
@@ -219,6 +226,12 @@ figedit/
 
 欢迎提交 issue 或改进建议，尤其是复杂版式、公式导出、OCR 校对和 PowerPoint 兼容性方面的问题。
 
+## 致谢与第三方代码
+
+FigEdit 的原生 SVG → PPTX 导出层基于 [PPT Master](https://github.com/hugohe3/ppt-master) 改编。感谢 Hugo He 开源这一套将 SVG 转换为原生、逐元素可编辑 PowerPoint 的实现。FigEdit 在此基础上加入了单图重建工作流、Manifest 资产组织、可编辑公式和质量检查等适配。
+
+PPT Master 使用 MIT 许可证。上游版权声明、完整许可文本和改动说明见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。FigEdit 是独立项目，与 PPT Master 及其作者不存在隶属或背书关系。
+
 ## 许可证
 
-[MIT](LICENSE)
+FigEdit 自有代码使用 [MIT](LICENSE) 许可证；第三方代码沿用各自许可证，详见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
