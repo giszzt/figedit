@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3455" height="1614" viewBox="0 0 3455 1614">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="3455" height="1614" fill="#ffffff"/>
+  <g id="background">
+    <rect id="p1-outline" x="41" y="30" width="1109" height="1567" rx="35" ry="35" fill="#fbfcfd" stroke="#8faadc" stroke-width="4"/>
+    <rect id="p2-outline" x="1180" y="30" width="1102" height="1567" rx="35" ry="35" fill="#fdf8f4" stroke="#f4b183" stroke-width="4"/>
+    <rect id="p3-outline" x="2336" y="30" width="1084" height="1567" rx="35" ry="35" fill="#f6faf3" stroke="#a9d18e" stroke-width="4"/>
+    <rect id="p1-boxA" x="56" y="228" width="521" height="850" rx="25" ry="25" fill="#ffffff" stroke="#8faadc" stroke-width="3"/>
+    <rect id="p1-boxB1" x="614" y="228" width="478" height="458" rx="25" ry="25" fill="#ffffff" stroke="#8faadc" stroke-width="3"/>
+    <rect id="p1-boxB2" x="614" y="695" width="478" height="380" rx="25" ry="25" fill="#ffffff" stroke="#8faadc" stroke-width="3"/>
+    <rect id="p1-boxC" x="56" y="1098" width="521" height="470" rx="25" ry="25" fill="#ffffff" stroke="#8faadc" stroke-width="3"/>
+    <rect id="p1-boxCities" x="614" y="1098" width="478" height="476" rx="25" ry="25" fill="#ffffff" stroke="#8faadc" stroke-width="3"/>
+    <rect id="p2-tasks-container" x="1198" y="135" width="1054" height="479" rx="28" ry="28" fill="#fdf8f4" stroke="#f4b183" stroke-width="3"/>
+    <rect id="p2-card-org" x="1208" y="206" width="307" height="387" rx="22" ry="22" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-card-prg" x="1543" y="206" width="317" height="387" rx="22" ry="22" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-card-drg" x="1885" y="206" width="320" height="387" rx="22" ry="22" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-metrics-container" x="1198" y="635" width="1054" height="943" rx="28" ry="28" fill="#fdf8f4" stroke="#f4b183" stroke-width="3"/>
+    <rect id="p2-box1" x="1216" y="723" width="306" height="263" rx="20" ry="20" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-box2" x="1540" y="723" width="666" height="263" rx="20" ry="20" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-sg-subbox" x="1556" y="790" width="296" height="185" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-dp-subbox" x="1866" y="790" width="330" height="185" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-box3" x="1216" y="1013" width="990" height="251" rx="20" ry="20" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-lo-subbox" x="1235" y="1118" width="270" height="130" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-sso-subbox" x="1540" y="1108" width="318" height="145" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-rem-subbox" x="1880" y="1108" width="316" height="145" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-box4" x="1216" y="1291" width="659" height="261" rx="20" ry="20" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-ea-subbox" x="1235" y="1395" width="230" height="150" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-mape-subbox" x="1530" y="1395" width="332" height="150" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-box5" x="1895" y="1291" width="311" height="261" rx="20" ry="20" fill="#ffffff" stroke="#f6d3bb" stroke-width="3"/>
+    <rect id="p2-pc-subbox" x="1905" y="1338" width="291" height="104" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p2-rd-subbox" x="1905" y="1452" width="291" height="96" rx="16" ry="16" fill="#fbf7f3" stroke="#e9dccf" stroke-width="2"/>
+    <rect id="p3-llm-box" x="2350" y="128" width="1054" height="184" rx="22" ry="22" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-solution-banner" x="2350" y="338" width="1052" height="72" rx="18" ry="18" fill="#f6faf3" stroke="#a9d18e" stroke-width="3"/>
+    <rect id="p3-transitdata-box" x="2365" y="418" width="1027" height="612" rx="25" ry="25" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-cpt-box" x="2364" y="550" width="574" height="455" rx="22" ry="22" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-sft-box" x="2958" y="550" width="422" height="455" rx="22" ry="22" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-3tasks-box" x="2978" y="614" width="364" height="164" rx="18" ry="18" fill="#ffffff" stroke="#a9d18e" stroke-width="2.5"/>
+    <rect id="p3-inputformats-box" x="2978" y="802" width="364" height="186" rx="18" ry="18" fill="#ffffff" stroke="#a9d18e" stroke-width="2.5"/>
+    <rect id="p3-training-box" x="2350" y="1048" width="520" height="502" rx="25" ry="25" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-train-box1" x="2392" y="1112" width="456" height="116" rx="16" ry="16" fill="#ffffff" stroke="#70ad47" stroke-width="2.5"/>
+    <rect id="p3-train-box2" x="2392" y="1252" width="456" height="116" rx="16" ry="16" fill="#ffffff" stroke="#70ad47" stroke-width="2.5"/>
+    <rect id="p3-train-box3" x="2392" y="1392" width="456" height="138" rx="16" ry="16" fill="#ffffff" stroke="#70ad47" stroke-width="2.5"/>
+    <rect id="p3-eval-box" x="2908" y="1048" width="480" height="502" rx="25" ry="25" fill="#ffffff" stroke="#70ad47" stroke-width="3"/>
+    <rect id="p3-eval-inner-box" x="2915" y="1298" width="467" height="224" rx="20" ry="20" fill="#ffffff" stroke="#70ad47" stroke-width="2.5"/>
+  </g>
+  <g id="assets">
+    <image id="img-amap-logo" href="assets/asset-amap-logo.png" x="43" y="30" width="144" height="142" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-phone" href="assets/asset-phone.png" x="102" y="370" width="400" height="650" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-city-maps" href="assets/asset-city-maps.png" x="628" y="1168" width="458" height="392" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-org-graphic" href="assets/asset-org-graphic.png" x="1212" y="308" width="290" height="237" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-prg-graphic" href="assets/asset-prg-graphic.png" x="1556" y="308" width="290" height="237" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-drg-graphic" href="assets/asset-drg-graphic.png" x="1898" y="310" width="298" height="235" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-sg-graphic" href="assets/asset-sg-graphic.png" x="1565" y="880" width="235" height="90" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-overlap-sketch" href="assets/asset-overlap-sketch.png" x="1805" y="1022" width="285" height="98" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-numeric-icons" href="assets/asset-numeric-icons.png" x="1690" y="1290" width="172" height="60" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-llm-logos" href="assets/asset-llm-logos.png" x="2495" y="188" width="610" height="110" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-doc-icon" href="assets/asset-doc-icon.png" x="2766" y="630" width="96" height="106" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-qwen-logo" href="assets/asset-qwen-logo.png" x="2743" y="1436" width="100" height="96" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-person-icon" href="assets/asset-person-icon.png" x="2924" y="1150" width="122" height="112" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-robot-icon" href="assets/asset-robot-icon.png" x="2920" y="1293" width="138" height="112" preserveAspectRatio="xMidYMid meet"/>
+    <image id="img-money-time-icons" href="assets/asset-money-time-icons.png" x="3070" y="1460" width="180" height="55" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+  <g id="sections">
+    <rect id="p1-doc-back2" x="737" y="346" width="230" height="256" rx="0" ry="0" fill="#ffffff" stroke="#1a1a1a" stroke-width="5"/>
+    <rect id="p1-doc-back1" x="752" y="332" width="230" height="256" rx="0" ry="0" fill="#ffffff" stroke="#1a1a1a" stroke-width="5"/>
+    <path id="p1-doc-front" d="M 768 318 L 913 318 L 998 403 L 998 575 L 768 575 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="5" />
+    <path id="p1-doc-fold" d="M 913 318 L 913 403 L 998 403 Z" fill="#f0f0f0" stroke="#1a1a1a" stroke-width="5" />
+    <rect id="p3-chip-various" x="2740" y="814" width="185" height="37" rx="3" ry="3" fill="#548235"/>
+    <rect id="p3-chip-100-1" x="2740" y="860" width="185" height="33" rx="3" ry="3" fill="#548235"/>
+    <rect id="p3-chip-100-2" x="2740" y="904" width="185" height="33" rx="3" ry="3" fill="#548235"/>
+    <rect id="p3-chip-100-3" x="2740" y="948" width="185" height="36" rx="3" ry="3" fill="#548235"/>
+  </g>
+  <g id="icons">
+    <circle id="p1-B2-s1a" cx="765" cy="895" r="38" fill="#7a96cc"/>
+    <circle id="p1-B2-s2a" cx="875" cy="895" r="38" fill="#bdd3e8"/>
+    <circle id="p1-B2-s2b" cx="770" cy="990" r="38" fill="#7a96cc"/>
+    <circle id="p1-B2-s1b" cx="878" cy="990" r="38" fill="#bdd3e8"/>
+    <circle id="p1-B2-s7" cx="985" cy="990" r="38" fill="#bdd3e8"/>
+    <circle id="p1-line1-c1" cx="230" cy="1312" r="16" fill="#ffffff" stroke="#6aab4e" stroke-width="7"/>
+    <circle id="p1-line1-c2" cx="290" cy="1312" r="16" fill="#ffffff" stroke="#6aab4e" stroke-width="7"/>
+    <circle id="p1-line1-c3" cx="358" cy="1312" r="16" fill="#ffffff" stroke="#6aab4e" stroke-width="7"/>
+    <circle id="p1-line1-c4" cx="425" cy="1312" r="16" fill="#ffffff" stroke="#6aab4e" stroke-width="7"/>
+    <circle id="p1-line2-c1" cx="232" cy="1372" r="16" fill="#ffffff" stroke="#ed7d31" stroke-width="7"/>
+    <circle id="p1-line2-c2" cx="295" cy="1372" r="16" fill="#ffffff" stroke="#ed7d31" stroke-width="7"/>
+    <circle id="p1-line2-c3" cx="358" cy="1372" r="16" fill="#ffffff" stroke="#ed7d31" stroke-width="7"/>
+    <circle id="p1-line3-c1" cx="232" cy="1430" r="16" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+    <circle id="p1-line3-c2" cx="298" cy="1430" r="16" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+    <circle id="p1-line3-c3" cx="362" cy="1430" r="16" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+    <circle id="p1-line3-c4" cx="462" cy="1430" r="16" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+    <circle id="p2-conn-r1c1" cx="1237" cy="872" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r1c2" cx="1299" cy="872" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r1c3" cx="1369" cy="872" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r1c4" cx="1432" cy="872" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r1-ok" cx="1482" cy="872" r="22" fill="#70ad47"/>
+    <circle id="p2-conn-r2c1" cx="1237" cy="938" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r2c2" cx="1299" cy="938" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r2c3" cx="1369" cy="938" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r2c4" cx="1432" cy="938" r="12" fill="#ffffff" stroke="#2e75b6" stroke-width="6"/>
+    <circle id="p2-conn-r2-bad" cx="1482" cy="938" r="22" fill="#c00000"/>
+    <circle id="p3-tl-c1" cx="3013" cy="1425" r="15" fill="#ffffff" stroke="#70ad47" stroke-width="7"/>
+    <circle id="p3-tl-c2" cx="3073" cy="1425" r="15" fill="#ffffff" stroke="#70ad47" stroke-width="7"/>
+    <circle id="p3-tl-c3" cx="3143" cy="1425" r="15" fill="#ffffff" stroke="#ed7d31" stroke-width="7"/>
+    <circle id="p3-tl-c4" cx="3218" cy="1425" r="15" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+    <circle id="p3-tl-c5" cx="3283" cy="1425" r="15" fill="#ffffff" stroke="#2e75b6" stroke-width="7"/>
+  </g>
+  <g id="connectors">
+    <path id="p1-B2-arc1" d="M 778 866 Q 820 838 862 866" fill="none" stroke="#2e75b6" stroke-width="3" />
+    <path id="p1-B2-arc2" d="M 784 960 Q 826 934 866 960" fill="none" stroke="#2e75b6" stroke-width="3" />
+    <path id="p1-B2-arc3" d="M 786 956 Q 884 912 972 956" fill="none" stroke="#2e75b6" stroke-width="3" />
+    <line id="p1-line1-track" x1="230" y1="1312" x2="425" y2="1312" stroke="#6aab4e" stroke-width="8" />
+    <line id="p1-line2-track" x1="232" y1="1372" x2="358" y2="1372" stroke="#ed7d31" stroke-width="8" />
+    <line id="p1-line3-track" x1="232" y1="1430" x2="362" y2="1430" stroke="#2e75b6" stroke-width="8" />
+    <line id="p2-conn-row1-track" x1="1237" y1="872" x2="1432" y2="872" stroke="#2e75b6" stroke-width="6" />
+    <path id="p2-conn-r1-check" d="M 1471 872 L 1479 881 L 1494 863" fill="none" stroke="#ffffff" stroke-width="6" />
+    <line id="p2-conn-row2-track" x1="1237" y1="938" x2="1432" y2="938" stroke="#2e75b6" stroke-width="6" />
+    <path id="p2-conn-r2-break" d="M 1326 924 L 1352 952 M 1352 924 L 1326 952" fill="none" stroke="#c00000" stroke-width="6" />
+    <path id="p2-conn-r2-cross" d="M 1473 929 L 1491 947 M 1491 929 L 1473 947" fill="none" stroke="#ffffff" stroke-width="6" />
+    <line id="p3-align-arrow" x1="2665" y1="690" x2="2762" y2="690" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="p3-down-arrow" x1="2447" y1="722" x2="2447" y2="772" stroke="#2f5597" stroke-width="5" marker-end="url(#arrow-end)"/>
+    <line id="p3-table-vline1" x1="2498" y1="748" x2="2498" y2="985" stroke="#404040" stroke-width="2" />
+    <line id="p3-table-vline2" x1="2722" y1="748" x2="2722" y2="985" stroke="#404040" stroke-width="2" />
+    <line id="p3-table-header-rule" x1="2410" y1="800" x2="2925" y2="800" stroke="#404040" stroke-width="2" />
+    <line id="p3-table-rule2" x1="2410" y1="855" x2="2925" y2="855" stroke="#bfbfbf" stroke-width="1.5" />
+    <line id="p3-table-rule3" x1="2410" y1="898" x2="2925" y2="898" stroke="#bfbfbf" stroke-width="1.5" />
+    <line id="p3-table-rule4" x1="2410" y1="940" x2="2925" y2="940" stroke="#bfbfbf" stroke-width="1.5" />
+    <line id="p3-stations-arrow" x1="2598" y1="1334" x2="2662" y2="1334" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="p3-timeline-dash1" x1="2945" y1="1425" x2="3008" y2="1425" stroke="#333333" stroke-width="3" stroke-dasharray="9,7" />
+    <line id="p3-timeline-green" x1="3013" y1="1425" x2="3143" y2="1425" stroke="#70ad47" stroke-width="7" />
+    <line id="p3-timeline-orange" x1="3143" y1="1425" x2="3218" y2="1425" stroke="#ed7d31" stroke-width="7" />
+    <line id="p3-timeline-blue" x1="3218" y1="1425" x2="3283" y2="1425" stroke="#2e75b6" stroke-width="7" />
+    <line id="p3-timeline-dash2" x1="3288" y1="1425" x2="3350" y2="1425" stroke="#333333" stroke-width="3" stroke-dasharray="9,7" />
+  </g>
+  <g id="texts">
+    <text id="p1-title" x="573" y="104" font-family="var(--font-serif)" font-size="62" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="573" dy="0">Data Source</tspan></text>
+    <text id="p1-subtitle" x="559" y="180" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="559" dy="0">From Amap</tspan></text>
+    <text id="p1-A-title" x="69" y="272" font-family="var(--font-serif)" font-size="42" font-weight="700" fill="#2f5597" text-anchor="start"><tspan x="69" dy="0">A. Route plans</tspan></text>
+    <text id="p1-A-desc" x="322" y="324" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="322" dy="0">Multiple detailed routes and</tspan><tspan x="322" dy="42.5">associated ODs per plan</tspan></text>
+    <text id="p1-A-caption" x="312" y="1058" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="312" dy="0">13M route plans</tspan></text>
+    <text id="p1-B1-title" x="623" y="270" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#2f5597" text-anchor="start"><tspan x="623" dy="0">B1. Station Information</tspan></text>
+    <text id="p1-doc-header" x="782" y="365" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#2f5597" text-anchor="start"><tspan x="782" dy="0">x station</tspan></text>
+    <text id="p1-doc-name" x="873" y="432" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="873" dy="0">Name</tspan></text>
+    <text id="p1-doc-coords" x="873" y="488" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="873" dy="0">Coordinates</tspan></text>
+    <text id="p1-doc-desc" x="873" y="550" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="873" dy="0">Description</tspan></text>
+    <text id="p1-B1-caption" x="855" y="648" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="855" dy="0">120K stations</tspan></text>
+    <text id="p1-B2-title" x="851" y="743" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="851" dy="0">B2. Station Connectivity</tspan></text>
+    <text id="p1-B2-desc" x="855" y="788" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="855" dy="0">First-order station</tspan><tspan x="855" dy="42.5">connectivity</tspan></text>
+    <text id="p1-B2-s1a-label" x="765" y="909" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="765" dy="0">S₁</tspan></text>
+    <text id="p1-B2-s2a-label" x="875" y="909" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="875" dy="0">S₂</tspan></text>
+    <text id="p1-B2-s2b-label" x="770" y="1004" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="770" dy="0">S₂</tspan></text>
+    <text id="p1-B2-s1b-label" x="878" y="1004" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="878" dy="0">S₁</tspan></text>
+    <text id="p1-B2-s7-label" x="985" y="1004" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="985" dy="0">S₇</tspan></text>
+    <text id="p1-B2-ellipsis" x="856" y="1056" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#404040" text-anchor="middle"><tspan x="856" dy="0">· · ·</tspan></text>
+    <text id="p1-C-title" x="70" y="1163" font-family="var(--font-serif)" font-size="42" font-weight="700" fill="#2f5597" text-anchor="start"><tspan x="70" dy="0">C. Line Information</tspan></text>
+    <text id="p1-C-desc" x="330" y="1216" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="330" dy="0">Line length, stop sequences,</tspan><tspan x="330" dy="42.5">operating hours</tspan></text>
+    <text id="p1-line1-label" x="95" y="1325" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#548235" text-anchor="start"><tspan x="95" dy="0">Line 1</tspan></text>
+    <text id="p1-line2-label" x="95" y="1385" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#ed7d31" text-anchor="start"><tspan x="95" dy="0">Line 2</tspan></text>
+    <text id="p1-line3-label" x="95" y="1444" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#2e75b6" text-anchor="start"><tspan x="95" dy="0">Line 3</tspan></text>
+    <text id="p1-line3-dots" x="412" y="1440" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#2e75b6" text-anchor="middle"><tspan x="412" dy="0">···</tspan></text>
+    <text id="p1-C-ellipsis" x="295" y="1485" font-family="var(--font-serif)" font-size="38" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="295" dy="0">· · ·</tspan></text>
+    <text id="p1-C-caption" x="305" y="1545" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="305" dy="0">13K transit lines</tspan></text>
+    <text id="p1-cities-title" x="848" y="1150" font-family="var(--font-serif)" font-size="40" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="848" dy="0">Covers 4 cities</tspan></text>
+    <text id="p2-title" x="1675" y="98" font-family="var(--font-serif)" font-size="62" font-weight="700" fill="#ed7d31" text-anchor="middle"><tspan x="1675" dy="0">TransitBench</tspan></text>
+    <text id="p2-tasks-title" x="1679" y="192" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#ed7d31" text-anchor="middle"><tspan x="1679" dy="0">3 Evaluation Tasks</tspan></text>
+    <text id="p2-card-org-title" x="1360" y="252" font-family="var(--font-serif)" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1360" dy="0">Optimal Route</tspan><tspan x="1360" dy="42.5">Generation (ORG)</tspan></text>
+    <text id="p2-card-prg-title" x="1701" y="252" font-family="var(--font-serif)" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1701" dy="0">Personalized Route</tspan><tspan x="1701" dy="42.5">Generation (PRG)</tspan></text>
+    <text id="p2-card-drg-title" x="2045" y="252" font-family="var(--font-serif)" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2045" dy="0">Diverse Route</tspan><tspan x="2045" dy="42.5">Generation (DRG)</tspan></text>
+    <text id="p2-org-10k" x="1360" y="586" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1360" dy="0">10K</tspan></text>
+    <text id="p2-prg-10k" x="1701" y="584" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1701" dy="0">10K</tspan></text>
+    <text id="p2-drg-10k" x="2042" y="586" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2042" dy="0">10K</tspan></text>
+    <text id="p2-metrics-title" x="1725" y="700" font-family="var(--font-serif)" font-size="46" font-weight="700" fill="#ed7d31" text-anchor="middle"><tspan x="1725" dy="0">10 Evaluation Metrics Across 5 Categories</tspan></text>
+    <text id="p2-box1-title" x="1234" y="772" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1234" dy="0">1. Connectivity</tspan></text>
+    <text id="p2-box1-chip" x="1364" y="808" font-family="var(--font-sans)" font-size="36" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1364" dy="0">Conn</tspan></text>
+    <text id="p2-box2-title" x="1554" y="772" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1554" dy="0">2. Access Feasibility</tspan></text>
+    <text id="p2-sg-label" x="1699" y="840" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1699" dy="0">Station Grounding</tspan></text>
+    <text id="p2-sg-chip" x="1695" y="874" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1695" dy="0">SG</tspan></text>
+    <text id="p2-dp-label" x="2028" y="838" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="2028" dy="0">Distance Plausibility</tspan></text>
+    <text id="p2-dp-chip" x="2025" y="874" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="2025" dy="0">DP</tspan></text>
+    <text id="p2-dp-desc" x="2030" y="916" font-family="var(--font-serif)" font-size="33" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="2030" dy="0">Accuracy of feeder</tspan><tspan x="2030" dy="41.25">distance estimation</tspan></text>
+    <text id="p2-box3-title" x="1230" y="1058" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1230" dy="0">3. Route Overlap</tspan></text>
+    <text id="p2-box3-desc" x="1251" y="1104" font-family="var(--font-serif)" font-size="33" font-weight="400" fill="#404040" text-anchor="start"><tspan x="1251" dy="0">Consistency with ground truth routes</tspan></text>
+    <text id="p2-lo-label" x="1364" y="1172" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1364" dy="0">Line Overlap</tspan></text>
+    <text id="p2-lo-chip" x="1356" y="1222" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1356" dy="0">LO</tspan></text>
+    <text id="p2-sso-label" x="1694" y="1152" font-family="var(--font-serif)" font-size="35" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1694" dy="0">Station Sequence</tspan><tspan x="1694" dy="43.75">Overlap</tspan></text>
+    <text id="p2-sso-chip" x="1684" y="1238" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1684" dy="0">SSO</tspan></text>
+    <text id="p2-rem-label" x="2035" y="1152" font-family="var(--font-serif)" font-size="35" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="2035" dy="0">Route Exact Match</tspan></text>
+    <text id="p2-rem-chip" x="2020" y="1190" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="2020" dy="0">REM</tspan></text>
+    <text id="p2-rem-note" x="2042" y="1236" font-family="var(--font-serif)" font-size="30" font-weight="400" fill="#a6a6a6" text-anchor="middle"><tspan x="2042" dy="0">LO = 1 &amp; SSO = 1</tspan></text>
+    <text id="p2-box4-title" x="1232" y="1334" font-family="var(--font-serif)" font-size="34" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1232" dy="0">4. Numeric Field Accuracy</tspan></text>
+    <text id="p2-box4-desc" x="1251" y="1376" font-family="var(--font-serif)" font-size="33" font-weight="400" fill="#404040" text-anchor="start"><tspan x="1251" dy="0">Correctness of predicted route features</tspan></text>
+    <text id="p2-ea-label" x="1346" y="1436" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1346" dy="0">Estimation</tspan><tspan x="1346" dy="42.5">Accuracy</tspan></text>
+    <text id="p2-ea-chip" x="1343" y="1522" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1343" dy="0">EA</tspan></text>
+    <text id="p2-mape-label" x="1697" y="1432" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1697" dy="0">Mean Absolute</tspan><tspan x="1697" dy="42.5">Percentage Error</tspan></text>
+    <text id="p2-mape-chip" x="1700" y="1520" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="1700" dy="0">MAPE</tspan></text>
+    <text id="p2-box5-title" x="1911" y="1322" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#111111" text-anchor="start"><tspan x="1911" dy="0">5. Task-Specific</tspan></text>
+    <text id="p2-pc-label" x="2000" y="1382" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="2000" dy="0">Preference</tspan><tspan x="2000" dy="42.5">Compliance</tspan></text>
+    <text id="p2-pc-chip" x="2130" y="1400" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="2130" dy="0">PC</tspan></text>
+    <text id="p2-rd-label" x="1985" y="1494" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#222222" text-anchor="middle"><tspan x="1985" dy="0">Route</tspan><tspan x="1985" dy="42.5">Diversity</tspan></text>
+    <text id="p2-rd-chip" x="2131" y="1512" font-family="var(--font-sans)" font-size="34" font-weight="700" fill="#548235" text-anchor="middle"><tspan x="2131" dy="0">RD</tspan></text>
+    <text id="p3-title" x="2890" y="96" font-family="var(--font-serif)" font-size="62" font-weight="700" fill="#385723" text-anchor="middle"><tspan x="2890" dy="0">TransitLM</tspan></text>
+    <text id="p3-llm-title-1" x="3050" y="184" font-family="var(--font-serif)" font-size="42" font-weight="700" fill="#385723" text-anchor="end"><tspan x="3050" dy="0">General LLMs perform poorly on</tspan></text>
+    <text id="p3-llm-title-2" x="3062" y="184" font-family="var(--font-serif)" font-size="42" font-weight="700" fill="#ed7d31" text-anchor="start"><tspan x="3062" dy="0">TransitBench</tspan></text>
+    <text id="p3-llm-ellipsis" x="3135" y="262" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="3135" dy="0">···</tspan></text>
+    <text id="p3-solution-text" x="2876" y="390" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#385723" text-anchor="middle"><tspan x="2876" dy="0">Our Solution: TransitLM</tspan></text>
+    <text id="p3-transitdata-title" x="2390" y="480" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#385723" text-anchor="start"><tspan x="2390" dy="0">TransitData</tspan></text>
+    <text id="p3-exclude-bold" x="2390" y="528" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#385723" text-anchor="start"><tspan x="2390" dy="0">Exclude benchmark data</tspan></text>
+    <text id="p3-exclude-rest" x="2866" y="528" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#404040" text-anchor="start"><tspan x="2866" dy="0">from the data sources</tspan></text>
+    <text id="p3-cpt-title" x="2405" y="610" font-family="var(--font-serif)" font-size="46" font-weight="700" fill="#111111" text-anchor="start"><tspan x="2405" dy="0">CPT</tspan></text>
+    <text id="p3-cpt-text-label" x="2810" y="628" font-family="var(--font-serif)" font-size="40" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="2810" dy="0">Text</tspan></text>
+    <text id="p3-align-label" x="2700" y="672" font-family="var(--font-serif)" font-size="38" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="2700" dy="0">Align</tspan></text>
+    <text id="p3-3datasources" x="2420" y="700" font-family="var(--font-serif)" font-size="34" font-weight="700" fill="#2f5597" text-anchor="start"><tspan x="2420" dy="0">3 data sources</tspan></text>
+    <text id="p3-th-knowledge" x="2515" y="790" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="start"><tspan x="2515" dy="0">Knowledge</tspan></text>
+    <text id="p3-th-ratio" x="2820" y="790" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2820" dy="0">Ratio</tspan></text>
+    <text id="p3-row-a" x="2450" y="845" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="2450" dy="0">A</tspan></text>
+    <text id="p3-row-a-kn" x="2516" y="846" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#404040" text-anchor="start"><tspan x="2516" dy="0">route</tspan></text>
+    <text id="p3-chip-various-text" x="2832" y="843" font-family="var(--font-sans)" font-size="30" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="2832" dy="0">Various</tspan></text>
+    <text id="p3-row-b1" x="2451" y="889" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="2451" dy="0">B1</tspan></text>
+    <text id="p3-row-b1-kn" x="2516" y="890" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#404040" text-anchor="start"><tspan x="2516" dy="0">station</tspan></text>
+    <text id="p3-chip-100-1-text" x="2832" y="886" font-family="var(--font-sans)" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="2832" dy="0">100%</tspan></text>
+    <text id="p3-row-b2" x="2451" y="933" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="2451" dy="0">B2</tspan></text>
+    <text id="p3-row-b2-kn" x="2516" y="934" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#404040" text-anchor="start"><tspan x="2516" dy="0">connectivity</tspan></text>
+    <text id="p3-chip-100-2-text" x="2832" y="930" font-family="var(--font-sans)" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="2832" dy="0">100%</tspan></text>
+    <text id="p3-row-c" x="2450" y="977" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#2f5597" text-anchor="middle"><tspan x="2450" dy="0">C</tspan></text>
+    <text id="p3-row-c-kn" x="2516" y="978" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#404040" text-anchor="start"><tspan x="2516" dy="0">line</tspan></text>
+    <text id="p3-chip-100-3-text" x="2832" y="976" font-family="var(--font-sans)" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle"><tspan x="2832" dy="0">100%</tspan></text>
+    <text id="p3-sft-title" x="2990" y="606" font-family="var(--font-serif)" font-size="46" font-weight="700" fill="#111111" text-anchor="start"><tspan x="2990" dy="0">SFT</tspan></text>
+    <text id="p3-3tasks-title" x="3160" y="668" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="3160" dy="0">3 Tasks</tspan></text>
+    <text id="p3-3tasks-names" x="3156" y="712" font-family="var(--font-serif)" font-size="34" font-weight="400" fill="#9d9d9d" text-anchor="middle"><tspan x="3156" dy="0">ORG PRG DRG</tspan></text>
+    <text id="p3-3tasks-samples" x="3160" y="756" font-family="var(--font-serif)" font-size="29" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="3160" dy="0">30k samples for training</tspan></text>
+    <text id="p3-inputformats-title" x="3160" y="848" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="3160" dy="0">Input Formats</tspan></text>
+    <text id="p3-prompt-bold" x="2995" y="896" font-family="var(--font-serif)" font-size="30" font-weight="700" fill="#111111" text-anchor="start"><tspan x="2995" dy="0">Prompt:</tspan></text>
+    <text id="p3-prompt-rest" x="3128" y="896" font-family="var(--font-serif)" font-size="30" font-weight="400" fill="#404040" text-anchor="start"><tspan x="3128" dy="0">task definition</tspan></text>
+    <text id="p3-input-bold" x="3040" y="940" font-family="var(--font-serif)" font-size="30" font-weight="700" fill="#111111" text-anchor="start"><tspan x="3040" dy="0">Input:</tspan></text>
+    <text id="p3-input-rest" x="3152" y="940" font-family="var(--font-serif)" font-size="30" font-weight="400" fill="#404040" text-anchor="start"><tspan x="3152" dy="0">query + OD</tspan></text>
+    <text id="p3-input-rest2" x="3156" y="976" font-family="var(--font-serif)" font-size="30" font-weight="400" fill="#404040" text-anchor="middle"><tspan x="3156" dy="0">information</tspan></text>
+    <text id="p3-training-title" x="2385" y="1095" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#385723" text-anchor="start"><tspan x="2385" dy="0">Training</tspan></text>
+    <text id="p3-train-box1-title" x="2620" y="1158" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2620" dy="0">Varied Data Settings</tspan></text>
+    <text id="p3-train-box1-body" x="2620" y="1206" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="2620" dy="0">Multi-CPT × Multi-SFT</tspan></text>
+    <text id="p3-train-box2-title" x="2620" y="1298" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2620" dy="0">Vocabulary Expansion</tspan></text>
+    <text id="p3-train-stations" x="2462" y="1346" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#111111" text-anchor="start"><tspan x="2462" dy="0">Stations</tspan></text>
+    <text id="p3-train-ids" x="2680" y="1346" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#111111" text-anchor="start"><tspan x="2680" dy="0">IDs</tspan></text>
+    <text id="p3-train-box3-title" x="2620" y="1440" font-family="var(--font-serif)" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2620" dy="0">3 Base Model Sizes</tspan></text>
+    <text id="p3-train-box3-body" x="2600" y="1502" font-family="var(--font-serif)" font-size="36" font-weight="400" fill="#111111" text-anchor="middle"><tspan x="2600" dy="0">0.6B / 1.7B / 4B</tspan></text>
+    <text id="p3-eval-title" x="2930" y="1092" font-family="var(--font-serif)" font-size="44" font-weight="700" fill="#385723" text-anchor="start"><tspan x="2930" dy="0">Evaluation</tspan></text>
+    <text id="p3-eval-ontb" x="2925" y="1146" font-family="var(--font-serif)" font-size="36" font-weight="700" fill="#ed7d31" text-anchor="start"><tspan x="2925" dy="0">On TransitBench</tspan></text>
+    <text id="p3-eval-query1" x="3066" y="1188" font-family="var(--font-serif)" font-size="38" font-weight="400" fill="#111111" text-anchor="start"><tspan x="3066" dy="0">Query = [O→D] +</tspan></text>
+    <text id="p3-eval-query2" x="3073" y="1232" font-family="var(--font-serif)" font-size="38" font-weight="400" fill="#111111" text-anchor="start"><tspan x="3073" dy="0">{Preference, k-</tspan></text>
+    <text id="p3-eval-query3" x="3064" y="1276" font-family="var(--font-serif)" font-size="38" font-weight="400" fill="#111111" text-anchor="start"><tspan x="3064" dy="0">routes}*</tspan></text>
+  </g>
+</svg>

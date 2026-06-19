@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2514" height="1268" viewBox="0 0 2514 1268">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="2514" height="1268" fill="#ffffff"/>
+  <g id="background">
+    <rect id="stage1-source-internet-card" x="47" y="164" width="292" height="263" rx="58" ry="58" fill="#e5eaee" stroke="none" stroke-width="0"/>
+    <rect id="stage1-source-ecommerce-card" x="397" y="164" width="293" height="263" rx="58" ry="58" fill="#e5eaee" stroke="none" stroke-width="0"/>
+    <rect id="stage1-retrieval-card" x="47" y="477" width="643" height="535" rx="50" ry="50" fill="#f0f0f2" stroke="none" stroke-width="0"/>
+    <rect id="stage2-quality-card" x="792" y="178" width="920" height="527" rx="18" ry="18" fill="#f0f0f0" stroke="none" stroke-width="0"/>
+    <rect id="stage2-quality-header" x="792" y="178" width="920" height="104" rx="18" ry="18" fill="#d7d7d7" stroke="none" stroke-width="0"/>
+    <rect id="stage2-shared-policy" x="960" y="292" width="721" height="147" rx="8" ry="8" fill="#fff7ed" stroke="none" stroke-width="0"/>
+    <rect id="stage2-model-policy" x="815" y="505" width="332" height="198" rx="18" ry="18" fill="#e0eefb" stroke="none" stroke-width="0"/>
+    <rect id="stage2-cloth-policy" x="1372" y="505" width="310" height="198" rx="18" ry="18" fill="#e4f4e4" stroke="none" stroke-width="0"/>
+    <rect id="stage2-tagging-card" x="792" y="750" width="432" height="458" rx="22" ry="22" fill="#f3f3f5" stroke="none" stroke-width="0"/>
+    <rect id="stage2-tagging-header" x="792" y="750" width="432" height="104" rx="20" ry="20" fill="#d7d7d7" stroke="none" stroke-width="0"/>
+    <rect id="stage2-privacy-card" x="1287" y="750" width="425" height="458" rx="22" ry="22" fill="#f3f3f5" stroke="none" stroke-width="0"/>
+    <rect id="stage2-privacy-header" x="1287" y="750" width="425" height="104" rx="20" ry="20" fill="#d7d7d7" stroke="none" stroke-width="0"/>
+    <rect id="stage3-policy-label-1" x="1983" y="658" width="317" height="49" rx="8" ry="8" fill="#f4f4f4" stroke="none" stroke-width="0"/>
+    <rect id="stage3-policy-label-2" x="1983" y="718" width="317" height="49" rx="8" ry="8" fill="#f4f4f4" stroke="none" stroke-width="0"/>
+    <rect id="stage3-policy-label-3" x="1983" y="778" width="317" height="49" rx="8" ry="8" fill="#f4f4f4" stroke="none" stroke-width="0"/>
+    <rect id="stage3-stack-back-2" x="2004" y="875" width="304" height="229" rx="34" ry="34" fill="#e4f2fa" stroke="#111111" stroke-width="3"/>
+    <rect id="stage3-stack-back-1" x="1990" y="889" width="304" height="229" rx="34" ry="34" fill="#e4f2fa" stroke="#111111" stroke-width="3"/>
+    <rect id="stage3-stack-front" x="1976" y="903" width="304" height="229" rx="34" ry="34" fill="#e4f2fa" stroke="#111111" stroke-width="3"/>
+  </g>
+  <g id="assets">
+    <image id="image-stage1-internet-cloud" href="assets/stage1-internet-cloud.png" x="79" y="176" width="208" height="165" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage1-ecommerce" href="assets/stage1-ecommerce.png" x="452" y="198" width="183" height="141" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage1-garment-collage" href="assets/stage1-garment-collage.png" x="58" y="558" width="208" height="335" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage1-model-collage" href="assets/stage1-model-collage.png" x="490" y="560" width="189" height="370" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage1-tag-list-icon" href="assets/stage1-tag-list-icon.png" x="319" y="551" width="119" height="109" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage1-raw-stack" href="assets/stage1-raw-stack.png" x="305" y="1052" width="174" height="157" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-blur-example" href="assets/stage2-blur-example.png" x="1002" y="310" width="64" height="58" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-watermark-icon" href="assets/stage2-watermark-icon.png" x="997" y="375" width="70" height="69" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-lowres-icon" href="assets/stage2-lowres-icon.png" x="1331" y="317" width="106" height="54" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-pose-icon" href="assets/stage2-pose-icon.png" x="836" y="518" width="43" height="72" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-nonhuman-icon" href="assets/stage2-nonhuman-icon.png" x="835" y="611" width="45" height="57" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-vlm-judge" href="assets/stage2-vlm-judge.png" x="1178" y="505" width="66" height="66" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-expert-check" href="assets/stage2-expert-check.png" x="1165" y="615" width="79" height="74" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-incomplete-icon" href="assets/stage2-incomplete-icon.png" x="1386" y="514" width="71" height="70" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-multisubject-icon" href="assets/stage2-multisubject-icon.png" x="1378" y="609" width="101" height="61" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-tag-source" href="assets/stage2-tag-source.png" x="810" y="908" width="89" height="63" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-tag-library" href="assets/stage2-tag-library.png" x="810" y="987" width="94" height="86" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-vlm-refine" href="assets/stage2-vlm-refine.png" x="810" y="1097" width="76" height="72" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-dress-model" href="assets/stage2-dress-model.png" x="1022" y="999" width="85" height="163" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-attribute-swatches" href="assets/stage2-attribute-swatches.png" x="1107" y="973" width="58" height="187" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-face-original" href="assets/stage2-face-original.png" x="1309" y="901" width="126" height="113" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-face-library" href="assets/stage2-face-library.png" x="1534" y="895" width="132" height="102" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-face-switched" href="assets/stage2-face-switched.png" x="1309" y="1058" width="126" height="112" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage2-quality-avatar" href="assets/stage2-quality-avatar.png" x="1547" y="1052" width="116" height="119" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-model-cloud" href="assets/stage3-model-cloud.png" x="1828" y="190" width="225" height="157" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-cloth-cloud" href="assets/stage3-cloth-cloud.png" x="2237" y="190" width="221" height="157" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-pairing-funnel" href="assets/stage3-pairing-funnel.png" x="2062" y="181" width="154" height="187" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-upper" href="assets/stage3-upper.png" x="1831" y="441" width="97" height="124" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-coat" href="assets/stage3-coat.png" x="1942" y="442" width="91" height="123" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-lower" href="assets/stage3-lower.png" x="2049" y="441" width="99" height="124" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-shoes" href="assets/stage3-shoes.png" x="2160" y="441" width="92" height="124" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-bag" href="assets/stage3-bag.png" x="2270" y="441" width="91" height="124" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-hat" href="assets/stage3-hat.png" x="2383" y="441" width="91" height="124" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-output-left" href="assets/stage3-output-left.png" x="1832" y="656" width="135" height="174" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-output-right" href="assets/stage3-output-right.png" x="2305" y="656" width="134" height="174" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-benchmark-person" href="assets/stage3-benchmark-person.png" x="2009" y="925" width="67" height="179" preserveAspectRatio="xMidYMid meet"/>
+    <image id="image-stage3-benchmark-clothes" href="assets/stage3-benchmark-clothes.png" x="2140" y="921" width="122" height="181" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+  <g id="panels">
+    <rect id="panel-stage-1" x="18" y="16" width="700" height="1237" rx="58" ry="58" fill="none" stroke="#0b536d" stroke-width="4"/>
+    <rect id="panel-stage-2" x="758" y="16" width="996" height="1237" rx="52" ry="52" fill="none" stroke="#0b536d" stroke-width="4"/>
+    <rect id="panel-stage-3" x="1794" y="16" width="701" height="1237" rx="58" ry="58" fill="none" stroke="#0b536d" stroke-width="4"/>
+  </g>
+  <g id="sections">
+    <polygon id="stage1-retrieval-funnel" points="274,712 486,712 420,907 420,939 380,953 340,939 340,907" fill="#d7e8f4" stroke="#1f3854" stroke-width="4"/>
+    <rect id="stage3-pairing-policy" x="1811" y="430" width="665" height="195" rx="0" ry="0" fill="none" stroke="#2e78a8" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect id="stage3-upper-selected" x="1827" y="437" width="105" height="176" rx="0" ry="0" fill="none" stroke="#318c4d" stroke-width="2" stroke-dasharray="6 4"/>
+    <rect id="stage3-lower-selected" x="2045" y="437" width="106" height="176" rx="0" ry="0" fill="none" stroke="#318c4d" stroke-width="2" stroke-dasharray="6 4"/>
+  </g>
+  <g id="connectors">
+    <path id="stage1-arrow-internet" d="M 199 428 C 198 455 216 458 216 477" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage1-arrow-ecommerce" d="M 543 428 C 543 455 516 458 516 477" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage1-arrow-tag-left" d="M 272 659 C 309 660 329 684 338 711" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage1-arrow-tag-right" d="M 486 659 C 448 660 429 684 419 711" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage1-funnel-output" x1="380" y1="954" x2="380" y2="1040" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-shared-divider-a" x1="1000" y1="376" x2="1264" y2="376" stroke="#111111" stroke-width="2" stroke-dasharray="10 8" />
+    <line id="stage2-shared-divider-b" x1="1340" y1="376" x2="1648" y2="376" stroke="#111111" stroke-width="2" stroke-dasharray="10 8" />
+    <line id="stage2-model-divider" x1="844" y1="602" x2="1113" y2="602" stroke="#111111" stroke-width="2" stroke-dasharray="10 8" />
+    <line id="stage2-cloth-divider" x1="1380" y1="602" x2="1669" y2="602" stroke="#111111" stroke-width="2" stroke-dasharray="10 8" />
+    <line id="stage2-shared-to-vlm" x1="1254" y1="439" x2="1254" y2="495" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-model-to-vlm" x1="1147" y1="546" x2="1180" y2="546" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-cloth-to-vlm" x1="1372" y1="546" x2="1340" y2="546" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-vlm-to-expert" x1="1254" y1="575" x2="1254" y2="615" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-tags-down-1" x1="855" y1="972" x2="855" y2="986" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-tags-down-2" x1="855" y1="1074" x2="855" y2="1095" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-vlm-to-model" x1="889" y1="1134" x2="980" y2="1134" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage2-match-loop" d="M 1455 947 C 1427 947 1427 992 1455 992 M 1517 992 C 1545 992 1545 947 1517 947" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-original-to-switched" x1="1371" y1="1015" x2="1371" y2="1054" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage2-switched-to-check" x1="1438" y1="1114" x2="1538" y2="1114" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage3-model-arrow" d="M 2018 213 C 2050 191 2071 199 2080 223" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage3-cloth-arrow" d="M 2267 213 C 2236 190 2213 198 2202 223" fill="none" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <path id="stage3-upper-link" d="M 1880 626 L 1880 641 L 2098 641 L 2098 626" fill="none" stroke="#318c4d" stroke-width="2" />
+    <line id="stage3-left-output" x1="1880" y1="641" x2="1880" y2="652" stroke="#318c4d" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="stage3-right-output" x1="2368" y1="626" x2="2368" y2="652" stroke="#2474a2" stroke-width="2" marker-end="url(#arrow-end)"/>
+    <line id="stage3-policy-to-benchmark" x1="2141" y1="830" x2="2141" y2="867" stroke="#111111" stroke-width="4" marker-end="url(#arrow-end)"/>
+    <line id="stage3-plus-v" x1="2097" y1="995" x2="2097" y2="1050" stroke="#111111" stroke-width="7" />
+    <line id="stage3-plus-h" x1="2070" y1="1022" x2="2124" y2="1022" stroke="#111111" stroke-width="7" />
+  </g>
+  <g id="texts">
+    <text id="stage1-title" x="368" y="95" font-family="Comic Sans MS" font-size="42" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="368" dy="0">Stage 1: Data Collection</tspan></text>
+    <text id="stage1-internet-label" x="193" y="390" font-family="Comic Sans MS" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="193" dy="0">Internet Data</tspan></text>
+    <text id="stage1-ecommerce-label" x="544" y="388" font-family="Comic Sans MS" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="544" dy="0">E-commerce Data</tspan></text>
+    <text id="stage1-retrieval-title" x="369" y="531" font-family="Comic Sans MS" font-size="39" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="369" dy="0">Expert-Tagged Data Retrieval</tspan></text>
+    <text id="stage1-tag-list" x="379" y="694" font-family="Georgia" font-size="25" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="379" dy="0">Tag List</tspan></text>
+    <text id="stage1-funnel-label" x="380" y="775" font-family="Georgia" font-size="25" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="380" dy="0">Automated</tspan><tspan x="380" dy="31.25">&amp; Manual</tspan><tspan x="380" dy="31.25">Retrieval</tspan></text>
+    <text id="stage1-garment-label" x="177" y="935" font-family="Comic Sans MS" font-size="35" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="177" dy="0">Garment and</tspan><tspan x="177" dy="43.75">Accessory Data</tspan></text>
+    <text id="stage1-model-label" x="582" y="980" font-family="Comic Sans MS" font-size="35" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="582" dy="0">Model Data</tspan></text>
+    <text id="stage1-output-label" x="195" y="1101" font-family="Comic Sans MS" font-size="34" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="195" dy="0">Retrieved</tspan><tspan x="195" dy="42.5">Raw Data</tspan><tspan x="195" dy="42.5">(&gt;500K)</tspan></text>
+    <text id="stage2-title" x="1256" y="69" font-family="Comic Sans MS" font-size="43" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1256" dy="0">Stage 2: Data Filtering, Refinement,</tspan><tspan x="1256" dy="53.75">and Anonymization</tspan></text>
+    <text id="stage2-quality-title" x="1252" y="244" font-family="Comic Sans MS" font-size="42" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1252" dy="0">Quality Filtering with Hierarchical policy</tspan></text>
+    <text id="stage2-shared-label" x="877" y="354" font-family="Comic Sans MS" font-size="37" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="877" dy="0">Shared</tspan><tspan x="877" dy="46.25">Polity</tspan></text>
+    <text id="stage2-blur-label" x="1170" y="354" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1170" dy="0">Blur Image</tspan></text>
+    <text id="stage2-lowres-label" x="1553" y="361" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1553" dy="0">Low Resolution</tspan></text>
+    <text id="stage2-watermark-label" x="1175" y="424" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1175" dy="0">Watermark</tspan></text>
+    <text id="stage2-ellipsis-shared" x="1507" y="415" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1507" dy="0">......</tspan></text>
+    <text id="stage2-model-policy-title" x="998" y="491" font-family="Comic Sans MS" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="998" dy="0">Model-domain Policy</tspan></text>
+    <text id="stage2-cloth-policy-title" x="1528" y="487" font-family="Comic Sans MS" font-size="38" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1528" dy="0">Cloth-domain Policy</tspan></text>
+    <text id="stage2-pose-label" x="955" y="575" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="955" dy="0">Pose</tspan></text>
+    <g id="stage2-pose-threshold" class="math formula" data-latex="&gt; 90^\circ" data-math-hash="3aa5e1d42e" transform="translate(985 545.017) scale(1.4485386)"><title>&gt; 90^\circ</title><path d="M 0 7.75 L 0 4.99391 L 19.4041 12.0319 L 19.4041 14.5458 L 0 21.5837 L 0 18.8277 L 15.592 13.3058 L 0 7.75 Z M 32.1353 22.538 L 32.1353 19.7528 Q 33.2881 20.3002 34.4651 20.5859 Q 35.647 20.8717 36.7853 20.8717 Q 39.8126 20.8717 41.4062 18.8373 Q 43.0046 16.803 43.2323 12.6519 Q 42.3556 13.9548 41.0042 14.6523 Q 39.6576 15.3498 38.0253 15.3498 Q 34.6346 15.3498 32.6584 13.3009 Q 30.6821 11.2472 30.6821 7.68703 Q 30.6821 4.20922 32.7407 2.10703 Q 34.7993 0 38.219 0 Q 42.1424 0 44.2059 3.00797 Q 46.2742 6.01109 46.2742 11.7316 Q 46.2742 17.0742 43.736 20.2614 Q 41.2028 23.4486 36.9209 23.4486 Q 35.7681 23.4486 34.5862 23.2209 Q 33.4092 22.9933 32.1353 22.538 Z M 38.219 12.957 Q 40.2776 12.957 41.4788 11.5523 Q 42.6849 10.1428 42.6849 7.68703 Q 42.6849 5.25062 41.4788 3.83625 Q 40.2776 2.42188 38.219 2.42188 Q 36.1604 2.42188 34.9592 3.83625 Q 33.7579 5.25062 33.7579 7.68703 Q 33.7579 10.1428 34.9592 11.5523 Q 36.1604 12.957 38.219 12.957 Z M 58.3054 2.42188 Q 55.9465 2.42188 54.755 4.74687 Q 53.5682 7.06703 53.5682 11.7316 Q 53.5682 16.3767 54.755 18.7017 Q 55.9465 21.0267 58.3054 21.0267 Q 60.6837 21.0267 61.8704 18.7017 Q 63.062 16.3767 63.062 11.7316 Q 63.062 7.06703 61.8704 4.74687 Q 60.6837 2.42188 58.3054 2.42188 Z M 58.3054 0 Q 62.1078 0 64.1131 3.00797 Q 66.1184 6.01109 66.1184 11.7316 Q 66.1184 17.4375 64.1131 20.4455 Q 62.1078 23.4486 58.3054 23.4486 Q 54.5079 23.4486 52.5026 20.4455 Q 50.4973 17.4375 50.4973 11.7316 Q 50.4973 6.01109 52.5026 3.00797 Q 54.5079 0 58.3054 0 Z M 79.482 2.26058 Q 78.6343 2.26058 78.0512 2.85055 Q 77.468 3.43713 77.468 4.28478 Q 77.468 5.12227 78.0512 5.69867 Q 78.6343 6.27508 79.482 6.27508 Q 80.3297 6.27508 80.9128 5.69867 Q 81.496 5.12227 81.496 4.28478 Q 81.496 3.4473 80.9061 2.85394 Q 80.3195 2.26058 79.482 2.26058 Z M 79.482 0.894156 Q 80.1601 0.894156 80.784 1.15523 Q 81.4113 1.41292 81.8656 1.90117 Q 82.3539 2.37586 82.598 2.98278 Q 82.8421 3.58631 82.8421 4.28478 Q 82.8421 5.68172 81.8622 6.65144 Q 80.8823 7.62116 79.4617 7.62116 Q 78.0308 7.62116 77.0747 6.66839 Q 76.1219 5.71562 76.1219 4.28478 Q 76.1219 2.86411 77.095 1.88083 Q 78.0715 0.894156 79.482 0.894156 Z" fill="#111111"/></g>
+    <text id="stage2-nonhuman-label" x="1000" y="651" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1000" dy="0">Non-human</tspan></text>
+    <text id="stage2-vlm-label" x="1294" y="532" font-family="Georgia" font-size="26" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1294" dy="0">VLM</tspan><tspan x="1294" dy="32.5">Judge</tspan></text>
+    <text id="stage2-expert-label" x="1309" y="649" font-family="Georgia" font-size="26" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1309" dy="0">Expert</tspan><tspan x="1309" dy="32.5">Check</tspan></text>
+    <text id="stage2-incomplete-label" x="1572" y="565" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1572" dy="0">Incomplete</tspan></text>
+    <text id="stage2-multisubject-label" x="1579" y="651" font-family="Georgia" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1579" dy="0">Multi-subject</tspan></text>
+    <text id="stage2-model-ellipsis-1" x="877" y="681" font-family="Georgia" font-size="28" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="877" dy="0">...</tspan></text>
+    <text id="stage2-model-ellipsis-2" x="1025" y="681" font-family="Georgia" font-size="28" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1025" dy="0">...</tspan></text>
+    <text id="stage2-cloth-ellipsis-1" x="1433" y="681" font-family="Georgia" font-size="28" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1433" dy="0">...</tspan></text>
+    <text id="stage2-cloth-ellipsis-2" x="1584" y="681" font-family="Georgia" font-size="28" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1584" dy="0">...</tspan></text>
+    <text id="stage2-tagging-title" x="1008" y="825" font-family="Comic Sans MS" font-size="43" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1008" dy="0">Tagging Refinement</tspan></text>
+    <text id="stage2-privacy-title" x="1499" y="825" font-family="Comic Sans MS" font-size="43" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1499" dy="0">Privacy Protection</tspan></text>
+    <text id="stage2-human-tags" x="1082" y="919" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1082" dy="0">Human-collected Tags</tspan><tspan x="1082" dy="30.0">Taobao SKU Tags</tspan></text>
+    <text id="stage2-tag-library-label" x="947" y="1025" font-family="Georgia" font-size="28" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="947" dy="0">Tag</tspan><tspan x="947" dy="35.0">Library</tspan></text>
+    <text id="stage2-vlm-refine-label" x="939" y="1133" font-family="Georgia" font-size="29" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="939" dy="0">VLM</tspan></text>
+    <text id="stage2-dense-label" x="1096" y="1190" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1096" dy="0">Dense Attributes</tspan></text>
+    <text id="stage2-match-label" x="1490" y="922" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1490" dy="0">Match</tspan></text>
+    <text id="stage2-face-library-label" x="1602" y="1039" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1602" dy="0">Face Library</tspan></text>
+    <text id="stage2-switch-label" x="1425" y="1052" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1425" dy="0">Switch</tspan></text>
+    <text id="stage2-quality-label" x="1605" y="1191" font-family="Georgia" font-size="24" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1605" dy="0">Quality Check</tspan></text>
+    <text id="stage3-title" x="2145" y="69" font-family="Comic Sans MS" font-size="43" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2145" dy="0">Stage 3: Try-on Pairing</tspan><tspan x="2145" dy="53.75">Strategy</tspan></text>
+    <text id="stage3-model-data" x="1947" y="174" font-family="Comic Sans MS" font-size="37" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1947" dy="0">Model Data</tspan></text>
+    <text id="stage3-cloth-data" x="2351" y="174" font-family="Comic Sans MS" font-size="37" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2351" dy="0">Cloth Data</tspan></text>
+    <text id="stage3-pairing-policy-title" x="2143" y="412" font-family="Comic Sans MS" font-size="42" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2143" dy="0">Pairing Policy</tspan></text>
+    <text id="stage3-upper-label" x="1880" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1880" dy="0">Upper</tspan></text>
+    <text id="stage3-coat-label" x="1988" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="1988" dy="0">Coat</tspan></text>
+    <text id="stage3-lower-label" x="2098" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2098" dy="0">Lower</tspan></text>
+    <text id="stage3-shoes-label" x="2206" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2206" dy="0">Shoes</tspan></text>
+    <text id="stage3-bag-label" x="2316" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2316" dy="0">Bag</tspan></text>
+    <text id="stage3-hat-label" x="2428" y="600" font-family="Georgia" font-size="27" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2428" dy="0">Hat</tspan></text>
+    <text id="stage3-policy-text-1" x="2141" y="694" font-family="Comic Sans MS" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2141" dy="0">Multi-cloth Try-on</tspan></text>
+    <text id="stage3-policy-text-2" x="2141" y="754" font-family="Comic Sans MS" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2141" dy="0">Multi-Layered</tspan></text>
+    <text id="stage3-policy-text-3" x="2141" y="814" font-family="Comic Sans MS" font-size="31" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2141" dy="0">Diverse Pairs</tspan></text>
+    <text id="stage3-benchmark-title" x="2141" y="1161" font-family="Comic Sans MS" font-size="39" font-weight="700" fill="#111111" text-anchor="middle"><tspan x="2141" dy="0">Diverse &amp; Intricate</tspan><tspan x="2141" dy="48.75">Try-on Benchmark</tspan></text>
+  </g>
+</svg>
