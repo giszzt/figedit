@@ -13,10 +13,8 @@
   </p>
 
   <p>
-    <img src="https://img.shields.io/badge/Agent-Skill-4B5563?style=flat-square" alt="Agent Skill">
-    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+">
-    <img src="https://img.shields.io/badge/Output-SVG%20%7C%20PPTX-2563EB?style=flat-square" alt="SVG and PPTX output">
-    <img src="https://img.shields.io/badge/OCR-PP--OCRv6-16A34A?style=flat-square" alt="PP-OCRv6">
+    <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+"></a>
+    <a href="./VERSION"><img src="https://img.shields.io/badge/Version-0.1.0-2563EB?style=flat-square" alt="Version 0.1.0"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-F97316?style=flat-square" alt="MIT License"></a>
   </p>
 
@@ -222,6 +220,7 @@ figedit/
 ├── README.md           # Chinese introduction
 ├── README.en.md        # English introduction
 ├── LICENSE
+├── VERSION
 ├── THIRD_PARTY_NOTICES.md
 ├── requirements.txt
 ├── scripts/            # Measurement, composition, export, and audit tools
