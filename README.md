@@ -163,18 +163,18 @@ FigEdit 的重建质量高度依赖模型视觉理解与SVG绘制能力，不同
 **方式一：手动安装。** 克隆到 skill 目录，装好依赖：
 
 ```bash
-# 克隆仓库
-git clone https://github.com/giszzt/zzt-skill.git
+# 克隆到 Agent 的 skill 目录
+git clone https://github.com/giszzt/figedit.git ~/.codex/skills/figedit
 
-# 将 figedit 目录复制到你的 skill 目录，然后安装依赖
-pip install -r zzt-skill/figedit/requirements.txt
+# 安装 Python 依赖
+pip install -r ~/.codex/skills/figedit/requirements.txt
 ```
 
 **方式二：让 Agent 帮你装。** 把项目地址发给你的 Agent，说一句：
 
 ```
-请帮我安装配置好这个仓库里的 figedit skill：
-https://github.com/giszzt/zzt-skill/tree/main/figedit
+请帮我安装配置好这个 skill：
+https://github.com/giszzt/figedit
 ```
 
 ### 使用
