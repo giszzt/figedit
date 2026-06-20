@@ -164,19 +164,19 @@ Reconstruction quality depends heavily on the model's visual understanding, spat
 Clone the repository:
 
 ```bash
-git clone https://github.com/giszzt/zzt-skill.git
+git clone https://github.com/giszzt/figedit.git ~/.codex/skills/figedit
 ```
 
-Copy `zzt-skill/figedit` into the skill directory used by your agent, then install the Python dependencies:
+Then install the Python dependencies:
 
 ```bash
-pip install -r zzt-skill/figedit/requirements.txt
+pip install -r ~/.codex/skills/figedit/requirements.txt
 ```
 
 You can also ask your agent to install the skill directly from:
 
 ```text
-https://github.com/giszzt/zzt-skill/tree/main/figedit
+https://github.com/giszzt/figedit
 ```
 
 ### Use
