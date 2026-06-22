@@ -101,6 +101,12 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 [Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/camera-grid-rendering/)
 
+### 8. Grouped data-chart reconstruction
+
+![Original and reconstructed LLM performance evaluation chart](./assets/examples/08-llm-performance-evaluation.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/llm-performance-evaluation/)
+
 ## Why a hybrid approach?
 
 Turning a flat image back into an editable document is not only an object-recognition problem. The difficult part is deciding how each element should be represented.
