@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4239" height="2799" viewBox="0 0 4239 2799">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="4239" height="2799" fill="#ffffff"/>
+  <g id="panels">
+    <rect id="legend-sw-0" x="86" y="462" width="56" height="56" rx="14" ry="14" fill="#1A8EFF" stroke="none"/>
+    <rect id="legend-sw-1" x="491" y="462" width="56" height="56" rx="14" ry="14" fill="#36BC88" stroke="none"/>
+    <rect id="legend-sw-2" x="867" y="462" width="56" height="56" rx="14" ry="14" fill="#C5CAD4" stroke="none"/>
+    <rect id="legend-sw-3" x="1536" y="462" width="56" height="56" rx="14" ry="14" fill="#E4E6E7" stroke="none"/>
+    <rect id="legend-sw-4" x="1892" y="462" width="56" height="56" rx="14" ry="14" fill="#D9DDE2" stroke="none"/>
+    <rect id="pill-top-1" x="361" y="1568" width="340" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-top-2" x="1368" y="1568" width="444" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-top-3" x="2540" y="1568" width="215" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-top-4" x="3598" y="1568" width="215" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-bot-1" x="372" y="2630" width="319" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-bot-2" x="1462" y="2630" width="257" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-bot-3" x="2466" y="2630" width="361" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+    <rect id="pill-bot-4" x="3462" y="2630" width="486" height="83" rx="41" ry="41" fill="#ffffff" stroke="#cfcfcf" stroke-width="2"/>
+  </g>
+  <g id="sections">
+    <rect id="bar-swe-bench-pro-0" x="122" y="908" width="138" height="623" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-swe-bench-pro-0" x="122" y="1515" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-swe-bench-pro-1" x="293" y="945" width="138" height="586" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-swe-bench-pro-1" x="293" y="1515" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-swe-bench-pro-2" x="463" y="836" width="138" height="695" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-swe-bench-pro-2" x="463" y="1515" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-swe-bench-pro-3" x="631" y="943" width="138" height="588" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-swe-bench-pro-3" x="631" y="1515" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-swe-bench-pro-4" x="802" y="987" width="138" height="544" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-swe-bench-pro-4" x="802" y="1515" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-terminal-bench-21-0" x="1181" y="718" width="138" height="813" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-terminal-bench-21-0" x="1181" y="1515" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-terminal-bench-21-1" x="1350" y="893" width="138" height="638" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-terminal-bench-21-1" x="1350" y="1515" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-terminal-bench-21-2" x="1521" y="678" width="138" height="853" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-terminal-bench-21-2" x="1521" y="1515" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-terminal-bench-21-3" x="1688" y="688" width="138" height="843" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-terminal-bench-21-3" x="1688" y="1515" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-terminal-bench-21-4" x="1861" y="788" width="138" height="743" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-terminal-bench-21-4" x="1861" y="1515" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-nl2repo-0" x="2238" y="1040" width="138" height="491" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-nl2repo-0" x="2238" y="1515" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-nl2repo-1" x="2409" y="1102" width="138" height="429" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-nl2repo-1" x="2409" y="1515" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-nl2repo-2" x="2579" y="831" width="138" height="700" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-nl2repo-2" x="2579" y="1515" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-nl2repo-3" x="2749" y="1022" width="138" height="509" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-nl2repo-3" x="2749" y="1515" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-nl2repo-4" x="2918" y="1196" width="138" height="335" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-nl2repo-4" x="2918" y="1515" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-deepswe-0" x="3297" y="1067" width="138" height="464" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-deepswe-0" x="3297" y="1515" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-deepswe-1" x="3466" y="1350" width="138" height="181" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-deepswe-1" x="3466" y="1515" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-deepswe-2" x="3637" y="949" width="138" height="582" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-deepswe-2" x="3637" y="1515" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-deepswe-3" x="3806" y="828" width="138" height="703" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-deepswe-3" x="3806" y="1515" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-deepswe-4" x="3975" y="1431" width="138" height="100" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-deepswe-4" x="3975" y="1515" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-programbench-0" x="122" y="1953" width="138" height="640" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-programbench-0" x="122" y="2577" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-programbench-1" x="293" y="2082" width="138" height="511" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-programbench-1" x="293" y="2577" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-programbench-2" x="463" y="1871" width="138" height="722" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-programbench-2" x="463" y="2577" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-programbench-3" x="631" y="1882" width="138" height="711" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-programbench-3" x="631" y="2577" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-programbench-4" x="802" y="2196" width="138" height="397" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-programbench-4" x="802" y="2577" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-mcp-atlas-0" x="1181" y="1820" width="138" height="773" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-mcp-atlas-0" x="1181" y="2577" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-mcp-atlas-1" x="1350" y="1872" width="138" height="721" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-mcp-atlas-1" x="1350" y="2577" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-mcp-atlas-2" x="1521" y="1812" width="138" height="781" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-mcp-atlas-2" x="1521" y="2577" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-mcp-atlas-3" x="1688" y="1837" width="138" height="756" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-mcp-atlas-3" x="1688" y="2577" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-mcp-atlas-4" x="1861" y="1898" width="138" height="695" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-mcp-atlas-4" x="1861" y="2577" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-tool-decathlon-0" x="2238" y="2109" width="138" height="484" rx="16" ry="16" fill="#1A8EFF" stroke="none"/>
+    <rect id="barfoot-tool-decathlon-0" x="2238" y="2577" width="138" height="16" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-tool-decathlon-1" x="2409" y="2184" width="138" height="409" rx="16" ry="16" fill="#36BC88" stroke="none"/>
+    <rect id="barfoot-tool-decathlon-1" x="2409" y="2577" width="138" height="16" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-tool-decathlon-2" x="2579" y="1992" width="138" height="601" rx="16" ry="16" fill="#C5CAD4" stroke="none"/>
+    <rect id="barfoot-tool-decathlon-2" x="2579" y="2577" width="138" height="16" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-tool-decathlon-3" x="2749" y="2035" width="138" height="558" rx="16" ry="16" fill="#E4E6E7" stroke="none"/>
+    <rect id="barfoot-tool-decathlon-3" x="2749" y="2577" width="138" height="16" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-tool-decathlon-4" x="2918" y="2103" width="138" height="490" rx="16" ry="16" fill="#D9DDE2" stroke="none"/>
+    <rect id="barfoot-tool-decathlon-4" x="2918" y="2577" width="138" height="16" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+    <rect id="bar-hle-0-up" x="3297" y="2044" width="138" height="159" rx="16" ry="16" fill="#2974CC" stroke="none"/>
+    <rect id="bar-hle-0-low" x="3297" y="2186" width="138" height="407" rx="0" ry="0" fill="#1A8EFF" stroke="none"/>
+    <rect id="bar-hle-1-up" x="3466" y="2068" width="138" height="230" rx="16" ry="16" fill="#2974CC" stroke="none"/>
+    <rect id="bar-hle-1-low" x="3466" y="2282" width="138" height="311" rx="0" ry="0" fill="#36BC88" stroke="none"/>
+    <rect id="bar-hle-2-up" x="3637" y="2012" width="138" height="97" rx="16" ry="16" fill="#B0B5BD" stroke="none"/>
+    <rect id="bar-hle-2-low" x="3637" y="2093" width="138" height="500" rx="0" ry="0" fill="#C5CAD4" stroke="none"/>
+    <rect id="bar-hle-3-up" x="3806" y="2069" width="138" height="124" rx="16" ry="16" fill="#B0B5BD" stroke="none"/>
+    <rect id="bar-hle-3-low" x="3806" y="2177" width="138" height="416" rx="0" ry="0" fill="#E4E6E7" stroke="none"/>
+    <rect id="bar-hle-4-up" x="3975" y="2077" width="138" height="80" rx="16" ry="16" fill="#B0B5BD" stroke="none"/>
+    <rect id="bar-hle-4-low" x="3975" y="2141" width="138" height="452" rx="0" ry="0" fill="#D9DDE2" stroke="none"/>
+  </g>
+  <g id="icons">
+    <image id="logo-zai-brand" href="assets/logo_zai.png" x="4001" y="108" width="111" height="111" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-swe-bench-pro-0" href="assets/logo_glm_blue.png" x="145" y="928" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-swe-bench-pro-1" href="assets/logo_glm_green.png" x="316" y="965" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-swe-bench-pro-2" href="assets/logo_claude.png" x="486" y="856" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-swe-bench-pro-3" href="assets/logo_openai.png" x="654" y="963" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-swe-bench-pro-4" href="assets/logo_gemini.png" x="825" y="1007" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-terminal-bench-21-0" href="assets/logo_glm_blue.png" x="1204" y="738" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-terminal-bench-21-1" href="assets/logo_glm_green.png" x="1373" y="913" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-terminal-bench-21-2" href="assets/logo_claude.png" x="1544" y="698" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-terminal-bench-21-3" href="assets/logo_openai.png" x="1711" y="708" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-terminal-bench-21-4" href="assets/logo_gemini.png" x="1884" y="808" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-nl2repo-0" href="assets/logo_glm_blue.png" x="2261" y="1060" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-nl2repo-1" href="assets/logo_glm_green.png" x="2432" y="1122" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-nl2repo-2" href="assets/logo_claude.png" x="2602" y="851" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-nl2repo-3" href="assets/logo_openai.png" x="2772" y="1042" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-nl2repo-4" href="assets/logo_gemini.png" x="2941" y="1216" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-deepswe-0" href="assets/logo_glm_blue.png" x="3320" y="1087" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-deepswe-1" href="assets/logo_glm_green.png" x="3489" y="1370" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-deepswe-2" href="assets/logo_claude.png" x="3660" y="969" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-deepswe-3" href="assets/logo_openai.png" x="3829" y="848" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-deepswe-4" href="assets/logo_gemini.png" x="4001" y="1439" width="86" height="86" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-programbench-0" href="assets/logo_glm_blue.png" x="145" y="1973" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-programbench-1" href="assets/logo_glm_green.png" x="316" y="2102" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-programbench-2" href="assets/logo_claude.png" x="486" y="1891" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-programbench-3" href="assets/logo_openai.png" x="654" y="1902" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-programbench-4" href="assets/logo_gemini.png" x="825" y="2216" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-mcp-atlas-0" href="assets/logo_glm_blue.png" x="1204" y="1840" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-mcp-atlas-1" href="assets/logo_glm_green.png" x="1373" y="1892" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-mcp-atlas-2" href="assets/logo_claude.png" x="1544" y="1832" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-mcp-atlas-3" href="assets/logo_openai.png" x="1711" y="1857" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-mcp-atlas-4" href="assets/logo_gemini.png" x="1884" y="1918" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-tool-decathlon-0" href="assets/logo_glm_blue.png" x="2261" y="2129" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-tool-decathlon-1" href="assets/logo_glm_green.png" x="2432" y="2204" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-tool-decathlon-2" href="assets/logo_claude.png" x="2602" y="2012" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-tool-decathlon-3" href="assets/logo_openai.png" x="2772" y="2055" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-tool-decathlon-4" href="assets/logo_gemini.png" x="2941" y="2123" width="92" height="92" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-hle-0" href="assets/logo_glm_blue.png" x="3321" y="2194" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-hle-1" href="assets/logo_glm_green.png" x="3490" y="2290" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-hle-2" href="assets/logo_claude.png" x="3661" y="2101" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-hle-3" href="assets/logo_openai.png" x="3830" y="2185" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+    <image id="logo-hle-4" href="assets/logo_gemini.png" x="3999" y="2149" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+  <g id="texts">
+    <text id="title-main" x="103" y="205" font-family="var(--font-sans)" font-size="104" font-weight="800" fill="#1b1b1b" text-anchor="start"><tspan x="103" dy="0">LLM Performance Evaluation</tspan></text>
+    <text id="subtitle-1" x="106" y="312" font-family="var(--font-sans)" font-size="50" font-weight="400" fill="#5a5a5a" text-anchor="start"><tspan x="106" dy="0">8 Benchmarks: SWE-bench Pro, Terminal-Bench 2.1 (Terminus), NL2Repo, DeepSWE, ProgramBench, MCP-Atlas, Tool-Decathlon, Humanity&#x27;s Last Exam</tspan></text>
+    <text id="subtitle-2" x="107" y="392" font-family="var(--font-sans)" font-size="50" font-weight="400" fill="#8a8a8a" text-anchor="start"><tspan x="107" dy="0">All models are evaluated under their maximum thinking effort</tspan></text>
+    <text id="legend-label-0" x="166" y="510" font-family="var(--font-sans)" font-size="56" font-weight="600" fill="#2a2a2a" text-anchor="start"><tspan x="166" dy="0">GLM-5.2</tspan></text>
+    <text id="legend-label-1" x="571" y="510" font-family="var(--font-sans)" font-size="56" font-weight="600" fill="#2a2a2a" text-anchor="start"><tspan x="571" dy="0">GLM-5.1</tspan></text>
+    <text id="legend-label-2" x="947" y="510" font-family="var(--font-sans)" font-size="56" font-weight="600" fill="#2a2a2a" text-anchor="start"><tspan x="947" dy="0">Claude Opus 4.8</tspan></text>
+    <text id="legend-label-3" x="1616" y="510" font-family="var(--font-sans)" font-size="56" font-weight="600" fill="#2a2a2a" text-anchor="start"><tspan x="1616" dy="0">GPT-5.5</tspan></text>
+    <text id="legend-label-4" x="1972" y="510" font-family="var(--font-sans)" font-size="56" font-weight="600" fill="#2a2a2a" text-anchor="start"><tspan x="1972" dy="0">Gemini 3.1 Pro</tspan></text>
+    <text id="val-swe-bench-pro-0" x="191" y="894" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="191" dy="0">62.1</tspan></text>
+    <text id="val-swe-bench-pro-1" x="362" y="931" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="362" dy="0">58.4</tspan></text>
+    <text id="val-swe-bench-pro-2" x="532" y="822" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="532" dy="0">69.2</tspan></text>
+    <text id="val-swe-bench-pro-3" x="700" y="929" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="700" dy="0">58.6</tspan></text>
+    <text id="val-swe-bench-pro-4" x="871" y="973" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="871" dy="0">54.2</tspan></text>
+    <text id="val-terminal-bench-21-0" x="1250" y="704" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="1250" dy="0">81.0</tspan></text>
+    <text id="val-terminal-bench-21-1" x="1419" y="879" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1419" dy="0">63.5</tspan></text>
+    <text id="val-terminal-bench-21-2" x="1590" y="664" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1590" dy="0">85.0</tspan></text>
+    <text id="val-terminal-bench-21-3" x="1757" y="674" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1757" dy="0">84.0</tspan></text>
+    <text id="val-terminal-bench-21-4" x="1930" y="774" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1930" dy="0">74.0</tspan></text>
+    <text id="val-nl2repo-0" x="2307" y="1026" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="2307" dy="0">48.9</tspan></text>
+    <text id="val-nl2repo-1" x="2478" y="1088" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2478" dy="0">42.7</tspan></text>
+    <text id="val-nl2repo-2" x="2648" y="817" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2648" dy="0">69.7</tspan></text>
+    <text id="val-nl2repo-3" x="2818" y="1008" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2818" dy="0">50.7</tspan></text>
+    <text id="val-nl2repo-4" x="2987" y="1182" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2987" dy="0">33.4</tspan></text>
+    <text id="val-deepswe-0" x="3366" y="1053" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="3366" dy="0">46.2</tspan></text>
+    <text id="val-deepswe-1" x="3535" y="1336" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3535" dy="0">18.0</tspan></text>
+    <text id="val-deepswe-2" x="3706" y="935" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3706" dy="0">58.0</tspan></text>
+    <text id="val-deepswe-3" x="3875" y="814" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3875" dy="0">70.0</tspan></text>
+    <text id="val-deepswe-4" x="4044" y="1417" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="4044" dy="0">10.0</tspan></text>
+    <text id="val-programbench-0" x="191" y="1939" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="191" dy="0">63.7</tspan></text>
+    <text id="val-programbench-1" x="362" y="2068" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="362" dy="0">50.9</tspan></text>
+    <text id="val-programbench-2" x="532" y="1857" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="532" dy="0">71.9</tspan></text>
+    <text id="val-programbench-3" x="700" y="1868" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="700" dy="0">70.8</tspan></text>
+    <text id="val-programbench-4" x="871" y="2182" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="871" dy="0">39.5</tspan></text>
+    <text id="val-mcp-atlas-0" x="1250" y="1806" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="1250" dy="0">77.0</tspan></text>
+    <text id="val-mcp-atlas-1" x="1419" y="1858" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1419" dy="0">71.8</tspan></text>
+    <text id="val-mcp-atlas-2" x="1590" y="1798" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1590" dy="0">77.8</tspan></text>
+    <text id="val-mcp-atlas-3" x="1757" y="1823" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1757" dy="0">75.3</tspan></text>
+    <text id="val-mcp-atlas-4" x="1930" y="1884" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="1930" dy="0">69.2</tspan></text>
+    <text id="val-tool-decathlon-0" x="2307" y="2095" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="2307" dy="0">48.2</tspan></text>
+    <text id="val-tool-decathlon-1" x="2478" y="2170" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2478" dy="0">40.7</tspan></text>
+    <text id="val-tool-decathlon-2" x="2648" y="1978" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2648" dy="0">59.9</tspan></text>
+    <text id="val-tool-decathlon-3" x="2818" y="2021" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2818" dy="0">55.6</tspan></text>
+    <text id="val-tool-decathlon-4" x="2987" y="2089" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="2987" dy="0">48.8</tspan></text>
+    <text id="val-hle-0" x="3366" y="1988" font-family="var(--font-sans)" font-size="62" font-weight="700" fill="#1b1b1b" text-anchor="middle"><tspan x="3366" dy="0">54.7</tspan></text>
+    <text id="tools-hle-0" x="3366" y="2032" font-family="Georgia, serif" font-size="34" font-weight="400" fill="#8a8a8a" text-anchor="middle"><tspan x="3366" dy="0">w/ Tools</tspan></text>
+    <text id="baseval-hle-0" x="3366" y="2164" font-family="var(--font-sans)" font-size="58" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="3366" dy="0">40.5</tspan></text>
+    <text id="val-hle-1" x="3535" y="2012" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3535" dy="0">52.3</tspan></text>
+    <text id="tools-hle-1" x="3535" y="2056" font-family="Georgia, serif" font-size="34" font-weight="400" fill="#8a8a8a" text-anchor="middle"><tspan x="3535" dy="0">w/ Tools</tspan></text>
+    <text id="baseval-hle-1" x="3535" y="2260" font-family="var(--font-sans)" font-size="58" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="3535" dy="0">31.0</tspan></text>
+    <text id="val-hle-2" x="3706" y="1956" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3706" dy="0">57.9</tspan></text>
+    <text id="tools-hle-2" x="3706" y="2000" font-family="Georgia, serif" font-size="34" font-weight="400" fill="#8a8a8a" text-anchor="middle"><tspan x="3706" dy="0">w/ Tools</tspan></text>
+    <text id="baseval-hle-2" x="3706" y="2071" font-family="var(--font-sans)" font-size="58" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="3706" dy="0">49.8</tspan></text>
+    <text id="val-hle-3" x="3875" y="2013" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="3875" dy="0">52.2</tspan></text>
+    <text id="tools-hle-3" x="3875" y="2057" font-family="Georgia, serif" font-size="34" font-weight="400" fill="#8a8a8a" text-anchor="middle"><tspan x="3875" dy="0">w/ Tools</tspan></text>
+    <text id="baseval-hle-3" x="3875" y="2155" font-family="var(--font-sans)" font-size="58" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="3875" dy="0">41.4</tspan></text>
+    <text id="val-hle-4" x="4044" y="2021" font-family="var(--font-sans)" font-size="62" font-weight="500" fill="#1b1b1b" text-anchor="middle"><tspan x="4044" dy="0">51.4</tspan></text>
+    <text id="tools-hle-4" x="4044" y="2065" font-family="Georgia, serif" font-size="34" font-weight="400" fill="#8a8a8a" text-anchor="middle"><tspan x="4044" dy="0">w/ Tools</tspan></text>
+    <text id="baseval-hle-4" x="4044" y="2119" font-family="var(--font-sans)" font-size="58" font-weight="600" fill="#ffffff" text-anchor="middle"><tspan x="4044" dy="0">45.0</tspan></text>
+    <text id="pill-label-top-1" x="531" y="1623" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="531" dy="0">SWE-bench Pro</tspan></text>
+    <text id="pill-label-top-2" x="1590" y="1623" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="1590" dy="0">Terminal-Bench 2.1</tspan></text>
+    <text id="pill-label-top-3" x="2647" y="1623" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="2647" dy="0">NL2Repo</tspan></text>
+    <text id="pill-label-top-4" x="3705" y="1623" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="3705" dy="0">DeepSWE</tspan></text>
+    <text id="pill-label-bot-1" x="531" y="2685" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="531" dy="0">ProgramBench</tspan></text>
+    <text id="pill-label-bot-2" x="1590" y="2685" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="1590" dy="0">MCP-Atlas</tspan></text>
+    <text id="pill-label-bot-3" x="2647" y="2685" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="2647" dy="0">Tool-Decathlon</tspan></text>
+    <text id="pill-label-bot-4" x="3705" y="2685" font-family="var(--font-sans)" font-size="40" font-weight="500" fill="#3a3a3a" text-anchor="middle"><tspan x="3705" dy="0">Humanity&#x27;s Last Exam</tspan></text>
+  </g>
+</svg>
