@@ -95,9 +95,7 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 ### 7. Mixed formulas and raster evidence
 
-![Original Camera Grid Rendering figure](./assets/examples/camera-grid-rendering/source.png)
-
-![Reconstructed Camera Grid Rendering figure](./assets/examples/camera-grid-rendering/preview.png)
+![Original and reconstructed Camera Grid Rendering figure](./assets/examples/07-camera-grid-rendering.png)
 
 [Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/camera-grid-rendering/)
 
