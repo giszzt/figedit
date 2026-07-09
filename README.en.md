@@ -335,8 +335,6 @@ figedit/
 
 ## Contributing
 
-FigEdit is designed, maintained, and curated by Waka ([@giszzt](https://github.com/giszzt)). Codex has been used as a collaborative development assistant for parts of the implementation, refactoring, documentation, and example reconstruction work.
-
 Issues and improvements are welcome, especially for complex layouts, formula export, OCR correction, clean-plate quality, and PowerPoint compatibility.
 
 ## Acknowledgments and third-party code

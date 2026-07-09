@@ -319,8 +319,6 @@ figedit/
 
 ## 贡献
 
-FigEdit 由 Waka（[@giszzt](https://github.com/giszzt)）设计、维护并整理案例。Codex 作为协作开发助手，参与了部分代码实现、重构、文档整理和案例重建工作。
-
 欢迎提交 issue 或改进建议，尤其是复杂版式、公式导出、OCR 校对、清版底板质量和 PowerPoint 兼容性方面的问题。
 
 ## 致谢与第三方代码
