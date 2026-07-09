@@ -5,7 +5,7 @@
 
   <p><strong>Make flattened figures editable again.</strong></p>
 
-  <p>Rebuild screenshots, paper figures, diagrams, and AI-generated graphics as editable SVG and native PowerPoint.</p>
+  <p>Rebuild screenshots, paper figures, diagrams, posters, and AI-generated graphics as editable SVG and native PowerPoint.</p>
 
   <p>
     <a href="./README.md">中文</a> ·
@@ -14,7 +14,7 @@
 
   <p>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+"></a>
-    <a href="./VERSION"><img src="https://img.shields.io/badge/Version-0.1.0-2563EB?style=flat-square" alt="Version 0.1.0"></a>
+    <a href="./VERSION"><img src="https://img.shields.io/badge/Version-0.2.0-2563EB?style=flat-square" alt="Version 0.2.0"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-F97316?style=flat-square" alt="MIT License"></a>
   </p>
 
@@ -22,6 +22,7 @@
     <a href="#examples">Examples</a> ·
     <a href="#quick-start">Quick start</a> ·
     <a href="#how-it-works">How it works</a> ·
+    <a href="./CHANGELOG.md">Changelog</a> ·
     <a href="#acknowledgments-and-third-party-code">Acknowledgments</a>
   </p>
 </div>
@@ -30,12 +31,13 @@
 
 ## What it does
 
-FigEdit, also known in Chinese as 图易编, is an agent skill for rebuilding flattened images as editable graphics packages. Give it a screenshot, a paper figure, an AI-generated slide, a technical architecture diagram, or almost any other raster graphic. It separates the image into meaningful parts and reconstructs each part in the form that is most useful to edit:
+FigEdit, also known in Chinese as 图易编, is an agent skill for rebuilding flattened images as editable graphics packages. Give it a screenshot, a paper figure, an AI-generated slide, a technical architecture diagram, a poster or cover, or almost any other raster graphic. It separates the image into meaningful parts and reconstructs each part in the form that is most useful to edit:
 
 - labels become real text;
 - panels, borders, arrows, and connectors become vector shapes;
 - formulas become semantic math and editable PowerPoint equations;
-- photos, maps, screenshots, logos, and distinctive visual elements remain replaceable cropped assets.
+- photos, maps, screenshots, logos, and distinctive visual elements remain replaceable cropped assets;
+- text embedded in photographs, illustrations, and continuous scenes is rebuilt as an editable layer over an AI-reconstructed clean background plate.
 
 The result is not merely an auto-traced image. It is a structured package that can be relabeled, rearranged, and restyled.
 
@@ -52,6 +54,10 @@ When a published figure has a useful frame, layout, shape language, or color sys
 ### Lost or unavailable source files
 
 If the editable source of a designed infographic has been lost or was never shared, FigEdit can recover much of its structure from the flattened image. Frames become vectors, readable labels become selectable text, and source-specific icons or imagery are preserved as clean crops.
+
+### Text living on top of photos and illustrations
+
+Posters, covers, social cards, and scene-like infographics place titles and callouts directly on a continuous visual field, where cropping and vector redraws both fail. FigEdit asks a reference-capable image model to produce a clean plate — the same background with the foreground erased and the hidden pixels reconstructed — then overlays the text, formulas, and marks as editable layers.
 
 ## Examples
 
@@ -105,6 +111,18 @@ Each image below compares the source figure with the FigEdit reconstruction.
 
 [Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/llm-performance-evaluation/)
 
+### 9. Background-aware cover reconstruction
+
+![Original and reconstructed Sciscover cover](./assets/examples/09-sciscover-cover.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/sciscover-cover/)
+
+### 10. Clean plate with full foreground extraction
+
+![Original and reconstructed ESA ISS infographic](./assets/examples/10-esa-iss-pillars.png)
+
+[Open the complete case: source, SVG, PPTX, manifest, and quality reports](./assets/examples/esa-iss-pillars/)
+
 ## Why use it?
 
 Turning a flattened image back into an editable document is not only a matter of recognizing what appears in the image. The harder problem is deciding which representation best preserves each element. Existing approaches solve different parts of the problem, but each has clear limitations:
@@ -123,6 +141,8 @@ FigEdit uses a hybrid reconstruction strategy:
 - formulas are treated as independent semantic objects and exported as editable Office Math equations in the native PPTX;
 - panels, shapes, borders, arrows, and connection relationships are rebuilt as vector objects;
 - logos, photos, screenshots, maps, complex icons, and other source-specific visuals are cropped directly from the source;
+- objects contaminated by overlapping labels or entangled with the background are regenerated by a reference-capable image model on a chroma sheet, then keyed out as clean transparent assets;
+- complex continuous backgrounds (photographs, illustrations, rendered scenes, irregular gradients) are rebuilt as an AI clean plate under an editable foreground layer;
 - the final package includes editable SVG, self-contained SVG with embedded assets, and a native editable PPTX.
 
 Once the dependencies are installed, give an image to the agent in one sentence. It can run the complete analysis, decomposition, reconstruction, export, and quality-check pipeline.
@@ -145,18 +165,20 @@ The agent classifies the figure and chooses a representation for every significa
 | Labels, titles, captions, legends | Editable text |
 | Equations, variables, inline formulas | LaTeX-backed math and Office Math |
 | Icons, photos, maps, charts, logos | Cropped and replaceable image assets |
+| Contaminated or entangled objects | AI-regenerated on a chroma sheet, keyed out as transparent assets |
+| Complex continuous backgrounds | AI clean plate with the foreground erased and reconstructed |
 
-For complex figures, the agent also chooses a reconstruction strategy: simple figures can be fully redrawn as vectors, mixed figures use hybrid reconstruction, multi-panel figures are decomposed panel by panel, and hand-drawn figures use semantic approximation. These strategies can be combined. A single panel may therefore use a vector frame, editable labels, semantic formulas, and preserved raster evidence.
+For complex figures, the agent also chooses a reconstruction strategy: simple figures can be fully redrawn as vectors, mixed figures use hybrid reconstruction, multi-panel figures are decomposed panel by panel, hand-drawn figures use semantic approximation, and figures with unrecoverable backgrounds use a clean plate under an editable foreground. These strategies can be combined. On the clean-plate route, the agent first presents the foreground options — extract every pictorial object as an independent asset, extract a named subset, or keep them flattened in the plate — before any generation call.
 
 Every decision is recorded in `manifest.json`, making the complete process reproducible.
 
 ### 3. Compose
 
-The manifest is converted into the final package: vector structure, positioned text, rendered formulas, cropped image assets, SVG files, and a native PowerPoint file.
+The manifest is converted into the final package: vector structure, positioned text, rendered formulas, cropped image assets, the clean plate when one exists, SVG files, and a native PowerPoint file.
 
 ### 4. Validate
 
-The audit checks for missing structure, text trapped inside image assets, failed formula conversion, weak editability, clipped crops, and export problems. The agent repairs the manifest and recomposes the package when necessary.
+The audit checks for missing structure, text trapped inside image assets, failed formula conversion, weak editability, clipped crops, and export problems, and compares the reconstruction against the source pixel by pixel, producing a difference heatmap and per-tile scores that point to the most divergent regions. The agent repairs the manifest and recomposes the package when necessary.
 
 ## Quick start
 
@@ -169,7 +191,7 @@ Reconstruction quality depends heavily on the model's visual understanding and S
 
 | Agent environment | Recommended models | Notes |
 | --- | --- | --- |
-| **Codex** | GPT-5.5 | Preferred. Strong visual understanding, spatial reasoning, and tool-use capabilities |
+| **Codex** | GPT-5.5 | Preferred. Strong visual understanding, spatial reasoning, and tool-use capabilities, and its built-in `image_gen` makes the clean-plate route work out of the box |
 | **Claude Code** | Claude Fable 5, with Claude Opus 4.8 as the second choice | Claude Fable 5 performed at least as well as GPT-5.5 in testing but is currently unavailable. Claude Opus 4.8 is usable, although its reconstruction of complex figures is weaker than GPT-5.5 |
 | **Other mainstream agents** | GPT-5.5, Claude Opus 4.8, Gemini 3.5 | Avoid models that are strong at coding but lack image input or spatial visual reasoning. They may execute the FigEdit scripts yet still make obvious mistakes in element classification, crop boundaries, layer relationships, and layout judgment |
 
@@ -178,8 +200,10 @@ Reconstruction quality depends heavily on the model's visual understanding and S
 **Option 1: Install manually.** Clone the repository into the agent's skill directory, then install the dependencies:
 
 ```bash
-# Clone into the Agent skill directory
+# Codex
 git clone https://github.com/giszzt/figedit.git ~/.codex/skills/figedit
+# Claude Code
+git clone https://github.com/giszzt/figedit.git ~/.claude/skills/figedit
 
 # Install the Python dependencies
 pip install -r ~/.codex/skills/figedit/requirements.txt
@@ -192,24 +216,68 @@ Please install and configure this skill:
 https://github.com/giszzt/figedit
 ```
 
+### Image backend configuration (optional)
+
+Only figures that need an AI clean plate or chroma regeneration require image generation. Ordinary figures need no keys at all.
+
+When the agent environment has a built-in image tool (such as Codex's `image_gen`), FigEdit uses it first with zero configuration. Otherwise, copy `env.example` to `.env` and fill in whichever keys you have. Labnana (GPT-Image-2 / Gemini / Nano Banana) and the official OpenAI and Gemini APIs are supported, with automatic fallback ordering. `.env` is excluded by `.gitignore` and is never committed.
+
 ### Use
 
-Once installed, give the agent an image and describe the editable result you need:
+Once installed, give the agent an image and describe the editable result you need. By default the model decides how each element is handled and which reconstruction route to take; anything you state explicitly — the route, or how a specific element should be treated — always overrides the default judgment.
+
+**Everyday conversion** — stating the goal is enough:
 
 ```text
 Turn this figure into an editable SVG package.
 ```
 
 ```text
-Turn this image into an editable format.
-```
-
-```text
-Vectorize this figure and reproduce its content accurately.
-```
-
-```text
 I need to change several labels in this diagram. Convert it into an editable PPTX.
+```
+
+```text
+Recreate the layout, frames, and color scheme of this paper figure; I will replace the text myself.
+```
+
+**Controlling how elements are treated** — name the element and the treatment:
+
+```text
+Fully vectorize this figure, including redrawing the icons as editable shapes.
+```
+
+```text
+Don't crop the bar chart as one block — rebuild it as editable chart elements.
+```
+
+```text
+Keep the screenshots and maps as plain crops; just make the surrounding titles and callouts editable text.
+```
+
+```text
+The badge in the top-left always crops with dirty edges. Regenerate a clean transparent version with AI instead.
+```
+
+**Choosing the reconstruction route** — the two routes can cross freely:
+
+```text
+The titles on this poster sit on a photo. Split it into a background plate plus editable text.
+```
+
+```text
+This is an ordinary white-background flowchart, but I want the cleanest possible extraction — take the AI clean-plate route directly.
+```
+
+```text
+Use the clean-plate route and extract every icon and character as independent transparent assets so I can rearrange them.
+```
+
+```text
+When generating the plate, extract only the rocket in the middle as a separate asset; flatten everything else into the background.
+```
+
+```text
+Skip the plate for this photo-background figure — just use conventional crops. I can accept the fidelity loss.
 ```
 
 The agent should run the full measurement, reconstruction, export, and quality-check workflow in your project directory.
@@ -226,7 +294,8 @@ output/
 ├── manifest.json             # Reconstruction plan
 ├── quality_report.md         # Quality checks and export status
 ├── editability_report.md     # Text-lift and asset-text audit
-└── assets/                   # Cropped raster assets
+├── assets/                   # Cropped, regenerated, and plate assets
+└── diagnostics/              # Placement overlay and pixel-level visual QA (diff heatmap, per-tile scores)
 ```
 
 ## Project structure
@@ -236,12 +305,14 @@ figedit/
 ├── SKILL.md            # Agent-facing workflow
 ├── README.md           # Chinese introduction
 ├── README.en.md        # English introduction
+├── CHANGELOG.md
 ├── LICENSE
 ├── VERSION
 ├── THIRD_PARTY_NOTICES.md
 ├── requirements.txt
-├── scripts/            # Measurement, composition, export, and audit tools
-├── references/         # Reconstruction policies and authoring guidance
+├── env.example         # Image backend key template (copy to .env)
+├── scripts/            # Measurement, composition, chroma regeneration, export, and audit tools
+├── references/         # Reconstruction policies (taxonomy, decision matrix, background reconstruction, clean-plate prompting)
 ├── templates/          # Manifest schema and task templates
 ├── examples/           # Example prompts
 └── assets/examples/    # Complete downloadable reconstruction cases
@@ -251,25 +322,28 @@ figedit/
 
 | Package | Version | Purpose |
 | --- | --- | --- |
-| opencv-python | >= 4.9 | Structural detection |
+| opencv-python | >= 4.9 | Structural detection (4.x and 5.x both supported) |
 | paddleocr | >= 3.7 | OCR using PP-OCRv6 |
 | paddlepaddle | >= 3.3 | PaddleOCR backend |
 | Pillow | >= 10.0 | Image processing |
 | numpy | >= 1.24 | Array operations |
-| scipy | >= 1.10 | Spatial analysis |
-| matplotlib | >= 3.7 | Preview rendering |
+| scipy | >= 1.10 | Chroma key edge analysis |
+| matplotlib | >= 3.7 | Formula rendering |
 | latex2mathml | >= 3.81 | Formula conversion |
 | lxml | >= 5.0 | SVG and XML processing |
+| cairosvg (optional) | - | Improves PPTX media rendering; falls back to svglib when absent |
 
 ## Contributing
 
-Issues and improvements are welcome, especially for complex layouts, formula export, OCR correction, and PowerPoint compatibility.
+FigEdit is designed, maintained, and curated by Waka ([@giszzt](https://github.com/giszzt)). Codex has been used as a collaborative development assistant for parts of the implementation, refactoring, documentation, and example reconstruction work.
+
+Issues and improvements are welcome, especially for complex layouts, formula export, OCR correction, clean-plate quality, and PowerPoint compatibility.
 
 ## Acknowledgments and third-party code
 
-FigEdit's native SVG-to-PPTX export layer is adapted from [PPT Master](https://github.com/hugohe3/ppt-master). Thanks to Hugo He for open-sourcing its native, element-by-element editable PowerPoint conversion work. FigEdit extends and integrates that work for single-figure reconstruction, manifest-driven assets, editable equations, and reconstruction quality checks.
+FigEdit's native SVG-to-PPTX export layer is adapted from [PPT Master](https://github.com/hugohe3/ppt-master). Thanks to Hugo He for open-sourcing its native, element-by-element editable PowerPoint conversion work. FigEdit extends and integrates that work for single-figure reconstruction, manifest-driven assets, editable equations, and reconstruction quality checks. PPT Master is licensed under the MIT License; its copyright notice and complete license text are preserved in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
 
-PPT Master is licensed under the MIT License. Its copyright notice, complete license text, and a description of the integration are preserved in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md). FigEdit is an independent project and is not affiliated with or endorsed by PPT Master or its author.
+The built-in image generation invocation protocol (display the source image as the visible edit target in the conversation, then generate) is adapted from [GordenImage2PPTX](https://github.com/GordenSun/GordenSuperPPTSkills). Thanks to GordenSun for validating and sharing this reliable way to pass reference images to an agent's built-in image tool.
 
 ## License
 

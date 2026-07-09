@@ -11,6 +11,12 @@ Use one of these decisions for every significant element:
 - `simplify`: replace with a simpler editable equivalent only when fidelity is not important
 - `semantic-redraw`: redraw to preserve meaning rather than exact appearance
 - `omit`: exclude only if nonessential and documented
+- `restore`: clean contamination while preserving source identity
+- `flatten`: keep an inseparable object in the background plate
+- `regenerate-chroma`: reproduce the element on a solid chroma background via a
+  reference-capable image model, key it out to a clean transparent asset
+  (`chroma_regeneration.md`)
+- `generate-replacement`: create an audited approximate asset or patch
 
 ## Primary Rule
 
@@ -21,16 +27,33 @@ For visual objects, preserve source fidelity by default.
   `math` elements.
 - Pictorial, source-specific, or custom visual objects are usually cropped.
 - Redraw only generic primitives and simple structural symbols.
-- When uncertain, crop.
+- On conventional routes, when uncertain between source-specific crop and generic
+  redraw, crop.
+- How an object becomes a raster asset depends on the route, and there is no
+  salient-object matting on either. **AI route** (`ai-clean-plate`,
+  full-extract/selective): the object is regenerated on a chroma sheet and
+  keyed apart (`regenerate-chroma`, `chroma_regeneration.md`) — never cropped
+  from the original, never matted. Anything can be AI-regenerated — photos,
+  people, illustrations, icons, badges, logos, screenshots, charts, maps,
+  composite objects — with no content-category approval gate. **Conventional
+  route**: coordinate-crop a rectangle from the source (`crop_assets.py`);
+  assets on flat/white/separable backgrounds need no alpha. Never invent a
+  generic redraw or accept a dirty crop instead. When exact source pixels must
+  not drift (a chart read for its values, a compliance logo), keep the object
+  flattened in the clean plate or coordinate-crop it as an opaque rectangle;
+  do not chase pixel-exactness with a fragile cutout.
+- On AI clean-plate routes, crop only if the asset is identity-critical and clean
+  enough to layer back. If uncertain and the object is inseparable or low-edit,
+  leave it flattened in the clean plate.
 
 ## Matrix
 
 | Element type | Default decision | Use vector redraw when | Use raster crop when |
 |---|---|---|---|
 | Title, label, annotation | retype + split math spans | Text is readable and functions as a label | Decorative lettering is integral and must visually match |
-| Formula, equation, inline math span | retype-math | The region contains variables, scripts, fractions, operators, Greek symbols, equations, or recurrence notation | Only if tiny and explicitly accepted as raster evidence |
+| Formula, equation, inline math span | retype-math | The region contains variables, scripts, fractions, operators, Greek symbols, equations, or recurrence notation | Only if the user explicitly waives formula editability for that specific item |
 | Panel, card, frame | redraw | Almost always | Rarely |
-| Background block | redraw | Flat color or simple gradient | Complex texture, paper grain, or image background must be preserved |
+| Background block | redraw or background-plate | Flat color, simple single-zone gradient, or measured regular geometry | Complex texture, paper grain, continuous scene, irregular/multi-zone color field, illustrated background, or image background must be preserved or repaired |
 | Divider, grid, table rule | redraw | Almost always | Rarely |
 | Arrow, connector, flow line | redraw | Almost always | Only if arrow is a distinctive hand-drawn illustration and fidelity matters |
 | Plain geometric marker | redraw | Circle, square, dot, plus, minus, check, cross, simple triangle | Rarely |
@@ -45,7 +68,9 @@ For visual objects, preserve source fidelity by default.
 | Photo, product image, person | crop | Rarely | Almost always |
 | Dense thumbnail grid | crop | Rarely | Almost always |
 | Hand-drawn character/object | crop or semantic-redraw | Editable reinterpretation requested | Original style fidelity matters |
-| Texture, grain, watercolor | crop or omit | Recreated as simple style | Texture fidelity matters |
+| Texture, grain, watercolor, glow, scene lighting | crop, flatten, or ai-clean-plate | Recreated as a nonessential simple style | Texture/lighting/scene fidelity matters or foreground marks hide it |
+| Object crossed by labels or leaders | restore or flatten | Overlay is small and object geometry can be preserved | Direct crop bakes in annotations or alpha extraction damages the object |
+| Missing pixels in continuous background | ai-clean-plate | Background can be faithfully rebuilt with simple SVG/crops | Crop + simple SVG cannot reveal or reproduce hidden pixels in a continuous field |
 
 ## Icon-Specific Rules
 
@@ -98,3 +123,7 @@ Do not crop an entire tile merely to preserve an icon if the tile background and
 4. If exact text is uncertain, mark it with `notes: "verify text"` in the manifest.
 5. If a crop may be inaccurate, include extra padding and document it.
 6. If redrawing would create a different-looking substitute, crop instead.
+7. If cropping preserves unwanted annotations, do not call it a clean asset;
+   restore, regenerate via chroma, flatten, or route the background through the
+   clean-plate gate.
+8. Never label generated content as `source-preserve`.

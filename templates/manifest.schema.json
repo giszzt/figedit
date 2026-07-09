@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Editable SVG Reconstruction Manifest",
+  "title": "FigEdit Background Aware Manifest",
   "type": "object",
   "required": [
     "project",
@@ -70,7 +70,6 @@
         "type": "object",
         "required": [
           "id",
-          "label",
           "x",
           "y",
           "w",
@@ -118,6 +117,9 @@
             "type": "string"
           },
           "file": {
+            "type": "string"
+          },
+          "source_mode": {
             "type": "string"
           },
           "x": {
@@ -176,25 +178,16 @@
           "crop_status": {
             "type": "string"
           },
-          "crop_confidence": {
-            "type": "number"
+          "text_policy": {
+            "type": "string"
           },
           "edge_check": {
             "type": "object"
           },
-          "padding_applied": {
-            "type": "number"
+          "generation_provenance": {
+            "type": "object"
           },
-          "neighbor_risk": {
-            "type": "string"
-          },
-          "text_policy": {
-            "type": "string"
-          },
-          "edge_policy": {
-            "type": "string"
-          },
-          "verification_notes": {
+          "review_status": {
             "type": "string"
           }
         }
@@ -257,9 +250,6 @@
             "type": "string"
           },
           "math_format": {
-            "type": "string"
-          },
-          "math_backend": {
             "type": "string"
           },
           "formula_policy": {
@@ -333,6 +323,9 @@
           "detector": {
             "type": "string"
           },
+          "source": {
+            "type": "string"
+          },
           "style_source": {
             "type": "string"
           },
@@ -378,10 +371,104 @@
         }
       }
     },
+    "background_plan": {
+      "type": "object",
+      "description": "Only for ai-clean-plate. Conventional routes omit this field.",
+      "required": [
+        "strategy",
+        "route_decision",
+        "plate_asset_id",
+        "generation_provenance",
+        "candidate_review"
+      ],
+      "properties": {
+        "strategy": {
+          "const": "ai-clean-plate"
+        },
+        "route_decision": {
+          "type": "object",
+          "required": [
+            "reason"
+          ],
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "crop_svg_recoverable": {
+              "type": "boolean"
+            }
+          }
+        },
+        "plate_asset_id": {
+          "type": "string"
+        },
+        "generation_provenance": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string"
+            },
+            "backend": {
+              "type": "string"
+            },
+            "tool": {
+              "type": "string"
+            },
+            "skill": {
+              "type": "string"
+            },
+            "prompt_file": {
+              "type": "string"
+            },
+            "prompt": {
+              "type": "string"
+            },
+            "references": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "output": {
+              "type": "string"
+            }
+          }
+        },
+        "candidate_review": {
+          "type": "object",
+          "required": [
+            "accepted"
+          ],
+          "properties": {
+            "accepted": {
+              "type": "boolean"
+            },
+            "checks": {
+              "type": "object"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "review_status": {
+          "type": "string"
+        }
+      }
+    },
     "style_tokens": {
       "type": "object"
     },
     "diagnostics": {
+      "type": "object"
+    },
+    "recognition_summary": {
+      "type": "object"
+    },
+    "asset_decision_policy": {
+      "type": "object"
+    },
+    "editability_targets": {
       "type": "object"
     },
     "quality_gates": {

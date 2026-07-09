@@ -1,0 +1,5 @@
+TASK: Reproduce the foreground pictorial objects from the source infographic on a pure #00ff00 chroma background.
+INCLUDE: ISS, ESA mark/wordmark, and every astronaut mission-node composite.
+EXCLUDE: editable labels, dates, timeline lines, arrows, title text, red banner, background stars.
+LAYOUT: regular grid with clear gutters and no overlaps.
+REJECT IF: missing objects, merged objects, pseudo-labels overlapping assets, non-flat key background, or visibly simplified portraits/badges.

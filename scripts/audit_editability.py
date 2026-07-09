@@ -104,7 +104,9 @@ def audit(manifest_path: Path, ocr_path: Path | None = None) -> dict[str, Any]:
         bbox = item.get("bbox") or {"x": 0, "y": 0, "w": 1, "h": 1}
         match = None
         for svg_text in svg_text_records:
-            if text_norm and (text_norm in svg_text["norm"] or svg_text["norm"] in text_norm):
+            text_matches = text_norm and (text_norm in svg_text["norm"] or svg_text["norm"] in text_norm)
+            geometry_matches = _bbox_overlap_ratio(bbox, svg_text["bbox"]) >= 0.72
+            if text_matches or geometry_matches:
                 if _center_distance(bbox, svg_text["bbox"]) <= max(40, bbox.get("w", 1) * 0.8):
                     match = svg_text
                     break

@@ -102,15 +102,68 @@ def _merge_nearby_assets(candidates: list[dict[str, Any]], width: int, height: i
     return merged
 
 
-def _edge_check(crop: Image.Image) -> dict[str, Any]:
+def _edge_check(
+    crop: Image.Image,
+    source: Image.Image | None = None,
+    box: tuple[int, int, int, int] | None = None,
+) -> dict[str, Any]:
     arr = np.asarray(crop.convert("L"))
     if arr.size == 0:
         return {"status": "empty", "edge_density": 1.0}
-    border = np.concatenate([arr[:2, :].reshape(-1), arr[-2:, :].reshape(-1), arr[:, :2].reshape(-1), arr[:, -2:].reshape(-1)])
+    band = max(1, min(3, arr.shape[0] // 8 or 1, arr.shape[1] // 8 or 1))
     center = arr[max(0, arr.shape[0] // 4) : max(1, arr.shape[0] * 3 // 4), max(0, arr.shape[1] // 4) : max(1, arr.shape[1] * 3 // 4)]
     bg = float(np.median(center)) if center.size else float(np.median(arr))
-    density = float(np.mean(np.abs(border.astype(float) - bg) > 30))
-    return {"status": "ok" if density < 0.24 else "needs-padding", "edge_density": round(density, 4)}
+    sides = {
+        "top": arr[:band, :],
+        "bottom": arr[-band:, :],
+        "left": arr[:, :band],
+        "right": arr[:, -band:],
+    }
+    side_density = {
+        side: float(np.mean(np.abs(values.astype(float) - bg) > 30)) if values.size else 0.0
+        for side, values in sides.items()
+    }
+    border = np.concatenate([values.reshape(-1) for values in sides.values() if values.size])
+    density = float(np.mean(np.abs(border.astype(float) - bg) > 30)) if border.size else 0.0
+    needs_padding = [side for side, value in side_density.items() if value >= 0.24]
+    continuation: dict[str, float] = {}
+    continuation_risk: list[str] = []
+    if source is not None and box is not None:
+        src = np.asarray(source.convert("L"))
+        x1, y1, x2, y2 = box
+        checks = {
+            "top": (
+                src[max(0, y1) : min(src.shape[0], y1 + band), max(0, x1) : min(src.shape[1], x2)],
+                src[max(0, y1 - band) : max(0, y1), max(0, x1) : min(src.shape[1], x2)],
+            ),
+            "bottom": (
+                src[max(0, y2 - band) : min(src.shape[0], y2), max(0, x1) : min(src.shape[1], x2)],
+                src[min(src.shape[0], y2) : min(src.shape[0], y2 + band), max(0, x1) : min(src.shape[1], x2)],
+            ),
+            "left": (
+                src[max(0, y1) : min(src.shape[0], y2), max(0, x1) : min(src.shape[1], x1 + band)],
+                src[max(0, y1) : min(src.shape[0], y2), max(0, x1 - band) : max(0, x1)],
+            ),
+            "right": (
+                src[max(0, y1) : min(src.shape[0], y2), max(0, x2 - band) : min(src.shape[1], x2)],
+                src[max(0, y1) : min(src.shape[0], y2), min(src.shape[1], x2) : min(src.shape[1], x2 + band)],
+            ),
+        }
+        for side, (inside, outside) in checks.items():
+            if inside.size == 0 or outside.size == 0 or inside.shape != outside.shape:
+                continue
+            ratio = float(np.mean(np.abs(inside.astype(float) - outside.astype(float)) <= 18))
+            continuation[side] = round(ratio, 4)
+            if ratio >= 0.72:
+                continuation_risk.append(side)
+    return {
+        "status": "ok" if not needs_padding else "needs-padding",
+        "edge_density": round(density, 4),
+        "edge_density_by_side": {side: round(value, 4) for side, value in side_density.items()},
+        "needs_padding_sides": needs_padding,
+        "continuation_risk_sides": continuation_risk,
+        "continuation_by_side": continuation,
+    }
 
 
 def _infer_with_cv(image_path: Path, ocr_items: list[dict[str, Any]], primitives: dict[str, Any]) -> list[dict[str, Any]]:
@@ -252,8 +305,9 @@ def crop_assets(image_path: Path, assets: list[dict[str, Any]], out_dir: Path) -
         y = int(round(region["y"]))
         w = int(round(region["w"]))
         h = int(round(region["h"]))
-        crop = source.crop((x, y, x + w, y + h))
-        check = _edge_check(crop)
+        box = (x, y, x + w, y + h)
+        crop = source.crop(box)
+        check = _edge_check(crop, source, box)
         asset["edge_check"] = check
         asset["crop_status"] = "verified" if check["status"] == "ok" else "needs-padding"
         crop_path = out_dir / asset["file"]

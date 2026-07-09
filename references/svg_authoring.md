@@ -23,6 +23,34 @@ Recommended group order:
 <g id="annotations">...</g>
 ```
 
+When `background_plan.plate_asset_id` or `plate_file` is present, the generator
+places a full-canvas `<image id="background-plate">` in the background group
+with `preserveAspectRatio="none"`. The plate dimensions must already match the
+canvas; the attribute prevents accidental letterboxing, not geometry repair.
+
+## PPTX Grouping
+
+Author SVG groups for layer order and maintainability, but do not rely on
+ordinary groups staying grouped in PowerPoint. Native PPTX export defaults to
+semantic ungrouping: non-semantic layout groups such as `background`, `assets`,
+`panels`, `connectors`, and `texts` are flattened after their transforms and
+styles are applied, so the final PowerPoint file is directly selectable without
+manual ungrouping.
+
+Keep a group atomic only when ungrouping would hurt visual fidelity or
+editability. Use one of these explicit markers:
+
+```xml
+<g id="logo-mark" data-pptx-group="atomic">...</g>
+<g id="equation-main" class="formula" data-latex="...">...</g>
+<g id="masked-photo" data-pptx-group="preserve" clip-path="url(#clip)">...</g>
+```
+
+The exporter also preserves groups with formulas, group-level clip paths,
+masks, filters, opacity, or rotations that require a group wrapper. Avoid
+wrapping an entire figure, panel, or asset layer as an atomic group unless the
+user explicitly asked for that object to move as one piece.
+
 ## Naming
 
 Use stable semantic IDs:
@@ -41,6 +69,7 @@ Avoid generic names such as `rect1`, `image2`, or `path-final`.
 - Use manual line breaks for multi-line labels.
 - Use `text-anchor` and `dominant-baseline` for alignment.
 - Mark uncertain text in the manifest.
+- For dense figures, preserve the source slot and baseline rather than relying on default browser or PowerPoint text metrics.
 
 Recommended font stacks:
 
@@ -83,6 +112,10 @@ Examples such as `A_i^{tree}`, `\delta_i`, `R^{(m)}`, and
 `\sum_{\ell=1}^{G}` still belong in `math` when they function as equations or
 mathematical annotations.
 
+Do not rasterize formulas to avoid placement difficulty. If a formula is dense
+or small, keep it editable and control its layout with a measured source slot,
+explicit width/height, anchor, baseline, and font size.
+
 For mixed prose/formula labels, split the visual line into adjacent elements
 that share a baseline. Do not leave TeX syntax, Unicode subscript/superscript,
 or compact Greek-variable notation inside `type: "text"`.
@@ -113,6 +146,10 @@ or compact Greek-variable notation inside `type: "text"`.
 
 If a symbol-like text is intentionally not a formula, add
 `formula_policy: "not-formula"` and a short `formula_decision_reason`.
+
+Native PPTX export uses PowerPoint text and Office Math layout, which can differ
+from SVG. On tight layouts, verify the exported PPTX visually and adjust the
+manifest if equations or labels shift, wrap, overflow, or collide.
 
 ## Shapes
 
@@ -146,6 +183,11 @@ Use relative paths in `editable.svg`:
 ```
 
 Use base64 data URIs in `editable_embedded.svg`.
+
+For a background plate, prefer the top-level `background_plan` reference rather
+than adding a duplicate image element. For coordinate-sensitive foreground
+assets, keep normal aspect-ratio preservation and verify placement against the
+source overlay.
 
 ## Accessibility and Maintainability
 

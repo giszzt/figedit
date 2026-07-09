@@ -84,5 +84,58 @@ filename, code token, or prose label, keep it as text only with
 If a formula cannot be converted to editable OMML, do not silently mark it as
 done. The PPTX exporter keeps that formula visible as vector artwork and writes
 the failure to `editable.pptx.math_report.json` and the `pptx_math_export`
-quality gate. Repair the LaTeX and rerun composition until every important
-formula is editable.
+quality gate. Repair the LaTeX and rerun composition until every detected
+formula is editable, unless the user explicitly waives formula editability for a
+specific item.
+
+## Editable formulas must also stay visually placed
+
+Formula reconstruction has two inseparable requirements:
+
+1. the formula is semantic and editable (`math` in the manifest, editable Office Math in PPTX)
+2. the formula occupies the same visual slot as the source after SVG rendering and native PPTX export
+
+Do not raster-crop a formula to avoid layout difficulty. If an editable formula
+drifts, grows, shrinks, overlaps a connector, or shifts its baseline in
+PowerPoint, treat that as a layout defect and repair the manifest.
+
+For dense figures, record enough layout evidence to make repair reproducible:
+
+- `source_region`: the formula's observed bounding box in source-image pixels
+- `x`, `y`, `w`, `h`: the intended placement slot, usually matching the source region after padding decisions
+- `font_size`: chosen to fit the slot after render, not merely copied from OCR height
+- `text_anchor` and `dominant_baseline`: explicit anchor choices
+- `baseline_y` when a formula must align with neighboring prose or a diagram axis
+- `layout_lock: "source-slot"` for formulas that must fit a tight region
+- `review_status: "verified"` only after visual checking
+
+Example:
+
+```json
+{
+  "type": "math",
+  "id": "formula-episode-advantage",
+  "latex": "A^{\\mathrm{ep}}_{u,n,k}=\\frac{R_n-\\mathrm{median}(R_u)}{\\mathrm{MAD}(R_u)+\\epsilon}",
+  "source_region": { "x": 804, "y": 237, "w": 104, "h": 30 },
+  "x": 804,
+  "y": 237,
+  "w": 104,
+  "h": 30,
+  "font_size": 18,
+  "text_anchor": "start",
+  "dominant_baseline": "middle",
+  "baseline_y": 252,
+  "layout_lock": "source-slot",
+  "decision": "retype-math",
+  "review_status": "verified"
+}
+```
+
+When SVG and PPTX disagree, prefer adjusting the editable formula's layout
+constraints over accepting visual drift. Common repairs are reducing
+`font_size`, widening the slot if the source allows it, changing the anchor,
+splitting a mixed prose/formula line into finer elements, and aligning adjacent
+elements to a shared `baseline_y`.
+
+`editable.pptx.math_report.json` proves editability, not placement. A successful
+OMML conversion is not sufficient for acceptance on dense formula figures.

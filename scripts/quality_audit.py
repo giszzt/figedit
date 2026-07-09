@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quality audit helpers for FigEdit outputs."""
+"""Quality audit helpers for FigEdit Background Aware outputs."""
 
 from __future__ import annotations
 
@@ -35,6 +35,17 @@ def _find_chrome() -> Path | None:
     return Path(found) if found else None
 
 
+def _num(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except Exception:
+        return default
+
+
+def _status(status: str, **extra: Any) -> dict[str, Any]:
+    return {"status": status, **extra}
+
+
 def render_preview(svg_path: Path, preview_path: Path, width: int, height: int) -> dict[str, Any]:
     chrome = _find_chrome()
     if not chrome:
@@ -59,6 +70,285 @@ def render_preview(svg_path: Path, preview_path: Path, width: int, height: int) 
     }
 
 
+def _is_ai_clean_plate(manifest: dict[str, Any]) -> bool:
+    plan = manifest.get("background_plan") or {}
+    return plan.get("strategy") == "ai-clean-plate"
+
+
+def _canvas_area(manifest: dict[str, Any]) -> float:
+    canvas = manifest.get("canvas", {})
+    return max(1.0, _num(canvas.get("width"), 1.0) * _num(canvas.get("height"), 1.0))
+
+
+def _is_source_crop(asset: dict[str, Any], plate_id: str | None) -> bool:
+    if asset.get("id") == plate_id or asset.get("kind") == "background-plate":
+        return False
+    source_mode = str(asset.get("source_mode", "")).lower()
+    decision = str(asset.get("decision", "")).lower()
+    return bool(asset.get("source_region")) or source_mode == "source-crop" or decision in {"crop", "source-preserve"}
+
+
+def _ai_patchwork_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Catch the failure mode where an AI plate is covered by dirty source blocks."""
+
+    if not _is_ai_clean_plate(manifest):
+        return _status("ok", reason="no AI clean plate")
+
+    plan = manifest.get("background_plan") or {}
+    plate_id = plan.get("plate_asset_id")
+    area = _canvas_area(manifest)
+    crops = [asset for asset in manifest.get("assets", []) if _is_source_crop(asset, plate_id)]
+    crop_summaries = []
+    large = []
+    total_area = 0.0
+    residue = []
+
+    for asset in crops:
+        asset_area = max(0.0, _num(asset.get("w")) * _num(asset.get("h")))
+        ratio = asset_area / area
+        total_area += asset_area
+        if ratio >= 0.04:
+            large.append(asset)
+        crop_summaries.append({"id": asset.get("id"), "area_ratio": round(ratio, 4)})
+
+        residue_flags = [
+            asset.get("text_residue"),
+            asset.get("old_text_residue"),
+            asset.get("annotation_residue"),
+            asset.get("contains_old_text"),
+            asset.get("contains_foreground_text"),
+        ]
+        crop_status = str(asset.get("crop_status", "")).lower()
+        notes = str(asset.get("review_notes", "") + " " + asset.get("decision_reason", "")).lower()
+        if any(flag is True for flag in residue_flags) or any(token in crop_status for token in ["residue", "dirty", "old-text"]) or "old text" in notes or "annotation residue" in notes:
+            residue.append(asset.get("id"))
+
+    total_ratio = total_area / area
+    if residue:
+        return _status(
+            "failed",
+            message="source crops contain old text or annotation residue",
+            residue_assets=residue,
+        )
+    if len(large) >= 3 or total_ratio >= 0.35:
+        return _status(
+            "failed",
+            message="AI clean-plate output appears to be patchwork source-crop reconstruction",
+            source_crop_count=len(crops),
+            large_source_crop_count=len(large),
+            source_crop_area_ratio=round(total_ratio, 4),
+            crops=crop_summaries[:20],
+        )
+    if large:
+        return _status(
+            "review",
+            message="AI clean-plate output uses large source crops; confirm they are clean, identity-critical assets",
+            source_crop_count=len(crops),
+            large_source_crop_count=len(large),
+            source_crop_area_ratio=round(total_ratio, 4),
+            crops=crop_summaries[:20],
+        )
+    return _status("ok", source_crop_count=len(crops), source_crop_area_ratio=round(total_ratio, 4))
+
+
+def _detector_noise_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Flag raw OpenCV/CV detections that leaked into the final SVG."""
+
+    structural_types = {"rect", "line", "path", "polyline", "polygon", "circle", "ellipse"}
+    raw_decisions = {"auto", "raw", "raw-detection", "detector-import", "opencv-import", "cv-import"}
+    raw = []
+    unreviewed_cv = []
+
+    for element in manifest.get("elements", []):
+        if element.get("type") not in structural_types:
+            continue
+        detector = " ".join(str(element.get(k, "")) for k in ["detector", "source", "evidence"]).lower()
+        decision = str(element.get("decision", "")).lower()
+        review = str(element.get("review_status", "")).lower()
+        if decision in raw_decisions:
+            raw.append(element.get("id"))
+        if any(token in detector for token in ["opencv", "cv", "hough", "detected_primitives"]) and review not in {"verified", "ok", "accepted"}:
+            unreviewed_cv.append(element.get("id"))
+
+    if raw:
+        return _status("failed", message="raw detector primitives were imported into final elements", samples=raw[:30])
+    if len(unreviewed_cv) > 20:
+        return _status(
+            "review",
+            message="many OpenCV-sourced primitives lack explicit review; check for detector noise",
+            count=len(unreviewed_cv),
+            samples=unreviewed_cv[:30],
+        )
+    return _status("ok", unreviewed_cv_count=len(unreviewed_cv))
+
+
+def _ocr_fallback_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Flag OCR fallback text that has not been model-verified."""
+
+    fallback = []
+    low_conf_unverified = []
+    unreviewed_ocr = []
+
+    for element in manifest.get("elements", []):
+        if element.get("type") != "text":
+            continue
+        joined = " ".join(str(element.get(k, "")) for k in ["decision", "source", "detector", "review_status"]).lower()
+        review = str(element.get("review_status", "")).lower()
+        confidence = element.get("confidence")
+        if "ocr-fallback" in joined or "fallback-ocr" in joined:
+            fallback.append(element.get("id"))
+        if confidence is not None and _num(confidence, 1.0) < 0.65 and review not in {"verified", "ok", "accepted"}:
+            low_conf_unverified.append(element.get("id"))
+        if "ocr" in joined and review not in {"verified", "ok", "accepted", "manual-verified"}:
+            unreviewed_ocr.append(element.get("id"))
+
+    if fallback:
+        return _status("failed", message="OCR fallback text reached final elements", samples=fallback[:30])
+    if len(low_conf_unverified) > 0:
+        return _status(
+            "review",
+            message="low-confidence OCR text requires manual verification",
+            count=len(low_conf_unverified),
+            samples=low_conf_unverified[:30],
+        )
+    if len(unreviewed_ocr) > 30:
+        return _status(
+            "review",
+            message="many OCR-sourced text elements lack explicit review",
+            count=len(unreviewed_ocr),
+            samples=unreviewed_ocr[:30],
+        )
+    return _status("ok", unreviewed_ocr_count=len(unreviewed_ocr))
+
+
+def _text_math_layout_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Review trigger for dense editable text/math layouts.
+
+    This is intentionally a review gate rather than a pixel-diff substitute.
+    It catches the common false-green case where formulas are editable and the
+    SVG renders, but dense text/math placement has not been constrained or
+    visually reviewed after PPTX export.
+    """
+
+    elements = manifest.get("elements", [])
+    text_elements = [el for el in elements if el.get("type") == "text"]
+    math_elements = [el for el in elements if el.get("type") in {"math", "formula"}]
+    classification = manifest.get("classification") or {}
+    figure_type = str(classification.get("figure_type", "")).lower()
+    complexity = str(classification.get("complexity", "")).lower()
+
+    dense = (
+        len(math_elements) >= 20
+        or len(text_elements) >= 80
+        or "formula" in figure_type
+        or ("high" in complexity and len(math_elements) >= 8)
+    )
+    if not dense:
+        return _status("ok", reason="not a dense text/math layout")
+
+    unconstrained_math = [
+        el.get("id")
+        for el in math_elements
+        if not el.get("source_region")
+        or not el.get("w")
+        or not el.get("h")
+        or not (el.get("layout_lock") or el.get("baseline_y") or el.get("dominant_baseline"))
+    ]
+    unconstrained_text = [
+        el.get("id")
+        for el in text_elements
+        if (not el.get("source_region") or not (el.get("w") or el.get("max_width"))) and _num(el.get("font_size"), 16) <= 14
+    ]
+
+    review = manifest.get("pptx_visual_review") or (manifest.get("quality_gates") or {}).get("pptx_visual_review")
+    review_ok = isinstance(review, dict) and str(review.get("status", "")).lower() in {"ok", "verified", "passed"}
+
+    if not review_ok:
+        return _status(
+            "review",
+            message="dense editable text/math layout requires PPTX visual review",
+            text_count=len(text_elements),
+            math_count=len(math_elements),
+            unconstrained_math_count=len(unconstrained_math),
+            unconstrained_text_count=len(unconstrained_text),
+            samples=(unconstrained_math + unconstrained_text)[:30],
+        )
+    if len(unconstrained_math) > max(3, len(math_elements) * 0.25):
+        return _status(
+            "review",
+            message="many math elements lack source-slot layout constraints",
+            math_count=len(math_elements),
+            unconstrained_math_count=len(unconstrained_math),
+            samples=unconstrained_math[:30],
+        )
+    if len(unconstrained_text) > 20:
+        return _status(
+            "review",
+            message="many small text elements lack source-region or width constraints",
+            text_count=len(text_elements),
+            unconstrained_text_count=len(unconstrained_text),
+            samples=unconstrained_text[:30],
+        )
+    return _status(
+        "ok",
+        text_count=len(text_elements),
+        math_count=len(math_elements),
+        pptx_visual_review="ok",
+    )
+
+
+def _background_plate_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    if not _is_ai_clean_plate(manifest):
+        return _status("ok", reason="conventional route")
+
+    plan = manifest.get("background_plan") or {}
+    plate_id = plan.get("plate_asset_id")
+    plate = next((asset for asset in manifest.get("assets", []) if asset.get("id") == plate_id), None)
+    provenance = plan.get("generation_provenance") or {}
+    review = plan.get("candidate_review") or {}
+
+    if not isinstance(plate, dict):
+        return _status("failed", message="AI clean plate asset is missing")
+    if plate.get("kind") != "background-plate":
+        return _status("failed", message="AI clean plate asset should use kind=background-plate")
+    if not provenance.get("output"):
+        return _status("failed", message="AI clean plate lacks generation provenance output")
+    if review.get("accepted") is not True:
+        return _status("failed", message="AI clean plate candidate was not accepted")
+
+    canvas = manifest.get("canvas", {})
+    w_ok = abs(_num(plate.get("w")) - _num(canvas.get("width"))) <= max(1.0, _num(canvas.get("width")) * 0.01)
+    h_ok = abs(_num(plate.get("h")) - _num(canvas.get("height"))) <= max(1.0, _num(canvas.get("height")) * 0.01)
+    if not w_ok or not h_ok:
+        return _status("failed", message="AI clean plate is not canvas-aligned")
+    return _status("ok")
+
+
+def _background_route_consistency_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    classification = manifest.get("classification") or {}
+    style = str(classification.get("style_type", "")).lower()
+    intent = str(classification.get("reconstruction_intent", "")).lower()
+    mode = str(classification.get("reconstruction_mode", "")).lower()
+    has_plan = bool(manifest.get("background_plan"))
+
+    ai_declared = (
+        style == "continuous-visual-field"
+        or intent == "clean-plate-plus-editable-overlay"
+        or mode == "e-ai"
+    )
+    if ai_declared and not has_plan:
+        return _status(
+            "review",
+            message="classification suggests an AI clean-plate route, but background_plan is missing",
+            style_type=style,
+            reconstruction_intent=intent,
+            reconstruction_mode=mode,
+        )
+    if has_plan and not _is_ai_clean_plate(manifest):
+        return _status("failed", message="background_plan is present but strategy is not ai-clean-plate")
+    return _status("ok")
+
+
 def audit_output(out_dir: Path) -> dict[str, Any]:
     manifest_path = out_dir / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
@@ -81,6 +371,12 @@ def audit_output(out_dir: Path) -> dict[str, Any]:
         "preview_render": preview,
         "low_confidence_elements": {"status": "review" if low_conf else "ok", "count": len(low_conf)},
         "crop_edge_checks": {"status": "review" if crop_issues else "ok", "count": len(crop_issues)},
+        "background_route_consistency": _background_route_consistency_gate(manifest),
+        "background_plate": _background_plate_gate(manifest),
+        "ai_patchwork_source_crops": _ai_patchwork_gate(manifest),
+        "opencv_detector_noise": _detector_noise_gate(manifest),
+        "ocr_fallback_text": _ocr_fallback_gate(manifest),
+        "text_math_layout_fidelity": _text_math_layout_gate(manifest),
     }
     return gates
 
@@ -96,6 +392,7 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
     formula_leaks = editability.get("formula_text_leak_samples", [])
     low_conf = [el for el in elements if el.get("review_status") in {"low-confidence", "needs-check"}]
     crop_issues = [a for a in assets if a.get("crop_status") not in {None, "verified", "ok"} or (a.get("edge_check") or {}).get("status") not in {None, "ok"}]
+    background_plan = manifest.get("background_plan") or {}
 
     lines = [
         "# Reconstruction Quality Report",
@@ -107,6 +404,7 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
         f"- Canvas: {manifest.get('canvas', {}).get('width')} x {manifest.get('canvas', {}).get('height')}",
         f"- OCR status: {ocr.get('status', 'missing')} ({len(ocr.get('items', []))} text candidates)",
         f"- OpenCV status: {primitives.get('status', 'missing')} ({primitives.get('counts', {})})",
+        f"- Background strategy: {background_plan.get('strategy', 'conventional')}",
         f"- Assets: {len(assets)}",
         f"- Elements: {len(elements)}",
         f"- SVG text elements: {len([e for e in elements if e.get('type') == 'text'])}",
@@ -143,6 +441,9 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
                 for leak in value.get("samples", [])[:20]:
                     reasons = ", ".join(leak.get("reasons", []))
                     lines.append(f"- Formula-like text `{leak.get('id')}` should be split or converted: `{leak.get('text')}` reasons={reasons}")
+            samples = value.get("samples") if isinstance(value.get("samples"), list) else []
+            for sample in samples[:20]:
+                lines.append(f"- Gate `{key}` sample: `{sample}`")
     if formula_leaks and "formula_text_leakage" not in gates:
         for leak in formula_leaks[:20]:
             reasons = ", ".join(leak.get("reasons", []))
@@ -154,14 +455,15 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
             "",
             "- `diagnostics/ocr_overlay.png`",
             "- `diagnostics/structure_overlay.png`",
-            "- `diagnostics/crop_overlay.png`",
+            "- `diagnostics/placement_overlay.png`",
             "- `diagnostics/style_overlay.png`",
-            "- `diagnostics/rejected_candidates.png`",
             "- `editability_report.md`",
             "",
             "## Notes",
             "",
             "- Dense maps, heatmaps, screenshots, and charts remain source-preserved raster assets unless explicitly vectorized.",
+            "- AI clean plate is a background repair route, not a foreground patchwork route.",
+            "- Source-specific assets should be cropped only when identity matters and the crop is clean.",
             "- Low-confidence OCR text should be checked against the source image before publication use.",
         ]
     )

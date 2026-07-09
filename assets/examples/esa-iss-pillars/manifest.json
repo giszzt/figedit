@@ -1,0 +1,4128 @@
+{
+  "project": "esa-iss-pillars-full-extract",
+  "source_image": "assets/source.png",
+  "canvas": {
+    "width": 1920,
+    "height": 1400,
+    "background": "#071b23"
+  },
+  "classification": {
+    "layout_topology": "linear-flow",
+    "complexity": "high",
+    "style_type": "continuous-visual-field",
+    "reconstruction_mode": "E-ai",
+    "reconstruction_intent": "clean-plate-plus-editable-overlay"
+  },
+  "background_plan": {
+    "strategy": "ai-clean-plate",
+    "foreground_mode": "full-extract",
+    "foreground_mode_source": "user-choice",
+    "route_decision": {
+      "reason": "Foreground text, arrows, mission nodes, ISS illustration, and ESA branding sit over a continuous starfield; crop plus simple SVG cannot reconstruct covered background pixels.",
+      "crop_svg_recoverable": false
+    },
+    "plate_asset_id": "asset-clean-plate",
+    "generation_provenance": {
+      "role": "primary-clean-plate",
+      "backend": "Codex Image Gen",
+      "prompt_file": "diagnostics/clean-plate-prompt.txt",
+      "references": [
+        "assets/source.png"
+      ],
+      "output": "assets/clean_plate_1920x1400.png",
+      "raw_output": "assets/clean_plate_raw.png"
+    },
+    "candidate_review": {
+      "accepted": true,
+      "checks": {
+        "foreground_text_removed": true,
+        "major_visual_identity_preserved": true,
+        "aspect_ratio_and_alignment_usable": true
+      },
+      "notes": "Clean starfield plate preserves the source color family and removes foreground overlay. Raw output was resized to source canvas for alignment."
+    },
+    "review_status": "verified"
+  },
+  "assets": [
+    {
+      "id": "asset-clean-plate",
+      "file": "assets/clean_plate_1920x1400.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 0,
+        "y": 0,
+        "w": 1920,
+        "h": 1400
+      },
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "h": 1400,
+      "kind": "background-plate",
+      "decision": "generate-replacement",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/clean-plate-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "output": "assets/clean_plate_1920x1400.png",
+        "raw_output": "assets/clean_plate_raw.png"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-iss",
+      "file": "assets/iss.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 505,
+        "y": 270,
+        "w": 340,
+        "h": 150
+      },
+      "x": 505,
+      "y": 270,
+      "w": 340,
+      "h": 150,
+      "kind": "space-station",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-esa-mark",
+      "file": "assets/esa_mark.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1658,
+        "y": 73,
+        "w": 66,
+        "h": 66
+      },
+      "x": 1658,
+      "y": 73,
+      "w": 66,
+      "h": 66,
+      "kind": "brand-logo",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-esa-word",
+      "file": "assets/esa_word.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1726,
+        "y": 82,
+        "w": 123,
+        "h": 52
+      },
+      "x": 1726,
+      "y": 82,
+      "w": 123,
+      "h": 52,
+      "kind": "brand-logo",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top_guidoni",
+      "file": "assets/top_guidoni.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 901.0,
+        "y": 300,
+        "w": 118,
+        "h": 125
+      },
+      "x": 901.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top_haignere",
+      "file": "assets/top_haignere.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1098.0,
+        "y": 300,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1098.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top_vittori",
+      "file": "assets/top_vittori.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1295.0,
+        "y": 300,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1295.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top_perrin",
+      "file": "assets/top_perrin.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1495.0,
+        "y": 300,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1495.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top_dewinne",
+      "file": "assets/top_dewinne.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1689.0,
+        "y": 300,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1689.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_dewinne",
+      "file": "assets/r2_dewinne.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 111.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 111.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_eyharts",
+      "file": "assets/r2_eyharts.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 309.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 309.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_schlegel",
+      "file": "assets/r2_schlegel.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 509.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 509.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_nespoli",
+      "file": "assets/r2_nespoli.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 704.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 704.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_fuglesang",
+      "file": "assets/r2_fuglesang.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 899.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 899.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_reiter",
+      "file": "assets/r2_reiter.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1099.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1099.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_vittori",
+      "file": "assets/r2_vittori.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1295.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1295.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_kuipers",
+      "file": "assets/r2_kuipers.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1495.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1495.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r2_duque",
+      "file": "assets/r2_duque.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1689.0,
+        "y": 508,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1689.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_fuglesang",
+      "file": "assets/r3_fuglesang.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 111.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 111.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_nespoli",
+      "file": "assets/r3_nespoli.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 309.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 309.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_vittori",
+      "file": "assets/r3_vittori.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 509.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 509.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_kuipers",
+      "file": "assets/r3_kuipers.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 704.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 704.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_parmitano",
+      "file": "assets/r3_parmitano.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 899.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 899.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_gerst",
+      "file": "assets/r3_gerst.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1099.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1099.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_cristoforetti",
+      "file": "assets/r3_cristoforetti.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1295.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1295.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_mogensen",
+      "file": "assets/r3_mogensen.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1495.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1495.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r3_peake",
+      "file": "assets/r3_peake.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1689.0,
+        "y": 728,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1689.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_wandt",
+      "file": "assets/r4_wandt.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 111.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 111.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_mogensen",
+      "file": "assets/r4_mogensen.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 309.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 309.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_cristoforetti",
+      "file": "assets/r4_cristoforetti.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 509.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 509.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_maurer",
+      "file": "assets/r4_maurer.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 704.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 704.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_pesquet",
+      "file": "assets/r4_pesquet.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 899.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 899.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_parmitano",
+      "file": "assets/r4_parmitano.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1099.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1099.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_gerst",
+      "file": "assets/r4_gerst.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1295.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1295.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_nespoli",
+      "file": "assets/r4_nespoli.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1495.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1495.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-r4_pesquet_proxima",
+      "file": "assets/r4_pesquet_proxima.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 1689.0,
+        "y": 956,
+        "w": 118,
+        "h": 125
+      },
+      "x": 1689.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-bottom_uznanski",
+      "file": "assets/bottom_uznanski.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 111.0,
+        "y": 1188,
+        "w": 118,
+        "h": 125
+      },
+      "x": 111.0,
+      "y": 1188,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-bottom_adenot",
+      "file": "assets/bottom_adenot.png",
+      "source_mode": "external",
+      "source_region": {
+        "x": 309.0,
+        "y": 1188,
+        "w": 118,
+        "h": 125
+      },
+      "x": 309.0,
+      "y": 1188,
+      "w": 118,
+      "h": 125,
+      "kind": "astronaut-mission-node",
+      "decision": "regenerate-chroma",
+      "asset_fidelity": "approximate-ok",
+      "background_handling": "transparent",
+      "crop_status": "verified",
+      "decision_reason": "Full-extract foreground object regenerated on chroma sheet and keyed to transparency.",
+      "generation_provenance": {
+        "backend": "Codex Image Gen",
+        "prompt_file": "diagnostics/foreground-sheet-prompt.txt",
+        "references": [
+          "assets/source.png"
+        ],
+        "sheet": "assets/foreground_sheet_raw.png",
+        "keyed_sheet": "assets/foreground_sheet_keyed.png",
+        "chroma_color": "#00ff00"
+      },
+      "review_status": "reviewed",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    }
+  ],
+  "elements": [
+    {
+      "type": "image",
+      "id": "image-iss",
+      "asset_id": "asset-iss",
+      "x": 505,
+      "y": 270,
+      "w": 340,
+      "h": 150,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "image",
+      "id": "image-esa-mark",
+      "asset_id": "asset-esa-mark",
+      "x": 1658,
+      "y": 73,
+      "w": 66,
+      "h": 66,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "image",
+      "id": "image-esa-word",
+      "asset_id": "asset-esa-word",
+      "x": 1726,
+      "y": 82,
+      "w": 123,
+      "h": 52,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "label-esa-agency",
+      "decision": "retype",
+      "x": 1752,
+      "y": 171,
+      "text": "EUROPEAN SPACE AGENCY",
+      "font_size": 16,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "title-main",
+      "decision": "retype",
+      "x": 96,
+      "y": 214,
+      "text": "INTERNATIONAL SPACE STATION",
+      "font_size": 52,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#f3f7f7",
+      "font_family": "Courier New, Consolas, monospace",
+      "review_status": "verified"
+    },
+    {
+      "type": "rect",
+      "id": "section-missions-red",
+      "decision": "redraw",
+      "x": 93,
+      "y": 257,
+      "w": 370,
+      "h": 45,
+      "fill": "#f31d2f",
+      "stroke": "none",
+      "layer": "sections"
+    },
+    {
+      "type": "text",
+      "id": "label-missions",
+      "decision": "retype",
+      "x": 104,
+      "y": 291,
+      "text": "ESA astronauts' missions",
+      "font_size": 32,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff",
+      "font_family": "Arial, Helvetica, sans-serif",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-top-0",
+      "decision": "redraw",
+      "x1": 1032,
+      "y1": 367,
+      "x2": 1085,
+      "y2": 367,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-top-1",
+      "decision": "redraw",
+      "x1": 1229,
+      "y1": 367,
+      "x2": 1282,
+      "y2": 367,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-top-2",
+      "decision": "redraw",
+      "x1": 1426,
+      "y1": 367,
+      "x2": 1482,
+      "y2": 367,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-top-3",
+      "decision": "redraw",
+      "x1": 1626,
+      "y1": 367,
+      "x2": 1676,
+      "y2": 367,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-iss-to-top",
+      "decision": "redraw",
+      "x1": 710,
+      "y1": 367,
+      "x2": 888,
+      "y2": 367,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "path",
+      "id": "timeline-top-to-r2",
+      "decision": "redraw",
+      "d": "M 1812 367 C 1884 398 1892 485 1768 552",
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-0",
+      "decision": "redraw",
+      "x1": 296,
+      "y1": 571,
+      "x2": 242,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-1",
+      "decision": "redraw",
+      "x1": 496,
+      "y1": 571,
+      "x2": 440,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-2",
+      "decision": "redraw",
+      "x1": 691,
+      "y1": 571,
+      "x2": 640,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-3",
+      "decision": "redraw",
+      "x1": 886,
+      "y1": 571,
+      "x2": 835,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-4",
+      "decision": "redraw",
+      "x1": 1086,
+      "y1": 571,
+      "x2": 1030,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-5",
+      "decision": "redraw",
+      "x1": 1282,
+      "y1": 571,
+      "x2": 1230,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-6",
+      "decision": "redraw",
+      "x1": 1482,
+      "y1": 571,
+      "x2": 1426,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r2-7",
+      "decision": "redraw",
+      "x1": 1676,
+      "y1": 571,
+      "x2": 1626,
+      "y2": 571,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "path",
+      "id": "timeline-r2-to-r3",
+      "decision": "redraw",
+      "d": "M 100 571 C 24 610 24 724 105 789",
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-0",
+      "decision": "redraw",
+      "x1": 242,
+      "y1": 800,
+      "x2": 296,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-1",
+      "decision": "redraw",
+      "x1": 440,
+      "y1": 800,
+      "x2": 496,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-2",
+      "decision": "redraw",
+      "x1": 640,
+      "y1": 800,
+      "x2": 691,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-3",
+      "decision": "redraw",
+      "x1": 835,
+      "y1": 800,
+      "x2": 886,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-4",
+      "decision": "redraw",
+      "x1": 1030,
+      "y1": 800,
+      "x2": 1086,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-5",
+      "decision": "redraw",
+      "x1": 1230,
+      "y1": 800,
+      "x2": 1282,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-6",
+      "decision": "redraw",
+      "x1": 1426,
+      "y1": 800,
+      "x2": 1482,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r3-7",
+      "decision": "redraw",
+      "x1": 1626,
+      "y1": 800,
+      "x2": 1676,
+      "y2": 800,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "path",
+      "id": "timeline-r3-to-r4",
+      "decision": "redraw",
+      "d": "M 1820 800 C 1886 842 1882 940 1812 1015",
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-0",
+      "decision": "redraw",
+      "x1": 296,
+      "y1": 1029,
+      "x2": 242,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-1",
+      "decision": "redraw",
+      "x1": 496,
+      "y1": 1029,
+      "x2": 440,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-2",
+      "decision": "redraw",
+      "x1": 691,
+      "y1": 1029,
+      "x2": 640,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-3",
+      "decision": "redraw",
+      "x1": 886,
+      "y1": 1029,
+      "x2": 835,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-4",
+      "decision": "redraw",
+      "x1": 1086,
+      "y1": 1029,
+      "x2": 1030,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-5",
+      "decision": "redraw",
+      "x1": 1282,
+      "y1": 1029,
+      "x2": 1230,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-6",
+      "decision": "redraw",
+      "x1": 1482,
+      "y1": 1029,
+      "x2": 1426,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-r4-7",
+      "decision": "redraw",
+      "x1": 1676,
+      "y1": 1029,
+      "x2": 1626,
+      "y2": 1029,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "path",
+      "id": "timeline-r4-to-bottom",
+      "decision": "redraw",
+      "d": "M 96 1029 C 20 1070 24 1160 108 1246",
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "line",
+      "id": "timeline-bottom-0",
+      "decision": "redraw",
+      "x1": 235,
+      "y1": 1246,
+      "x2": 302,
+      "y2": 1246,
+      "stroke": "#e8f1f1",
+      "stroke_width": 2.2,
+      "fill": "none",
+      "arrow_end": true,
+      "layer": "connectors",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-top_guidoni",
+      "decision": "retype",
+      "x": 960,
+      "y": 290,
+      "text": "Umberto Guidoni",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-top_guidoni",
+      "asset_id": "asset-top_guidoni",
+      "x": 901.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-top_guidoni",
+      "decision": "retype",
+      "x": 960,
+      "y": 431,
+      "text": "STS-100",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-top_guidoni",
+      "decision": "retype",
+      "x": 960,
+      "y": 456,
+      "text": "April - May 2001",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-top_haignere",
+      "decision": "retype",
+      "x": 1157,
+      "y": 290,
+      "text": "Claudie Haigneré",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-top_haignere",
+      "asset_id": "asset-top_haignere",
+      "x": 1098.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-top_haignere",
+      "decision": "retype",
+      "x": 1157,
+      "y": 431,
+      "text": "Andromède",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-top_haignere",
+      "decision": "retype",
+      "x": 1157,
+      "y": 456,
+      "text": "October 2001",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-top_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 290,
+      "text": "Roberto Vittori",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-top_vittori",
+      "asset_id": "asset-top_vittori",
+      "x": 1295.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-top_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 431,
+      "text": "Marco Polo",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-top_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 456,
+      "text": "April - May 2002",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-top_perrin",
+      "decision": "retype",
+      "x": 1554,
+      "y": 290,
+      "text": "Philippe Perrin",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-top_perrin",
+      "asset_id": "asset-top_perrin",
+      "x": 1495.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-top_perrin",
+      "decision": "retype",
+      "x": 1554,
+      "y": 431,
+      "text": "STS-111",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-top_perrin",
+      "decision": "retype",
+      "x": 1554,
+      "y": 456,
+      "text": "June 2002",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-top_dewinne",
+      "decision": "retype",
+      "x": 1748,
+      "y": 290,
+      "text": "Frank De Winne",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-top_dewinne",
+      "asset_id": "asset-top_dewinne",
+      "x": 1689.0,
+      "y": 300,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-top_dewinne",
+      "decision": "retype",
+      "x": 1748,
+      "y": 431,
+      "text": "Odissea",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-top_dewinne",
+      "decision": "retype",
+      "x": 1748,
+      "y": 456,
+      "text": "October - November 2002",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_dewinne",
+      "decision": "retype",
+      "x": 170,
+      "y": 498,
+      "text": "Frank De Winne",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_dewinne",
+      "asset_id": "asset-r2_dewinne",
+      "x": 111.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_dewinne",
+      "decision": "retype",
+      "x": 170,
+      "y": 638,
+      "text": "OasISS",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_dewinne",
+      "decision": "retype",
+      "x": 170,
+      "y": 664,
+      "text": "May - December 2009",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_eyharts",
+      "decision": "retype",
+      "x": 368,
+      "y": 498,
+      "text": "Léopold Eyharts",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_eyharts",
+      "asset_id": "asset-r2_eyharts",
+      "x": 309.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_eyharts",
+      "decision": "retype",
+      "x": 368,
+      "y": 638,
+      "text": "STS-122",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_eyharts",
+      "decision": "retype",
+      "x": 368,
+      "y": 664,
+      "text": "February - March 2008",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_schlegel",
+      "decision": "retype",
+      "x": 568,
+      "y": 498,
+      "text": "Hans Schlegel",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_schlegel",
+      "asset_id": "asset-r2_schlegel",
+      "x": 509.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_schlegel",
+      "decision": "retype",
+      "x": 568,
+      "y": 638,
+      "text": "STS-122",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_schlegel",
+      "decision": "retype",
+      "x": 568,
+      "y": 664,
+      "text": "February 2008",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_nespoli",
+      "decision": "retype",
+      "x": 763,
+      "y": 498,
+      "text": "Paolo Nespoli",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_nespoli",
+      "asset_id": "asset-r2_nespoli",
+      "x": 704.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_nespoli",
+      "decision": "retype",
+      "x": 763,
+      "y": 638,
+      "text": "Esperia",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_nespoli",
+      "decision": "retype",
+      "x": 763,
+      "y": 664,
+      "text": "October - November 2007",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_fuglesang",
+      "decision": "retype",
+      "x": 958,
+      "y": 498,
+      "text": "Christer Fuglesang",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_fuglesang",
+      "asset_id": "asset-r2_fuglesang",
+      "x": 899.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_fuglesang",
+      "decision": "retype",
+      "x": 958,
+      "y": 638,
+      "text": "Celsius",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_fuglesang",
+      "decision": "retype",
+      "x": 958,
+      "y": 664,
+      "text": "December 2006",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_reiter",
+      "decision": "retype",
+      "x": 1158,
+      "y": 498,
+      "text": "Thomas Reiter",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_reiter",
+      "asset_id": "asset-r2_reiter",
+      "x": 1099.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_reiter",
+      "decision": "retype",
+      "x": 1158,
+      "y": 638,
+      "text": "Astrolab",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_reiter",
+      "decision": "retype",
+      "x": 1158,
+      "y": 664,
+      "text": "July - December 2006",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 498,
+      "text": "Roberto Vittori",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_vittori",
+      "asset_id": "asset-r2_vittori",
+      "x": 1295.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 638,
+      "text": "Eneide",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_vittori",
+      "decision": "retype",
+      "x": 1354,
+      "y": 664,
+      "text": "April 2005",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_kuipers",
+      "decision": "retype",
+      "x": 1554,
+      "y": 498,
+      "text": "André Kuipers",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_kuipers",
+      "asset_id": "asset-r2_kuipers",
+      "x": 1495.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_kuipers",
+      "decision": "retype",
+      "x": 1554,
+      "y": 638,
+      "text": "DELTA",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_kuipers",
+      "decision": "retype",
+      "x": 1554,
+      "y": 664,
+      "text": "April 2004",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r2_duque",
+      "decision": "retype",
+      "x": 1748,
+      "y": 498,
+      "text": "Pedro Duque",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r2_duque",
+      "asset_id": "asset-r2_duque",
+      "x": 1689.0,
+      "y": 508,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r2_duque",
+      "decision": "retype",
+      "x": 1748,
+      "y": 638,
+      "text": "Cervantes",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r2_duque",
+      "decision": "retype",
+      "x": 1748,
+      "y": 664,
+      "text": "October 2003",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_fuglesang",
+      "decision": "retype",
+      "x": 170,
+      "y": 718,
+      "text": "Christer Fuglesang",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_fuglesang",
+      "asset_id": "asset-r3_fuglesang",
+      "x": 111.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_fuglesang",
+      "decision": "retype",
+      "x": 170,
+      "y": 860,
+      "text": "Alissé",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_fuglesang",
+      "decision": "retype",
+      "x": 170,
+      "y": 887,
+      "text": "August - September 2009",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_nespoli",
+      "decision": "retype",
+      "x": 368,
+      "y": 718,
+      "text": "Paolo Nespoli",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_nespoli",
+      "asset_id": "asset-r3_nespoli",
+      "x": 309.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_nespoli",
+      "decision": "retype",
+      "x": 368,
+      "y": 860,
+      "text": "MagISStra",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_nespoli",
+      "decision": "retype",
+      "x": 368,
+      "y": 887,
+      "text": "December 2010 - May 2011",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_vittori",
+      "decision": "retype",
+      "x": 568,
+      "y": 718,
+      "text": "Roberto Vittori",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_vittori",
+      "asset_id": "asset-r3_vittori",
+      "x": 509.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_vittori",
+      "decision": "retype",
+      "x": 568,
+      "y": 860,
+      "text": "DAMA",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_vittori",
+      "decision": "retype",
+      "x": 568,
+      "y": 887,
+      "text": "May 2011",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_kuipers",
+      "decision": "retype",
+      "x": 763,
+      "y": 718,
+      "text": "André Kuipers",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_kuipers",
+      "asset_id": "asset-r3_kuipers",
+      "x": 704.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_kuipers",
+      "decision": "retype",
+      "x": 763,
+      "y": 860,
+      "text": "PromISSe",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_kuipers",
+      "decision": "retype",
+      "x": 763,
+      "y": 887,
+      "text": "December 2011 - July 2012",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_parmitano",
+      "decision": "retype",
+      "x": 958,
+      "y": 718,
+      "text": "Luca Parmitano",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_parmitano",
+      "asset_id": "asset-r3_parmitano",
+      "x": 899.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_parmitano",
+      "decision": "retype",
+      "x": 958,
+      "y": 860,
+      "text": "Volare",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_parmitano",
+      "decision": "retype",
+      "x": 958,
+      "y": 887,
+      "text": "May - November 2013",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_gerst",
+      "decision": "retype",
+      "x": 1158,
+      "y": 718,
+      "text": "Alexander Gerst",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_gerst",
+      "asset_id": "asset-r3_gerst",
+      "x": 1099.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_gerst",
+      "decision": "retype",
+      "x": 1158,
+      "y": 860,
+      "text": "Blue Dot",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_gerst",
+      "decision": "retype",
+      "x": 1158,
+      "y": 887,
+      "text": "May - November 2014",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_cristoforetti",
+      "decision": "retype",
+      "x": 1354,
+      "y": 718,
+      "text": "Samantha Cristoforetti",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_cristoforetti",
+      "asset_id": "asset-r3_cristoforetti",
+      "x": 1295.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_cristoforetti",
+      "decision": "retype",
+      "x": 1354,
+      "y": 860,
+      "text": "Futura",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_cristoforetti",
+      "decision": "retype",
+      "x": 1354,
+      "y": 887,
+      "text": "November 2014 - June 2015",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_mogensen",
+      "decision": "retype",
+      "x": 1554,
+      "y": 718,
+      "text": "Andreas Mogensen",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_mogensen",
+      "asset_id": "asset-r3_mogensen",
+      "x": 1495.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_mogensen",
+      "decision": "retype",
+      "x": 1554,
+      "y": 860,
+      "text": "Iriss",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_mogensen",
+      "decision": "retype",
+      "x": 1554,
+      "y": 887,
+      "text": "September 2015 - October 2015",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r3_peake",
+      "decision": "retype",
+      "x": 1748,
+      "y": 718,
+      "text": "Tim Peake",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r3_peake",
+      "asset_id": "asset-r3_peake",
+      "x": 1689.0,
+      "y": 728,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r3_peake",
+      "decision": "retype",
+      "x": 1748,
+      "y": 860,
+      "text": "Principia",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r3_peake",
+      "decision": "retype",
+      "x": 1748,
+      "y": 887,
+      "text": "December 2015 - June 2016",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_wandt",
+      "decision": "retype",
+      "x": 170,
+      "y": 943,
+      "text": "Marcus Wandt",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_wandt",
+      "asset_id": "asset-r4_wandt",
+      "x": 111.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_wandt",
+      "decision": "retype",
+      "x": 170,
+      "y": 1089,
+      "text": "Muninn",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_wandt",
+      "decision": "retype",
+      "x": 170,
+      "y": 1117,
+      "text": "January 2024 - February 2024",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_mogensen",
+      "decision": "retype",
+      "x": 368,
+      "y": 943,
+      "text": "Andreas Mogensen",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_mogensen",
+      "asset_id": "asset-r4_mogensen",
+      "x": 309.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_mogensen",
+      "decision": "retype",
+      "x": 368,
+      "y": 1089,
+      "text": "Huginn",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_mogensen",
+      "decision": "retype",
+      "x": 368,
+      "y": 1117,
+      "text": "August 2023 - March 2024",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_cristoforetti",
+      "decision": "retype",
+      "x": 568,
+      "y": 943,
+      "text": "Samantha Cristoforetti",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_cristoforetti",
+      "asset_id": "asset-r4_cristoforetti",
+      "x": 509.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_cristoforetti",
+      "decision": "retype",
+      "x": 568,
+      "y": 1089,
+      "text": "Minerva",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_cristoforetti",
+      "decision": "retype",
+      "x": 568,
+      "y": 1117,
+      "text": "April 2022 - October 2022",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_maurer",
+      "decision": "retype",
+      "x": 763,
+      "y": 943,
+      "text": "Matthias Maurer",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_maurer",
+      "asset_id": "asset-r4_maurer",
+      "x": 704.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_maurer",
+      "decision": "retype",
+      "x": 763,
+      "y": 1089,
+      "text": "Cosmic Kiss",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_maurer",
+      "decision": "retype",
+      "x": 763,
+      "y": 1117,
+      "text": "November 2021 - May 2022",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_pesquet",
+      "decision": "retype",
+      "x": 958,
+      "y": 943,
+      "text": "Thomas Pesquet",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_pesquet",
+      "asset_id": "asset-r4_pesquet",
+      "x": 899.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_pesquet",
+      "decision": "retype",
+      "x": 958,
+      "y": 1089,
+      "text": "Alpha",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_pesquet",
+      "decision": "retype",
+      "x": 958,
+      "y": 1117,
+      "text": "April - November 2021",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_parmitano",
+      "decision": "retype",
+      "x": 1158,
+      "y": 943,
+      "text": "Luca Parmitano",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_parmitano",
+      "asset_id": "asset-r4_parmitano",
+      "x": 1099.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_parmitano",
+      "decision": "retype",
+      "x": 1158,
+      "y": 1089,
+      "text": "Beyond",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_parmitano",
+      "decision": "retype",
+      "x": 1158,
+      "y": 1117,
+      "text": "July 2019 - February 2020",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_gerst",
+      "decision": "retype",
+      "x": 1354,
+      "y": 943,
+      "text": "Alexander Gerst",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_gerst",
+      "asset_id": "asset-r4_gerst",
+      "x": 1295.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_gerst",
+      "decision": "retype",
+      "x": 1354,
+      "y": 1089,
+      "text": "Horizons",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_gerst",
+      "decision": "retype",
+      "x": 1354,
+      "y": 1117,
+      "text": "June - December 2018",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_nespoli",
+      "decision": "retype",
+      "x": 1554,
+      "y": 943,
+      "text": "Paolo Nespoli",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_nespoli",
+      "asset_id": "asset-r4_nespoli",
+      "x": 1495.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_nespoli",
+      "decision": "retype",
+      "x": 1554,
+      "y": 1089,
+      "text": "Vita",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_nespoli",
+      "decision": "retype",
+      "x": 1554,
+      "y": 1117,
+      "text": "July - December 2017",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-r4_pesquet_proxima",
+      "decision": "retype",
+      "x": 1748,
+      "y": 943,
+      "text": "Thomas Pesquet",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-r4_pesquet_proxima",
+      "asset_id": "asset-r4_pesquet_proxima",
+      "x": 1689.0,
+      "y": 956,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-r4_pesquet_proxima",
+      "decision": "retype",
+      "x": 1748,
+      "y": 1089,
+      "text": "Proxima",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-r4_pesquet_proxima",
+      "decision": "retype",
+      "x": 1748,
+      "y": 1117,
+      "text": "November 2016 - May 2017",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-bottom_uznanski",
+      "decision": "retype",
+      "x": 170,
+      "y": 1150,
+      "text": "",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified",
+      "lines": [
+        "Sławosz",
+        "Uznański-Wiśniewski"
+      ]
+    },
+    {
+      "type": "image",
+      "id": "image-bottom_uznanski",
+      "asset_id": "asset-bottom_uznanski",
+      "x": 111.0,
+      "y": 1188,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-bottom_uznanski",
+      "decision": "retype",
+      "x": 170,
+      "y": 1326,
+      "text": "Ignis",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-bottom_uznanski",
+      "decision": "retype",
+      "x": 170,
+      "y": 1352,
+      "text": "June-July 2025",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "name-bottom_adenot",
+      "decision": "retype",
+      "x": 368,
+      "y": 1150,
+      "text": "Sophie Adenot",
+      "font_size": 18,
+      "font_weight": "700",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "image",
+      "id": "image-bottom_adenot",
+      "asset_id": "asset-bottom_adenot",
+      "x": 309.0,
+      "y": 1188,
+      "w": 118,
+      "h": 125,
+      "layer": "assets",
+      "decision": "embed"
+    },
+    {
+      "type": "text",
+      "id": "mission-bottom_adenot",
+      "decision": "retype",
+      "x": 368,
+      "y": 1326,
+      "text": "εpsilon",
+      "font_size": 14,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    },
+    {
+      "type": "text",
+      "id": "date-bottom_adenot",
+      "decision": "retype",
+      "x": 368,
+      "y": 1352,
+      "text": "February-November 2026",
+      "font_size": 13,
+      "font_weight": "400",
+      "text_anchor": "middle",
+      "fill": "#f3f7f7",
+      "font_family": "Segoe UI",
+      "review_status": "verified"
+    }
+  ],
+  "diagnostics": {
+    "measurement_workspace": "work",
+    "ocr_status": "ok",
+    "opencv_status": "failed"
+  },
+  "asset_decision_policy": "Full-extract selected by user: foreground pictorial objects are regenerated on a chroma sheet, keyed, sliced, and placed as independent image assets; ordinary text and timeline structure are rebuilt as editable SVG/PPTX elements.",
+  "provenance": {
+    "original_source_image": "assets/source.png"
+  },
+  "quality_gates": {
+    "xml_editable": {
+      "status": "ok",
+      "message": "ok"
+    },
+    "xml_embedded": {
+      "status": "ok",
+      "message": "ok"
+    },
+    "preview_render": {
+      "status": "ok",
+      "renderer": "chrome.exe",
+      "returncode": 0,
+      "output": "4062645 bytes written to file n"
+    },
+    "low_confidence_elements": {
+      "status": "ok",
+      "count": 0
+    },
+    "crop_edge_checks": {
+      "status": "ok",
+      "count": 0
+    },
+    "background_route_consistency": {
+      "status": "ok"
+    },
+    "background_plate": {
+      "status": "ok"
+    },
+    "ai_patchwork_source_crops": {
+      "status": "ok",
+      "source_crop_count": 37,
+      "source_crop_area_ratio": 0.2095
+    },
+    "opencv_detector_noise": {
+      "status": "ok",
+      "unreviewed_cv_count": 0
+    },
+    "ocr_fallback_text": {
+      "status": "ok",
+      "unreviewed_ocr_count": 0
+    },
+    "text_math_layout_fidelity": {
+      "status": "review",
+      "message": "dense editable text/math layout requires PPTX visual review",
+      "text_count": 105,
+      "math_count": 0,
+      "unconstrained_math_count": 0,
+      "unconstrained_text_count": 68,
+      "samples": [
+        "mission-top_guidoni",
+        "date-top_guidoni",
+        "mission-top_haignere",
+        "date-top_haignere",
+        "mission-top_vittori",
+        "date-top_vittori",
+        "mission-top_perrin",
+        "date-top_perrin",
+        "mission-top_dewinne",
+        "date-top_dewinne",
+        "mission-r2_dewinne",
+        "date-r2_dewinne",
+        "mission-r2_eyharts",
+        "date-r2_eyharts",
+        "mission-r2_schlegel",
+        "date-r2_schlegel",
+        "mission-r2_nespoli",
+        "date-r2_nespoli",
+        "mission-r2_fuglesang",
+        "date-r2_fuglesang",
+        "mission-r2_reiter",
+        "date-r2_reiter",
+        "mission-r2_vittori",
+        "date-r2_vittori",
+        "mission-r2_kuipers",
+        "date-r2_kuipers",
+        "mission-r2_duque",
+        "date-r2_duque",
+        "mission-r3_fuglesang",
+        "date-r3_fuglesang"
+      ]
+    },
+    "visual_qa": {
+      "status": "ok",
+      "note": "report-only",
+      "mean_delta_e": 15.3,
+      "p95_delta_e": 79.74,
+      "worst_tiles": [
+        {
+          "x": 320,
+          "y": 928,
+          "w": 160,
+          "h": 116,
+          "mean_delta_e": 35.27
+        },
+        {
+          "x": 480,
+          "y": 696,
+          "w": 160,
+          "h": 116,
+          "mean_delta_e": 29.57
+        },
+        {
+          "x": 1440,
+          "y": 928,
+          "w": 160,
+          "h": 116,
+          "mean_delta_e": 29.47
+        },
+        {
+          "x": 480,
+          "y": 928,
+          "w": 160,
+          "h": 116,
+          "mean_delta_e": 29.45
+        },
+        {
+          "x": 1280,
+          "y": 928,
+          "w": 160,
+          "h": 116,
+          "mean_delta_e": 28.84
+        }
+      ]
+    },
+    "pptx_export": {
+      "status": "ok",
+      "path": "editable.pptx",
+      "trace": "editable.pptx.trace.json"
+    },
+    "pptx_math_export": {
+      "status": "skipped",
+      "attempted_count": 0,
+      "prepared_count": 0,
+      "editable_count": 0,
+      "fallback_vector_count": 0,
+      "office_math_xml_count": 0,
+      "mml2omml_xsl": "MML2OMML.XSL",
+      "failures": []
+    },
+    "formula_text_leakage": {
+      "status": "ok",
+      "count": 0,
+      "samples": []
+    },
+    "editability": {
+      "status": "ok",
+      "readable_ocr_count": 121,
+      "svg_text_count": 105,
+      "math_element_count": 0,
+      "formula_text_leak_count": 0,
+      "lifted_text_count": 116,
+      "text_lift_ratio": 0.9587,
+      "structural_element_count": 35,
+      "image_element_count": 37,
+      "asset_text_risk_count": 5,
+      "missed_text_samples": [
+        {
+          "ocr": "ocr-text-0000",
+          "text": "esa",
+          "bbox": {
+            "x": 1724.0,
+            "y": 77.0,
+            "w": 123.0,
+            "h": 59.0
+          },
+          "confidence": 0.9999344944953918
+        },
+        {
+          "ocr": "ocr-text-0057",
+          "text": "volare",
+          "bbox": {
+            "x": 946.0,
+            "y": 805.0,
+            "w": 31.0,
+            "h": 18.0
+          },
+          "confidence": 0.9999459385871887
+        },
+        {
+          "ocr": "ocr-text-0077",
+          "text": "September – October 2015",
+          "bbox": {
+            "x": 1466.0,
+            "y": 885.0,
+            "w": 169.0,
+            "h": 14.0
+          },
+          "confidence": 0.972590446472168
+        },
+        {
+          "ocr": "ocr-text-0091",
+          "text": "beyand",
+          "bbox": {
+            "x": 1126.0,
+            "y": 1032.0,
+            "w": 34.0,
+            "h": 31.0
+          },
+          "confidence": 0.953373372554779
+        },
+        {
+          "ocr": "ocr-text-0116",
+          "text": "ignis",
+          "bbox": {
+            "x": 156.0,
+            "y": 1265.0,
+            "w": 33.0,
+            "h": 20.0
+          },
+          "confidence": 0.9832414388656616
+        }
+      ],
+      "asset_text_risk_samples": [
+        {
+          "asset": "asset-clean-plate",
+          "text": "esa",
+          "bbox": {
+            "x": 1724.0,
+            "y": 77.0,
+            "w": 123.0,
+            "h": 59.0
+          },
+          "confidence": 0.9999344944953918
+        },
+        {
+          "asset": "asset-clean-plate",
+          "text": "volare",
+          "bbox": {
+            "x": 946.0,
+            "y": 805.0,
+            "w": 31.0,
+            "h": 18.0
+          },
+          "confidence": 0.9999459385871887
+        },
+        {
+          "asset": "asset-clean-plate",
+          "text": "September – October 2015",
+          "bbox": {
+            "x": 1466.0,
+            "y": 885.0,
+            "w": 169.0,
+            "h": 14.0
+          },
+          "confidence": 0.972590446472168
+        },
+        {
+          "asset": "asset-clean-plate",
+          "text": "beyand",
+          "bbox": {
+            "x": 1126.0,
+            "y": 1032.0,
+            "w": 34.0,
+            "h": 31.0
+          },
+          "confidence": 0.953373372554779
+        },
+        {
+          "asset": "asset-clean-plate",
+          "text": "ignis",
+          "bbox": {
+            "x": 156.0,
+            "y": 1265.0,
+            "w": 33.0,
+            "h": 20.0
+          },
+          "confidence": 0.9832414388656616
+        }
+      ],
+      "formula_text_leak_samples": []
+    }
+  }
+}

@@ -64,7 +64,8 @@ def _detect_with_cv(image_path: Path, ocr_items: list[dict[str, Any]]) -> dict[s
     raw_lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=45, minLineLength=min_len, maxLineGap=8)
     lines: list[dict[str, Any]] = []
     if raw_lines is not None:
-        for idx, item in enumerate(raw_lines[:, 0, :]):
+        # OpenCV 4 returns (N, 1, 4); OpenCV 5 returns (N, 4)
+        for idx, item in enumerate(np.asarray(raw_lines).reshape(-1, 4)):
             x1, y1, x2, y2 = [int(v) for v in item]
             length = math.hypot(x2 - x1, y2 - y1)
             if length < min_len:

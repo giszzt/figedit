@@ -1,0 +1,114 @@
+{
+  "project": "ai-clean-plate-example",
+  "source_image": "source.png",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "background": "#101622"
+  },
+  "classification": {
+    "layout_topology": "image-heavy-composite",
+    "complexity": "high",
+    "style_type": "continuous-visual-field",
+    "reconstruction_mode": "E-ai",
+    "reconstruction_intent": "clean-plate-plus-editable-overlay",
+    "notes": "The background is a continuous visual field; crop + SVG cannot faithfully recover pixels hidden by foreground labels."
+  },
+  "background_plan": {
+    "strategy": "ai-clean-plate",
+    "route_decision": {
+      "reason": "Foreground title text and callout marks sit on a continuous image field, so normal source crops or SVG redraw cannot reveal the hidden background.",
+      "crop_svg_recoverable": false
+    },
+    "plate_asset_id": "asset-clean-plate",
+    "generation_provenance": {
+      "role": "primary-clean-plate",
+      "backend": "Codex Image Gen",
+      "fallback_policy": "Codex Image Gen -> Labnana GPT-Image-2 -> Labnana Gemini/Nano Banana -> official provider API -> configured command",
+      "prompt_file": "work/clean-plate-prompt.txt",
+      "references": [
+        "work/assets/source.png"
+      ],
+      "output": "work/generated/clean-plate.png"
+    },
+    "candidate_review": {
+      "accepted": true,
+      "checks": {
+        "foreground_text_removed": true,
+        "annotation_marks_removed": true,
+        "background_inscriptions_handled_as_briefed": true,
+        "major_visual_identity_preserved": true,
+        "aspect_ratio_and_alignment_usable": true,
+        "no_patchwork_source_crops_needed": true
+      },
+      "notes": "Replace with observations from the accepted candidate."
+    },
+    "review_status": "verified"
+  },
+  "panels": [],
+  "assets": [
+    {
+      "id": "asset-clean-plate",
+      "file": "work/generated/clean-plate.png",
+      "source_mode": "external",
+      "x": 0,
+      "y": 0,
+      "w": 1920,
+      "h": 1080,
+      "kind": "background-plate",
+      "decision": "generate-replacement",
+      "background_handling": "full-canvas",
+      "crop_status": "verified",
+      "review_status": "verified"
+    }
+  ],
+  "elements": [
+    {
+      "type": "text",
+      "id": "main-title",
+      "class": "title",
+      "decision": "retype",
+      "x": 960,
+      "y": 110,
+      "text": "Editable Title",
+      "font_size": 64,
+      "font_weight": "700",
+      "font_family": "Arial",
+      "fill": "#ffffff",
+      "text_anchor": "middle"
+    },
+    {
+      "type": "text",
+      "id": "label-1",
+      "class": "callout-label",
+      "decision": "retype",
+      "x": 360,
+      "y": 300,
+      "text": "Editable label",
+      "font_size": 28,
+      "fill": "#ffffff"
+    },
+    {
+      "type": "line",
+      "id": "leader-1",
+      "class": "leader",
+      "decision": "redraw",
+      "x1": 520,
+      "y1": 305,
+      "x2": 720,
+      "y2": 420,
+      "stroke": "#ffffff",
+      "stroke_width": 2
+    },
+    {
+      "type": "circle",
+      "id": "marker-1",
+      "class": "callout-dot",
+      "decision": "redraw",
+      "x": 720,
+      "y": 420,
+      "r": 6,
+      "fill": "#ffffff"
+    }
+  ]
+}

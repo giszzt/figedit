@@ -56,6 +56,80 @@ def _is_chrome_id(elem_id: str | None) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# PPTX grouping policy
+# ---------------------------------------------------------------------------
+
+_PRESERVE_GROUP_ATTR_VALUES = frozenset({
+    '1', 'true', 'yes', 'keep', 'preserve', 'atomic', 'semantic',
+})
+
+_PRESERVE_GROUP_CLASS_TOKENS = frozenset({
+    'pptx-atomic',
+    'pptx-preserve-group',
+    'atomic',
+    'semantic-group',
+    'math',
+    'formula',
+    'equation',
+})
+
+
+def _class_tokens(elem: ET.Element) -> set[str]:
+    return {
+        token.strip().lower()
+        for token in re.split(r'\s+', elem.get('class', '') or '')
+        if token.strip()
+    }
+
+
+def _truthy_attr(elem: ET.Element, *names: str) -> bool:
+    for name in names:
+        value = (elem.get(name) or '').strip().lower()
+        if value in _PRESERVE_GROUP_ATTR_VALUES:
+            return True
+    return False
+
+
+def _requires_group_wrapper(
+    elem: ET.Element,
+    *,
+    filter_id: str | None,
+    matrix_supported: bool,
+    angle_deg: float,
+) -> bool:
+    """Return whether flattening this SVG group would likely lose fidelity."""
+    if _truthy_attr(
+        elem,
+        'data-pptx-group',
+        'data-atomic',
+        'data-semantic-group',
+        'data-preserve-group',
+    ):
+        return True
+
+    if _class_tokens(elem).intersection(_PRESERVE_GROUP_CLASS_TOKENS):
+        return True
+
+    if elem.get('data-latex'):
+        return True
+
+    # Group-level clipping, masking, filtering, and opacity can change the
+    # combined visual result. Preserve the wrapper unless the group is purely a
+    # layer/layout container.
+    if filter_id or elem.get('clip-path') or elem.get('mask'):
+        return True
+    if elem.get('opacity') and elem.get('opacity') not in ('1', '1.0', '100%'):
+        return True
+
+    # For non-image children, SVG rotation is represented by the DrawingML
+    # group wrapper. Flattening would drop the rotation.
+    if angle_deg and not matrix_supported:
+        return True
+
+    return False
+
+
+# ---------------------------------------------------------------------------
 # Transform & layout helpers
 # ---------------------------------------------------------------------------
 
@@ -133,10 +207,12 @@ def _extract_rotate_pivot(transform_str: str) -> tuple[float, float] | None:
 # ---------------------------------------------------------------------------
 
 def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
-    """Convert SVG <g> to DrawingML group shape <p:grpSp>.
+    """Convert SVG <g> to DrawingML.
 
-    Preserves group structure so elements can be selected and moved together
-    in PowerPoint. Single-child groups are flattened to avoid unnecessary nesting.
+    By default, non-semantic layout/layer groups are flattened so the native
+    PPTX remains directly editable without a manual "Ungroup" step. Explicit
+    atomic groups and wrappers required for visual fidelity are preserved as
+    DrawingML group shapes.
 
     Uses identity coordinate mapping (chOff/chExt == off/ext) so child shapes
     keep their absolute slide coordinates unchanged.
@@ -192,14 +268,24 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if not child_results:
         return None
 
-    # Single-child non-semantic groups are flattened to reduce nesting. Top-level
-    # semantic groups are preserved so animations target the group, not its
-    # individual child shapes.
-    if len(child_results) == 1 and not should_animate_group:
-        return child_results[0]
+    preserve_group = ctx.pptx_group_policy != 'flat-semantic' or _requires_group_wrapper(
+        elem,
+        filter_id=filter_id,
+        matrix_supported=matrix_supported,
+        angle_deg=angle_deg,
+    )
 
-    # Multiple children, or a top-level semantic one-child group: wrap in
-    # <p:grpSp> so PowerPoint can animate the group as one unit.
+    # Non-semantic groups are flattened to improve direct editability in PPTX.
+    # Child transforms/styles have already been applied through child_ctx, so
+    # this keeps layout fidelity while removing the unnecessary PowerPoint group.
+    if not preserve_group:
+        return ShapeResult(
+            xml='\n'.join(result.xml for result in child_results),
+            bounds_emu=_merge_bounds(child_results),
+        )
+
+    # Atomic children: wrap in <p:grpSp> only when required for fidelity or
+    # explicitly requested by the SVG author.
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
 
@@ -280,6 +366,22 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 </p:grpSpPr>
 {shapes_xml}
 </p:grpSp>''', bounds_emu=(group_x, group_y, group_x + group_w, group_y + group_h))
+
+
+def _merge_bounds(child_results: list[ShapeResult]) -> tuple[int, int, int, int] | None:
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+    for child_result in child_results:
+        bounds = child_result.bounds_emu
+        if bounds is None:
+            continue
+        min_x = min(min_x, bounds[0])
+        min_y = min(min_y, bounds[1])
+        max_x = max(max_x, bounds[2])
+        max_y = max(max_y, bounds[3])
+    if min_x == float('inf'):
+        return None
+    return int(min_x), int(min_y), int(max_x), int(max_y)
 
 
 # ---------------------------------------------------------------------------

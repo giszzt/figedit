@@ -37,7 +37,10 @@ def _ensure_ascii_source(manifest: dict, manifest_path: Path, out_dir: Path) -> 
     return copied
 
 
-def _draw_crop_overlay(source: Path, manifest: dict, out_path: Path) -> None:
+def _draw_placement_overlay(source: Path, manifest: dict, out_path: Path) -> None:
+    """All declared source boxes drawn back onto the source image: asset crops
+    (green/orange by status) plus text/math source regions (blue), so wrong or
+    shifted boxes are visible in one review pass."""
     image = Image.open(source).convert("RGB")
     draw = ImageDraw.Draw(image, "RGBA")
     for asset in manifest.get("assets", []):
@@ -47,6 +50,15 @@ def _draw_crop_overlay(source: Path, manifest: dict, out_path: Path) -> None:
         color = (0, 170, 80, 220) if status in {None, "ok", "verified"} else (255, 140, 0, 230)
         draw.rectangle([x, y, x + w, y + h], outline=color, width=3)
         draw.text((x, y), str(asset.get("id", "asset")), fill=color)
+    for element in manifest.get("elements", []):
+        if element.get("type") not in {"text", "math"}:
+            continue
+        region = element.get("source_region") or element.get("source_bbox")
+        if not region:
+            continue
+        x, y, w, h = [float(region.get(k, 0)) for k in ("x", "y", "w", "h")]
+        color = (40, 90, 220, 200)
+        draw.rectangle([x, y, x + w, y + h], outline=color, width=2)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(out_path)
 
@@ -70,10 +82,60 @@ def _copy_measurement_artifacts(manifest: dict, out_dir: Path) -> None:
             shutil.copy2(item, diag_dst / item.name)
 
 
+def _copy_background_artifacts(manifest: dict, manifest_path: Path, out_dir: Path) -> None:
+    plan = manifest.get("background_plan") or {}
+    workspace = plan.get("diagnostics_workspace")
+    if not workspace and plan.get("plate_asset_id"):
+        plate = next((a for a in manifest.get("assets", []) if a.get("id") == plan.get("plate_asset_id")), None)
+        if plate and plate.get("source_mode") == "external":
+            workspace = str(Path(plate["file"]).parent)
+    if not workspace:
+        return
+    src_dir = Path(workspace)
+    if not src_dir.is_absolute():
+        src_dir = (manifest_path.parent / src_dir).resolve()
+    if not src_dir.exists():
+        return
+    diag_dst = out_dir / "diagnostics"
+    diag_dst.mkdir(parents=True, exist_ok=True)
+    for name in ["background_mask.png", "background_mask_overlay.png", "background_preparation.json"]:
+        src = src_dir / name
+        if src.exists():
+            shutil.copy2(src, diag_dst / name)
+
+
+def _copy_generation_artifacts(manifest: dict, manifest_path: Path, out_dir: Path) -> None:
+    plan = manifest.get("background_plan") or {}
+    provenance = plan.get("generation_provenance") or {}
+    diag_dst = out_dir / "diagnostics"
+    for field, target_name in [
+        ("job_record", "generation-job.json"),
+        ("prompt_file", "clean-plate-prompt.txt"),
+    ]:
+        value = provenance.get(field)
+        if not value:
+            continue
+        src = Path(value)
+        if not src.is_absolute():
+            src = (manifest_path.parent / src).resolve()
+        if not src.exists():
+            continue
+        diag_dst.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, diag_dst / target_name)
+        provenance[field] = f"diagnostics/{target_name}"
+
+
 def compose(manifest_path: Path, out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    for asset in manifest.get("assets", []):
+        if asset.get("source_mode") == "external":
+            asset_path = Path(asset["file"])
+            if not asset_path.is_absolute():
+                asset["file"] = str((manifest_path.parent / asset_path).resolve())
     _copy_measurement_artifacts(manifest, out_dir)
+    _copy_background_artifacts(manifest, manifest_path, out_dir)
+    _copy_generation_artifacts(manifest, manifest_path, out_dir)
     ascii_source = _ensure_ascii_source(manifest, manifest_path, out_dir)
 
     # Use the ASCII source for script operations, but keep original source path
@@ -87,8 +149,23 @@ def compose(manifest_path: Path, out_dir: Path) -> dict:
     svg = build_svg(manifest)
     (out_dir / "editable.svg").write_text(svg, encoding="utf-8")
     embed(out_dir / "editable.svg", out_dir, out_dir / "editable_embedded.svg")
-    _draw_crop_overlay(ascii_source, manifest, out_dir / "diagnostics" / "crop_overlay.png")
+    _draw_placement_overlay(ascii_source, manifest, out_dir / "diagnostics" / "placement_overlay.png")
     gates = audit_and_write(out_dir)
+    preview_path = out_dir / "preview.png"
+    if preview_path.exists():
+        try:
+            from visual_compare_qa import compare as visual_compare  # type: ignore
+
+            qa = visual_compare(Image.open(ascii_source), Image.open(preview_path), out_dir / "diagnostics" / "visual_qa")
+            gates["visual_qa"] = {
+                "status": "ok",
+                "note": "report-only",
+                "mean_delta_e": qa["mean_delta_e"],
+                "p95_delta_e": qa["p95_delta_e"],
+                "worst_tiles": qa["worst_tiles"][:5],
+            }
+        except Exception as exc:
+            gates["visual_qa"] = {"status": "unavailable", "message": repr(exc)}
     try:
         pptx_path = out_dir / "editable.pptx"
         trace_path = out_dir / "editable.pptx.trace.json"

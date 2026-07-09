@@ -14,6 +14,7 @@ Use the closest category:
 - `hierarchical-tree`: parent-child or branching structure
 - `ui-screen`: interface, dashboard, or software mockup
 - `hand-drawn-explainer`: sketch-like explanatory figure
+- `image-heavy-composite`: poster, cover, social card, or visual scene with overlays
 - `mixed-complex`: multiple topology types combined
 
 ### Element Complexity
@@ -31,18 +32,21 @@ Use the closest category:
 - `hand-drawn`
 - `ui-schematic`
 - `technical-blueprint`
+- `continuous-visual-field`
 - `mixed-style`
 
 ### Reconstruction Intent
 
 - `exact-layout`: preserve layout closely
 - `editable-layout`: prioritize editability with close visual similarity
+- `asset-preserving-hybrid`: preserve source-specific assets while lifting text/structure
+- `clean-plate-plus-editable-overlay`: use AI only to repair an unrecoverable continuous background
 - `semantic-redraw`: preserve meaning and relationships, allow visual cleanup
 - `redesign`: keep content, improve visual system
 
 ## Reconstruction Modes
 
-Every mode produces the same package: editable SVG (`editable.svg`, `editable_embedded.svg`) plus a native PowerPoint `editable.pptx`. The mode only changes the balance between redrawn vector structure and preserved raster assets, not the set of output formats. The "Typical outputs" notes below describe that balance, not the file list.
+Every mode produces the same package: editable SVG (`editable.svg`, `editable_embedded.svg`) plus a native PowerPoint `editable.pptx`. The mode only changes the balance between redrawn vector structure and preserved raster assets.
 
 ### Mode A: Structure-First Full Vector
 
@@ -52,9 +56,9 @@ Use when:
 - figure is clean and structured
 - user needs high editability
 
-Typical outputs:
+Typical balance:
 
-- fully editable SVG
+- mostly editable SVG
 - no or minimal raster assets
 
 Examples:
@@ -73,11 +77,11 @@ Use when:
 - original icons, pictograms, illustrations, photos, screenshots, maps, thumbnails, or logos should remain visually faithful
 - replacing source-specific objects with generic vector drawings would reduce fidelity
 
-Typical outputs:
+Typical balance:
 
-- editable SVG with external assets
-- embedded SVG for sharing
-- assets directory and contact sheet
+- editable SVG structure/text
+- source-preserved raster assets
+- contact sheet for crop review
 
 Examples:
 
@@ -101,11 +105,7 @@ Procedure:
 3. Reassemble panels in the global SVG.
 4. Normalize typography, stroke widths, and spacing.
 
-Examples:
-
-- benchmark overview figures
-- model/data/evaluation composite figures
-- multi-section paper figures
+Combine with Mode B when panels contain custom icons, pictograms, screenshots, maps, photos, or thumbnails.
 
 ### Mode D: Semantic Redraw
 
@@ -116,17 +116,26 @@ Use when:
 - exact pixel matching is less important than clear editable meaning
 - source image is low-resolution or compressed
 
-Typical outputs:
+Typical balance:
 
 - clean editable SVG
 - approximate style preservation
 - simplified shapes and icons
 
-Examples:
+Do not use Mode D for source-specific logos, screenshots, maps, evidence images, or distinctive icons unless the user explicitly accepts approximation.
 
-- illustrated workflows
-- sketch-like process explanations
-- informal architecture cartoons
+### Mode E: AI Clean-Plate Background Hybrid
+
+Use when the Background Gate selects `ai-clean-plate` (authoritative criteria in `background_reconstruction.md`): a continuous visual field that is not mechanically recoverable from simple primitives or clean crops, with foreground marks hiding pixels in it.
+
+Typical balance:
+
+- one canvas-aligned AI-generated clean background plate
+- editable text, formulas, connectors, and structural geometry
+- extracted foreground assets per `background_plan.foreground_mode`: chroma-regenerated transparent objects, keyed apart from a generated sheet (full-extract/selective), or none (flatten)
+- provenance and candidate review for the accepted plate and regenerated assets
+
+Mode E uses `E-ai`. Select it when the Background Gate reaches the `ai-clean-plate` category. Do not wait until after a failed SVG attempt when the source already shows strong AI-route signals. Do not create a local mask-repaired source plate as a Mode E variant.
 
 ## Mode Selection Rules
 
@@ -134,5 +143,7 @@ Examples:
 - Use Mode B by default when the figure combines editable structure with any source-specific visual assets.
 - Use Mode C when the figure has multiple major panels. Combine with Mode B if panels contain custom icons, pictograms, screenshots, maps, photos, or thumbnails.
 - Use Mode D only when semantic clarity and style approximation are more important than exact source visual fidelity.
-- If a figure has many pictorial icons that look custom or source-specific, do not treat them as simple icons; select Mode B or Mode C + B.
-- Combine modes when necessary; for example, Mode C + B for a multi-panel benchmark figure with embedded maps and custom icons.
+- Use Mode E when the Background Gate in `background_reconstruction.md` selects `ai-clean-plate`; do not select it by density, genre, or visual appeal.
+- If a figure has many pictorial icons that look custom or source-specific, do not treat them as simple icons; use Mode B or C+B unless the background itself needs Mode E.
+- Combine E with B only for the few foreground assets that genuinely need clean, independent source-preserved crops.
+- Combine modes when necessary, but keep the route explanation short and tied to visual evidence.

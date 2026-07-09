@@ -51,6 +51,11 @@ class ConvertContext:
     # editable text frame with multiple <a:p>. Off preserves the original
     # one-line-per-textbox behavior and the SVG's exact pixel layout.
     merge_paragraphs: bool = False
+    # Default PPTX grouping policy. ``flat-semantic`` removes non-semantic SVG
+    # layout/layer groups from the native PPTX so users can select elements
+    # directly, while preserving explicit atomic groups, formulas, masks,
+    # filters, and transforms that require a group wrapper for fidelity.
+    pptx_group_policy: str = "flat-semantic"
     # Optional per-element conversion diagnostics. Shared by child contexts so
     # callers can inspect native / skipped / unsupported decisions per slide.
     trace_events: list[dict[str, Any]] | None = None
@@ -154,6 +159,7 @@ class ConvertContext:
             # anim_targets is intentionally a fresh list on the child;
             # only the root-level context's list is read by the builder.
             merge_paragraphs=self.merge_paragraphs,
+            pptx_group_policy=self.pptx_group_policy,
             trace_events=self.trace_events,
         )
 

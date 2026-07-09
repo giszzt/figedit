@@ -1,0 +1,12 @@
+{
+  "source": "sciscover.jpg",
+  "mask": "background_mask.png",
+  "overlay": "background_mask_overlay.png",
+  "region_count": 6,
+  "coordinate_policy": "layout-locked",
+  "strategy": "ai-clean-plate",
+  "plate_generation": {
+    "status": "not-run",
+    "reason": "mask diagnostics only; invoke image_gen/image-gen for the clean plate"
+  }
+}

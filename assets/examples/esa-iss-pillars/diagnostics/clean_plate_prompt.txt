@@ -1,0 +1,5 @@
+TASK: Edit the source infographic into a clean starfield background plate.
+PRESERVE EXACTLY: deep teal/blue-black starfield, grain density, subtle glow zones, full-canvas aspect.
+REMOVE COMPLETELY: all titles, labels, ESA branding, ISS illustration, astronaut nodes, mission badges, timeline lines, arrows, and dates.
+RECONSTRUCT: covered pixels as continuous matching starfield with no residual letters, icon ghosts, or patch seams.
+DO NOT: redesign, add objects, add logos, add frames, add margins, or hallucinate text.

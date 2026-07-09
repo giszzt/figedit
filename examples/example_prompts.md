@@ -19,3 +19,30 @@ Convert this hand-drawn explanatory figure into editable SVG while preserving th
 ## Full vector request
 
 Convert this figure into SVG with maximum editability. If any source-specific icon, screenshot, photo, map, or detailed illustration cannot be cleanly vectorized without fidelity loss, preserve it as a cropped asset and document the decision.
+
+## Complex gradient background
+
+Rebuild this infographic with editable text, leaders, and foreground objects.
+The irregular gradient and grain should become a coordinate-locked background
+plate. Remove the original annotations from the plate, restore clean movable
+assets where practical, and document objects intentionally left flattened.
+
+## Contaminated technical object
+
+Reconstruct this technical figure, but several labels and callout lines cross
+the instrument. Assess whether the instrument can be locally restored as a
+separate asset. If cleanup would damage its geometry, keep it in the background
+plate or route the full composition through AI clean plate. In the generation
+brief, lock the instrument count, orientation, silhouette, visible components,
+and spatial relationships; reject candidates that change them.
+
+## Complex interwoven map or chart
+
+Reconstruct this map/chart-heavy figure with high visual fidelity. Text,
+leaders, symbols, data marks, imagery, and the irregular background are tightly
+interwoven, so ordinary crops and vector redraw cannot reproduce the source
+cleanly. Use an AI clean plate for the complete non-editable visual layer,
+dynamically list every boundary, mark, value-bearing relation, color encoding,
+and layout anchor that must remain unchanged, then rebuild the editable text
+and annotation layer above it. Reject candidates that change those preserved
+relationships.

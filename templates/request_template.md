@@ -16,7 +16,11 @@ Prioritize:
 
 ## Asset preservation requirement
 
-Do not replace source-specific icons, pictograms, illustrations, screenshots, maps, thumbnails, logos, or custom shapes with newly invented SVG drawings.
+Do not replace source-specific visual assets with newly invented SVG drawings
+when their exact appearance, evidence value, texture, or source style matters.
+Examples include icons, pictograms, illustrations, screenshots, maps,
+thumbnails, logos, UI fragments, scientific symbols, chart/map bodies, and
+custom shapes, but the rule is not limited to these examples.
 
 Only redraw elements that are clearly structural or generic primitives, such as panels, cards, frames, separators, arrows, table lines, simple plus/check/cross markers, and plain geometric shapes.
 

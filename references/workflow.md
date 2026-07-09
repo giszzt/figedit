@@ -12,7 +12,22 @@ Determine the user's intent before reconstruction:
 
 If the user does not specify, default to asset-preserving hybrid reconstruction.
 
-## 2. Classify the Figure
+Background-aware reconstruction extends the standard FigEdit workflow. It does not replace OCR review, structure redraw, formula reconstruction, asset preservation, native PPTX export, or visual repair.
+
+## 2. Recognition and Measurement Pass
+
+Run `scripts/prepare_measurements.py` for every figure before manifest authoring. Inspect:
+
+- OCR candidates and `diagnostics/ocr_overlay.png`
+- detected primitives and `diagnostics/structure_overlay.png`
+- sampled style tokens and `diagnostics/style_overlay.png`
+- `measurement_report.md`
+- `draft_manifest.json`
+- source image copied to the task workspace
+
+Use diagnostics for measurement and verification only. Do not use `draft_manifest.json` as the final manifest. Do not bulk-import OpenCV segments, false arrows, or OCR fallback text into `elements`.
+
+## 3. Classify the Figure
 
 Record:
 
@@ -22,109 +37,88 @@ Record:
 - reconstruction mode
 - expected asset fidelity level
 
-Use `taxonomy.md`.
+Use `taxonomy.md` when the type is unfamiliar. The default route remains conventional FigEdit; the background route is decided only by the Background Gate in `background_reconstruction.md`.
 
-## 3. Build Layer Inventory
-
-Create three inventories before authoring SVG.
+## 4. Build Inventories
 
 ### Structure inventory
 
-Include:
-
-- panels
-- cards
-- frames
-- table/grid structures
-- separators
-- background blocks
-- connectors and arrows
+Include panels, cards, frames, table/grid structures, separators, background blocks, connectors, and arrows.
 
 Default decision: `redraw`.
 
 ### Text and formula inventory
 
-Include:
+Include titles, section headers, labels, annotations, legends, captions, mathematical formulas, equations, and inline math spans.
 
-- titles
-- section headers
-- labels
-- annotations
-- legends
-- captions
-- mathematical formulas and equations
-
-Default decision: ordinary prose labels use `retype`; mathematical formulas and
-math-bearing text spans use `retype-math` with normalized LaTeX in a `math`
-element. A `math` element is the only route that can become an editable
-PowerPoint equation.
-
-Treat formulas as spans, not only as whole OCR boxes. A title, caption, legend,
-axis label, callout, or node label can contain both prose and inline math. In
-that case, split the region into adjacent elements: prose stays `text`, and the
-formula span becomes `math`.
+Default decision: ordinary prose labels use `retype`; math-bearing spans use editable `math` with normalized LaTeX. For dense figures, record the source slot, baseline, and neighboring collision constraints before final placement. OCR boxes are hints; verify each tight label or formula against the source crop or tile.
 
 ### Asset inventory
 
-Include:
-
-- icons
-- pictograms
-- illustrations
-- logos
-- maps
-- screenshots
-- thumbnails
-- photos
-- hand-drawn visual objects
-- model outputs
+Include icons, pictograms, illustrations, logos, maps, screenshots, thumbnails, photos, hand-drawn objects, model outputs, UI fragments, and other source-specific visuals.
 
 Default decision: `crop` unless the object passes the redraw eligibility test in `asset_preservation_policy.md`.
 
-## 4. Decide Element Strategy
+Do not redraw source-specific icons, logos, screenshots, custom pictograms, evidence thumbnails, technical symbols, or distinctive decorative marks just because they are small. If uncertain, crop.
 
-Apply this order:
+### Background inventory
 
-1. Does it contain a mathematical formula or formula-like span? Retype that
-   span as LaTeX and render it as a `math` element.
-2. Does the remaining region contain ordinary text? Retype it as `text`.
-3. Is it structural scaffolding? Redraw.
-4. Is it a pictorial or source-specific visual object? Crop.
-5. Is it a generic primitive? Redraw.
-6. Is it uncertain? Crop.
+Identify the visual field behind foreground text and marks:
 
-Record the decision and reason in the manifest.
+- flat fills and simple single-zone gradients
+- clean crop regions
+- photographs, illustrations, rendered scenes, textures, grain, stars, terrain, atmosphere, water, clouds, glow, lighting, collage, or painterly fields
+- regions where foreground labels hide unknown pixels
+- text-like material that may be background detail rather than editable foreground
 
-## 5. Establish Coordinate System
+Then ask the Background Gate question from `background_reconstruction.md`: can clean crops plus simple deterministic SVG faithfully reconstruct the background field without inventing scene pixels?
 
-Use original image dimensions as:
+## 5. Decide Element Strategy
 
-- SVG `width`
-- SVG `height`
-- SVG `viewBox`
+Apply these gates:
 
-Use pixel coordinates for all manifest entries.
+1. Formula Gate: formulas and inline math become `math`.
+2. Text Gate: readable foreground text becomes SVG text.
+3. Structure Gate: panels, connectors, simple marks, and primitives are redrawn.
+4. Raster Asset Gate: source-specific visuals are cropped when exact identity matters.
+5. Background Gate: continuous scene-like backgrounds with foreground overlays become `ai-clean-plate` unless mechanically recoverable.
 
-## 6. Extract Assets First
+Record decisions and reasons in the manifest. Keep optional summaries concise; do not add fields as ceremony.
 
-Before drawing replacement icons, extract all visual assets that should be preserved.
+## 6. Prepare Background and Assets
 
-For each asset:
+### Conventional route
 
-- create a source bounding box
+No `background_plan`. Use this only when the background is mechanically recoverable: ordinary SVG fills, simple regular gradients, measured geometric regions, or clean source crops. Prepare assets normally:
+
+- create source bounding boxes
 - add padding
-- crop to `assets/`
+- crop to `assets/` as rectangles (`crop_assets.py`); a standalone transparent asset comes from chroma regeneration per `chroma_regeneration.md`, not from salient-object matting
 - record target placement
 - generate contact sheet
-- verify it is not clipped or missing
+- verify crops are not clipped, dirty, or missing
 
-Do not redraw source-specific icons before trying to crop them.
+### AI clean-plate route
+
+Use this after the Background Gate selects `ai-clean-plate`, or when the user's own words request the AI route regardless of the gate's default (record `route_decision.source: "user-directive"`).
+
+1. Build the foreground inventory and make the Foreground Depth Decision (`background_reconstruction.md`). This is a hard checkpoint: unless the user's own words state a depth preference, stop and present the mode options (with inventory, cost, and a recommendation) before any generation call. Record `background_plan.foreground_mode` and `foreground_mode_source`.
+2. Write a dynamic generation brief using `ai_clean_plate_prompting.md`; its remove list mirrors the extraction scope.
+3. Invoke a reference-capable image backend according to `image_backend_policy.md` — the agent's own built-in image tool first, scriptable backends as fallback.
+4. Accept only a full-canvas clean plate that removes the in-scope foreground and preserves the declared visual identity.
+5. Add the accepted plate as the bottom background asset.
+6. Regenerate the in-scope foreground objects on a chroma sheet and key them apart (`chroma_regeneration.md`) — the whole inventory on one sheet, split only if a single sheet visibly fails. Do not crop these objects from the original and do not run salient-object matting or improvised cutout scripts.
+7. Overlay editable text, formulas, simple marks, and the extracted assets.
+
+Do not crop large rectangular blocks from the original source over the plate. Do not crop old labels, leaders, or callout residue back into the final output. If an object is inseparable and low-edit-value even for regeneration, leave it in the clean plate.
+
+If no acceptable clean plate can be produced, report a blocker rather than downgrading silently.
 
 ## 7. Rebuild Structural SVG
 
 Draw:
 
-- canvas background
+- canvas background or clean plate placement
 - panel outlines
 - cards and content blocks
 - separators
@@ -134,39 +128,28 @@ Draw:
 
 Use semantic groups and IDs.
 
-## 8. Retype Text
+## 8. Retype Text and Rebuild Formulas
 
-Retype text as SVG text.
+Retype text as SVG text:
 
-- Preserve visual hierarchy.
-- Use readable fallback fonts.
-- Manually split long lines.
-- Mark uncertain text in the manifest.
+- preserve visual hierarchy
+- use readable fallback fonts
+- manually split long lines
+- preserve source-region fit, alignment, and baseline for dense labels
+- mark uncertain text in the manifest
 
-For formulas, do not approximate with plain text. Use `type: "math"` and a
-normalized `latex` string. The compose step renders the formula as vector paths
-and stores the source LaTeX in `data-latex`.
+For formulas, use `type: "math"` and a normalized `latex` string. Do not approximate formulas with plain text, and do not crop formulas as images to avoid layout work. Every detected formula should remain editable in PPTX unless the user explicitly waives formula editability for that specific item.
 
-Use math detection cues before finalizing any `type: "text"` element:
+For formula-heavy or small-text-dense figures:
 
-- TeX-like syntax: `\frac`, `\sum`, `\sqrt`, `\hat`, `\bar`, `A^{ep}`, `R_u`.
-- Unicode math typography: superscripts/subscripts, Greek variables, arrows,
-  relation symbols, radicals, large operators, and set operators.
-- Equation structure: `=`, `<`, `>`, `<=`, `>=`, fractions, recurrences,
-  indexed variables, function calls with variable subscripts, and normalization
-  terms.
+1. place each formula/text element into a measured source slot
+2. render SVG preview and repair local collisions
+3. export native PPTX
+4. inspect or render the PPTX and repair PowerPoint-specific reflow, baseline, and overflow issues
 
-If a text element intentionally contains a symbolic method name or literal code
-that should not become math, set `formula_policy: "not-formula"` and record a
-short `formula_decision_reason`. Do not use that escape hatch for actual
-equations, variables, or inline formula annotations.
+Passing `pptx_math_export` means the formulas are editable; it does not prove that the PowerPoint layout is visually correct.
 
-For PPTX output, the compose step converts the same LaTeX to MathML and then to
-Office Math (OMML), removes the converted SVG formula paths from the PPTX
-staging SVG, and injects editable equation objects. If a formula cannot be
-converted, it remains visible as vector artwork and is listed in
-`editable.pptx.math_report.json`; fix the LaTeX and rerun if editability is
-required.
+Before finalizing, scan text elements for formula cues, OCR artifacts, and fallback garbage.
 
 ## 9. Place Assets
 
@@ -176,6 +159,8 @@ Place cropped assets using `<image>` elements.
 - Use masks or clipping only when necessary.
 - Do not stretch assets unless the source itself is stretched.
 - Align assets to the recreated structure.
+- Mark generated assets as approximate.
+- Keep source-specific assets source-preserved when exact identity matters.
 
 ## 10. Generate Deliverables
 
@@ -188,13 +173,12 @@ Create:
 - `contact_sheet.png`
 - `manifest.json`
 - `quality_report.md`
-- `README.md`
+- `editability_report.md`
 - `assets/`
 
-The `editable.pptx` is a native PowerPoint export of the same reconstruction,
-written with positioned text boxes and shapes rather than an imported SVG. It is
-produced for every figure, regardless of reconstruction mode. Formula elements
-should appear as editable Office Math objects when `pptx_math_export` is `ok`.
+The `editable.pptx` is a native PowerPoint export of the same reconstruction. Formula elements should appear as editable Office Math objects when `pptx_math_export` is `ok`. Ordinary layer/layout groups are flattened during PPTX export so users can select text, shapes, connectors, and cropped assets directly; preserve only explicit atomic groups that need to stay together for fidelity.
+
+For tight text or formula layouts, treat PPTX export as another render target, not as a packaging afterthought. Native PPT text and Office Math may reflow differently from SVG; repair the manifest until both deliverables are acceptable.
 
 ## 11. Validate and Repair
 
@@ -202,9 +186,13 @@ Use `quality_checklist.md`.
 
 Repair order:
 
-1. missing information
-2. wrong structure or arrow direction
-3. missing or wrongly redrawn visual assets
-4. clipped or misplaced crops
-5. text overflow
-6. visual polish
+1. raw detector candidates, OCR fallback text, or OpenCV noise leaked into SVG
+2. missing information
+3. wrong structure or arrow direction
+4. missing or wrongly redrawn source-specific assets
+5. contaminated, clipped, haloed, or misplaced crops
+6. background route errors, ghosts, seams, or patchwork source blocks
+7. unreviewed generated content
+8. formula and text editability problems
+9. formula/text placement problems in SVG or PPTX
+10. visual polish

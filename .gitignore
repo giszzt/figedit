@@ -14,6 +14,10 @@ output_dir/
 # Authoring scratch (diagram sources etc. — not shipped)
 docs/
 
+# Local API keys — never commit. Copy env.example to .env and fill in keys.
+*.local.json
+.env
+
 # OS / editor
 .DS_Store
 Thumbs.db

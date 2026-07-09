@@ -12,7 +12,7 @@
     "style_type": "benchmark-color",
     "reconstruction_mode": "C+B",
     "reconstruction_intent": "editable-layout",
-    "notes": "Reconstruct panels and text; crop dense maps and screenshots."
+    "notes": "Reconstruct panels and text; crop dense maps, screenshots, logos, and source-specific visuals."
   },
   "panels": [
     {
@@ -61,7 +61,10 @@
       "panel_id": "panel-left",
       "kind": "map",
       "decision": "crop",
-      "description": "Example map thumbnail"
+      "text_policy": "preserve-raster",
+      "background_handling": "tight-crop",
+      "crop_status": "verified",
+      "description": "Example source-specific map thumbnail"
     }
   ],
   "elements": [

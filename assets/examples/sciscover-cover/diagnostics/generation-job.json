@@ -1,0 +1,32 @@
+{
+  "backend": "Codex native image_gen tool",
+  "skill": "image_gen",
+  "model": "Codex image_gen default",
+  "job_id": "019f162f-9652-7293-9a8c-8fd777e00d56",
+  "submitted_prompt_file": "generated/clean_plate_prompt.txt",
+  "source_references": [
+    "source.jpg"
+  ],
+  "output": "generated/clean_plate_raw.png",
+  "original_generated_file": "ig_08aabde54fd48a27016a4327508ca08198a73e19ba57053d02.png",
+  "requested_aspect_ratio": "1086x1448",
+  "recorded_aspect_ratio": "1086x1448",
+  "requested_size": "1086x1448",
+  "recorded_size": "1086x1448",
+  "accepted": true,
+  "checks": {
+    "reference_recorded": true,
+    "prompt_recorded": true,
+    "aspect_ratio_recorded": true,
+    "output_file_copied": true,
+    "visual_candidate_reviewed": true
+  },
+  "candidate_review": {
+    "no_text_or_annotation_residue": true,
+    "major_object_count_preserved": true,
+    "orientation_and_layout_usable": true,
+    "no_new_objects": true,
+    "aspect_ratio_acceptable": true,
+    "notes": "The generated plate removed major foreground publication text and kept a source-like information-technology light field. Faint code-like texture is preserved intentionally."
+  }
+}

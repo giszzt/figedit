@@ -36,6 +36,12 @@ def style_attrs(el: Dict[str, Any]) -> str:
     return " ".join(attrs)
 
 
+def transform_attr(el: Dict[str, Any]) -> str:
+    if "transform" not in el:
+        return ""
+    return f'transform="{esc(el["transform"])}"'
+
+
 def make_marker_defs() -> str:
     return """
   <defs>
@@ -72,10 +78,11 @@ def text_element(el: Dict[str, Any]) -> str:
     for i, line in enumerate(lines):
         dy = 0 if i == 0 else line_gap
         tspans.append(f'<tspan x="{x}" dy="{dy}">{esc(line)}</tspan>')
+    transform = transform_attr(el)
     return (
         f'<text id="{esc(el.get("id", ""))}" x="{x}" y="{y}" '
         f'font-family="{esc(ff)}" font-size="{fs}" font-weight="{esc(fw)}" '
-        f'fill="{esc(fill)}" text-anchor="{esc(anchor)}">'
+        f'fill="{esc(fill)}" text-anchor="{esc(anchor)}" {transform}>'
         + "".join(tspans)
         + "</text>"
     )
@@ -86,21 +93,22 @@ def element_to_svg(el: Dict[str, Any], asset_by_id: Dict[str, Dict[str, Any]]) -
     eid = esc(el.get("id", ""))
     extra = style_attrs(el)
     marker = marker_attrs(el)
+    transform = transform_attr(el)
 
     if typ == "rect":
-        return f'<rect id="{eid}" x="{el.get("x",0)}" y="{el.get("y",0)}" width="{el.get("w",0)}" height="{el.get("h",0)}" rx="{el.get("rx",0)}" ry="{el.get("ry",el.get("rx",0))}" {extra}/>'
+        return f'<rect id="{eid}" x="{el.get("x",0)}" y="{el.get("y",0)}" width="{el.get("w",0)}" height="{el.get("h",0)}" rx="{el.get("rx",0)}" ry="{el.get("ry",el.get("rx",0))}" {extra} {transform}/>'
     if typ == "line":
-        return f'<line id="{eid}" x1="{el.get("x1",0)}" y1="{el.get("y1",0)}" x2="{el.get("x2",0)}" y2="{el.get("y2",0)}" {extra} {marker}/>'
+        return f'<line id="{eid}" x1="{el.get("x1",0)}" y1="{el.get("y1",0)}" x2="{el.get("x2",0)}" y2="{el.get("y2",0)}" {extra} {marker} {transform}/>'
     if typ == "path":
-        return f'<path id="{eid}" d="{esc(el.get("d",""))}" {extra} {marker}/>'
+        return f'<path id="{eid}" d="{esc(el.get("d",""))}" {extra} {marker} {transform}/>'
     if typ == "polyline":
-        return f'<polyline id="{eid}" points="{esc(el.get("points",""))}" {extra} {marker}/>'
+        return f'<polyline id="{eid}" points="{esc(el.get("points",""))}" {extra} {marker} {transform}/>'
     if typ == "polygon":
-        return f'<polygon id="{eid}" points="{esc(el.get("points",""))}" {extra}/>'
+        return f'<polygon id="{eid}" points="{esc(el.get("points",""))}" {extra} {transform}/>'
     if typ == "circle":
-        return f'<circle id="{eid}" cx="{el.get("x",0)}" cy="{el.get("y",0)}" r="{el.get("r",0)}" {extra}/>'
+        return f'<circle id="{eid}" cx="{el.get("x",0)}" cy="{el.get("y",0)}" r="{el.get("r",0)}" {extra} {transform}/>'
     if typ == "ellipse":
-        return f'<ellipse id="{eid}" cx="{el.get("x",0)}" cy="{el.get("y",0)}" rx="{el.get("rx",0)}" ry="{el.get("ry",0)}" {extra}/>'
+        return f'<ellipse id="{eid}" cx="{el.get("x",0)}" cy="{el.get("y",0)}" rx="{el.get("rx",0)}" ry="{el.get("ry",0)}" {extra} {transform}/>'
     if typ == "text":
         return text_element(el)
     if typ in {"math", "formula"}:
@@ -109,7 +117,8 @@ def element_to_svg(el: Dict[str, Any], asset_by_id: Dict[str, Dict[str, Any]]) -
         href = el.get("href")
         if not href and el.get("asset_id") in asset_by_id:
             href = asset_by_id[el["asset_id"]]["file"]
-        return f'<image id="{eid}" href="{esc(href or "")}" x="{el.get("x",0)}" y="{el.get("y",0)}" width="{el.get("w",0)}" height="{el.get("h",0)}" preserveAspectRatio="xMidYMid meet"/>'
+        preserve = el.get("preserve_aspect_ratio", "xMidYMid meet")
+        return f'<image id="{eid}" href="{esc(href or "")}" x="{el.get("x",0)}" y="{el.get("y",0)}" width="{el.get("w",0)}" height="{el.get("h",0)}" preserveAspectRatio="{esc(preserve)}" {transform}/>'
     return f'<!-- Unsupported element type: {esc(typ)} id={eid} -->'
 
 
@@ -145,6 +154,23 @@ def build_svg(manifest: Dict[str, Any]) -> str:
         "annotations": [],
     }
 
+    background_plan = manifest.get("background_plan") or {}
+    plate_asset_id = background_plan.get("plate_asset_id")
+    plate_file = background_plan.get("plate_file")
+    if plate_asset_id or plate_file:
+        plate = {
+            "type": "image",
+            "id": "background-plate",
+            "asset_id": plate_asset_id,
+            "href": plate_file,
+            "x": 0,
+            "y": 0,
+            "w": w,
+            "h": h,
+            "preserve_aspect_ratio": "none",
+        }
+        groups["background"].append("    " + element_to_svg(plate, asset_by_id))
+
     for el in manifest.get("elements", []):
         typ = el.get("type")
         cls = el.get("class", "")
@@ -167,7 +193,7 @@ def build_svg(manifest: Dict[str, Any]) -> str:
             key = "sections"
         groups[key].append("    " + element_to_svg(el, asset_by_id))
 
-    group_order = ["background", "assets", "panels", "sections", "icons", "connectors", "texts", "annotations"]
+    group_order = ["background", "assets", "panels", "connectors", "sections", "icons", "texts", "annotations"]
     for gid in group_order:
         lines = groups.get(gid, [])
         if not lines:

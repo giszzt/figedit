@@ -1,0 +1,1436 @@
+{
+  "project": "sciscover-cover-background-aware",
+  "source_image": "assets/source.jpg",
+  "canvas": {
+    "width": 1240,
+    "height": 1654,
+    "background": "#0d2442"
+  },
+  "classification": {
+    "layout_topology": "mixed-complex",
+    "complexity": "high",
+    "style_type": "image-heavy-technical-cover",
+    "reconstruction_mode": "E-ai+B",
+    "reconstruction_intent": "asset-preserving hybrid reconstruction with an AI clean background plate and editable publication text overlays",
+    "semantic_route": "photo/technical-cover body preserved as a continuous visual plate; publication typography rebuilt as editable text; source-specific logo marks preserved as cropped assets"
+  },
+  "diagnostics": {
+    "measurement_workspace": ".",
+    "ocr_overlay": "work/diagnostics/ocr_overlay.png",
+    "structure_overlay": "work/diagnostics/structure_overlay.png",
+    "style_overlay": "work/diagnostics/style_overlay.png",
+    "ocr_status": "ok",
+    "ocr_profile": "v6_medium",
+    "opencv_status": "ok"
+  },
+  "recognition_summary": {
+    "ocr": {
+      "status": "ok",
+      "candidate_count": 47,
+      "profile": "PP-OCRv6 medium",
+      "overlay": "work/diagnostics/ocr_overlay.png",
+      "review_notes": "OCR found the main English cover text and footer text; Chinese OCR text was treated as candidate evidence only and corrected manually from the source image."
+    },
+    "primitives": {
+      "status": "ok",
+      "counts": {
+        "lines": 1231,
+        "rectangles": 50,
+        "arrowheads": 13,
+        "dashed_groups": 33
+      },
+      "overlay": "work/diagnostics/structure_overlay.png",
+      "review_notes": "Detected lines are mostly light-field texture and background circuit strokes; they were not bulk-imported into the final SVG."
+    },
+    "style": {
+      "status": "ok",
+      "overlay": "work/diagnostics/style_overlay.png",
+      "review_notes": "Dominant palette confirmed dark blue/cyan background with white serif foreground typography and warm orange bokeh accents."
+    },
+    "asset_candidates": {
+      "status": "reviewed",
+      "candidate_count": 3,
+      "contact_sheet": "out/contact_sheet.png",
+      "review_notes": "Top journal emblem and two footer publisher logo blocks were inventoried as source-specific brand assets and preserved as crops."
+    },
+    "overlays_inspected": [
+      "work/diagnostics/ocr_overlay.png",
+      "work/diagnostics/structure_overlay.png",
+      "work/diagnostics/style_overlay.png"
+    ]
+  },
+  "background_plan": {
+    "strategy": "ai-clean-plate",
+    "route_decision": {
+      "initial_strategy": "ai-clean-plate",
+      "final_strategy": "ai-clean-plate",
+      "visual_entanglement_score": 5,
+      "ai_clean_plate_required": true,
+      "reason": "Large white foreground publication text, logo marks, ISSN labels, volume/date labels, and footer blocks cross a dense photographic/circuit-light field where local vector or crop repair would leave visible holes or seams."
+    },
+    "coordinate_policy": "layout-locked",
+    "fidelity_requirement": "approximate-ok",
+    "plate_asset_id": "asset-ai-clean-plate",
+    "diagnostics_workspace": "generated",
+    "removed_groups": [
+      "top journal logo and masthead",
+      "ISSN and Chinese journal metadata",
+      "main Information Sciences title",
+      "volume and issue/date labels",
+      "footer sponsor and publisher marks"
+    ],
+    "flattened_groups": [
+      "fiber-optic field",
+      "bokeh light field",
+      "circuit-like linework",
+      "ambient code-like background texture"
+    ],
+    "removal_regions": [
+      {
+        "id": "remove-top-masthead",
+        "intent": "remove-editable",
+        "x": 42,
+        "y": 70,
+        "w": 725,
+        "h": 115,
+        "pad": 14
+      },
+      {
+        "id": "remove-top-right-metadata",
+        "intent": "remove-editable",
+        "x": 940,
+        "y": 88,
+        "w": 245,
+        "h": 75,
+        "pad": 10
+      },
+      {
+        "id": "remove-main-title-information",
+        "intent": "remove-editable",
+        "x": 22,
+        "y": 196,
+        "w": 1010,
+        "h": 205,
+        "pad": 18
+      },
+      {
+        "id": "remove-main-title-sciences",
+        "intent": "remove-editable",
+        "x": 30,
+        "y": 373,
+        "w": 650,
+        "h": 180,
+        "pad": 18
+      },
+      {
+        "id": "remove-volume-date",
+        "intent": "remove-editable",
+        "x": 695,
+        "y": 438,
+        "w": 285,
+        "h": 78,
+        "pad": 10
+      },
+      {
+        "id": "remove-footer-band-labels",
+        "intent": "remove-editable",
+        "x": 0,
+        "y": 1484,
+        "w": 1240,
+        "h": 170,
+        "pad": 0
+      }
+    ],
+    "text_layer_policy": {
+      "editable_foreground": [
+        "SCIENCE CHINA masthead",
+        "ISSN and Chinese journal metadata",
+        "Information Sciences title",
+        "Volume 69 Number 1",
+        "January 2026",
+        "sponsor text"
+      ],
+      "preserve_in_plate": [
+        "faint ambient code-like and URL-like background inscriptions used as technical texture"
+      ],
+      "suppress_or_reconstruct": [
+        "all foreground publication labels and footer publisher marks"
+      ],
+      "ambiguous_handling": "Keep low-contrast code-like texture inside the clean plate; rebuild only readable publication text as editable overlays."
+    },
+    "foreground_asset_policy": {
+      "crop_preserve": [
+        "top Science China red emblem",
+        "Science China Press footer logo block",
+        "Springer footer logo block"
+      ],
+      "redraw": [
+        "footer translucent band",
+        "footer vertical separator rules"
+      ],
+      "restore_or_generate": [
+        "complete background plate under removed publication text"
+      ],
+      "flatten_in_plate": [
+        "dense light-field/circuit background"
+      ],
+      "ambiguous_handling": "Brand marks are source crops; title and metadata are editable text because they are publication labels."
+    },
+    "generation_provenance": {
+      "role": "primary-clean-plate",
+      "skill": "image_gen",
+      "backend": "Codex native image_gen tool",
+      "prompt_file": "diagnostics/clean-plate-prompt.txt",
+      "prompt": "Edit the provided reference image into a clean full-bleed background plate for an editable reconstruction of the journal cover. Preserve the portrait aspect ratio, blue/cyan digital fiber-optic light field, bokeh lights, circuit-like white line details, and faint ambient code-like background texture. Remove all foreground publication typography, logo marks, ISSN text, volume/date text, sponsor text, publisher/footer logos, and footer translucent boxes. Reconstruct the hidden background plausibly beneath removed text and logos. Do not add new readable words, logos, watermarks, borders, or frames. Keep the same overall composition and color balance, but the result should be a clean cover background with no prominent title or publisher text.",
+      "references": [
+        "source.jpg"
+      ],
+      "model": "Codex image_gen default",
+      "job_id": "019f162f-9652-7293-9a8c-8fd777e00d56",
+      "output": "work/generated/clean_plate_raw.png",
+      "job_record": "diagnostics/generation-job.json",
+      "requested_aspect_ratio": "1086x1448",
+      "recorded_aspect_ratio": "1086x1448",
+      "requested_size": "1086x1448",
+      "recorded_size": "1086x1448"
+    },
+    "generation_brief": {
+      "task": "Create a clean visual plate for editable publication typography overlays.",
+      "preserve": [
+        "blue and cyan fiber-optic light field",
+        "warm orange bokeh lights",
+        "white circuit-like line details near the bottom",
+        "dark upper negative space",
+        "faint background code-like texture"
+      ],
+      "remove": [
+        "journal masthead",
+        "ISSN metadata",
+        "main title",
+        "volume/date text",
+        "footer sponsor and publisher text/logos"
+      ],
+      "reconstruct": [
+        "hidden blue background and light-field texture under removed text",
+        "continuous lower circuit linework and bokeh beneath the footer band"
+      ],
+      "constraints": [
+        "no redesign",
+        "no new readable words",
+        "no new logos",
+        "no border or watermark",
+        "keep cover-like portrait composition"
+      ],
+      "output": [
+        "full bleed",
+        "same portrait aspect family",
+        "layout-locked background usable under editable text"
+      ],
+      "reject_if": [
+        "foreground title remains",
+        "publisher or journal logo remains",
+        "large pseudo-text is invented",
+        "composition drifts enough to break title placement"
+      ]
+    },
+    "candidate_review": {
+      "accepted": true,
+      "reviewer": "model visual inspection",
+      "checks": {
+        "no_text_or_annotation_residue": true,
+        "major_object_count_preserved": true,
+        "orientation_and_layout_usable": true,
+        "no_new_objects": true,
+        "aspect_ratio_acceptable": true
+      },
+      "notes": "Generated plate removes the major publication text and footer while preserving the source-like blue technical light field. Residual faint code-like marks are intentional background texture."
+    },
+    "review_status": "verified"
+  },
+  "asset_decision_policy": {
+    "route": "E-ai+B asset-preserving hybrid",
+    "crop_preserve": [
+      "top Science China emblem",
+      "Science China Press footer logo block",
+      "Springer footer logo block"
+    ],
+    "redraw_allowed": [
+      "footer translucent band",
+      "footer divider rules",
+      "editable publication typography"
+    ],
+    "restore_or_generate": [
+      "annotation-clean full-canvas background plate"
+    ],
+    "flatten": [
+      "dense light field and circuit texture"
+    ],
+    "review_notes": "Source-specific brand marks are cropped from the original; ordinary publication labels are retyped as editable overlays."
+  },
+  "editability_targets": {
+    "min_editable_text": 12,
+    "min_editable_structure": 3,
+    "min_movable_assets": 4,
+    "rationale": "Enable editing of main title, masthead, issue metadata, sponsor text, footer structure, and source-preserved brand/logo blocks."
+  },
+  "panels": [
+    {
+      "id": "cover-canvas",
+      "label": "Full cover",
+      "x": 0,
+      "y": 0,
+      "w": 1240,
+      "h": 1654,
+      "strategy": "AI clean plate plus editable publication overlay"
+    },
+    {
+      "id": "footer-publisher-strip",
+      "label": "Publisher and sponsor strip",
+      "x": 0,
+      "y": 1484,
+      "w": 1240,
+      "h": 170,
+      "strategy": "redraw translucent band and separators, retype sponsor text, crop publisher marks"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-ai-clean-plate",
+      "file": "assets/clean_plate_raw.png",
+      "source_mode": "external",
+      "x": 0,
+      "y": 0,
+      "w": 1240,
+      "h": 1654,
+      "kind": "ai-clean-background-plate",
+      "decision": "generate-replacement",
+      "asset_fidelity": "approximate-ok",
+      "decision_reason": "Continuous photo-like background was heavily covered by foreground publication text; clean reconstruction requires the accepted image_gen plate.",
+      "background_handling": "full-canvas-plate",
+      "crop_status": "verified",
+      "review_status": "verified",
+      "edge_check": {
+        "status": "ok",
+        "note": "external or generated asset; source crop check not applicable"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-top-science-china-emblem",
+      "file": "assets/top_science_china_emblem.png",
+      "source_region": {
+        "x": 48,
+        "y": 80,
+        "w": 82,
+        "h": 105
+      },
+      "x": 48,
+      "y": 80,
+      "w": 82,
+      "h": 105,
+      "pad": 0,
+      "edge_policy": "allow-border-touch",
+      "kind": "journal-logo-mark",
+      "decision": "crop",
+      "asset_fidelity": "source-preserve",
+      "decision_reason": "Distinctive journal emblem; cropping preserves exact brand mark.",
+      "background_handling": "preserve-background",
+      "crop_status": "verified",
+      "edge_check": {
+        "status": "ok",
+        "edge_density": 0.8164,
+        "note": "border-touch allowed by model-led crop policy"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-footer-science-china-press",
+      "file": "assets/footer_science_china_press.png",
+      "source_region": {
+        "x": 545,
+        "y": 1534,
+        "w": 365,
+        "h": 66
+      },
+      "x": 545,
+      "y": 1534,
+      "w": 365,
+      "h": 66,
+      "pad": 0,
+      "edge_policy": "allow-border-touch",
+      "kind": "publisher-logo-block",
+      "decision": "crop",
+      "asset_fidelity": "source-preserve",
+      "decision_reason": "Publisher logo block is brand-specific and should not be approximated with generic SVG.",
+      "background_handling": "preserve-footer-band-background",
+      "crop_status": "verified",
+      "edge_check": {
+        "status": "ok",
+        "edge_density": 0.2421,
+        "note": "border-touch allowed by model-led crop policy"
+      },
+      "padding_applied": 0
+    },
+    {
+      "id": "asset-footer-springer",
+      "file": "assets/footer_springer.png",
+      "source_region": {
+        "x": 965,
+        "y": 1534,
+        "w": 245,
+        "h": 66
+      },
+      "x": 965,
+      "y": 1534,
+      "w": 245,
+      "h": 66,
+      "pad": 0,
+      "edge_policy": "allow-border-touch",
+      "kind": "publisher-logo-block",
+      "decision": "crop",
+      "asset_fidelity": "source-preserve",
+      "decision_reason": "Springer wordmark and horse icon are brand-specific source assets.",
+      "background_handling": "preserve-footer-band-background",
+      "crop_status": "verified",
+      "edge_check": {
+        "status": "ok",
+        "edge_density": 0.6924,
+        "note": "border-touch allowed by model-led crop policy"
+      },
+      "padding_applied": 0
+    }
+  ],
+  "elements": [
+    {
+      "type": "rect",
+      "id": "footer-translucent-band",
+      "layer": "panels",
+      "decision": "redraw",
+      "decision_reason": "Generic translucent footer structure.",
+      "x": 0,
+      "y": 1484,
+      "w": 1240,
+      "h": 170,
+      "fill": "#071326",
+      "opacity": 0.42
+    },
+    {
+      "type": "line",
+      "id": "footer-divider-left",
+      "layer": "sections",
+      "decision": "redraw",
+      "decision_reason": "Generic structural divider.",
+      "x1": 507,
+      "y1": 1484,
+      "x2": 507,
+      "y2": 1654,
+      "stroke": "#dbe8f4",
+      "stroke_width": 1.5,
+      "opacity": 0.45
+    },
+    {
+      "type": "line",
+      "id": "footer-divider-right",
+      "layer": "sections",
+      "decision": "redraw",
+      "decision_reason": "Generic structural divider.",
+      "x1": 930,
+      "y1": 1484,
+      "x2": 930,
+      "y2": 1654,
+      "stroke": "#dbe8f4",
+      "stroke_width": 1.5,
+      "opacity": 0.45
+    },
+    {
+      "type": "image",
+      "id": "top-science-china-emblem",
+      "asset_id": "asset-top-science-china-emblem",
+      "decision": "embed",
+      "decision_reason": "Source-preserved journal emblem.",
+      "x": 48,
+      "y": 80,
+      "w": 82,
+      "h": 105
+    },
+    {
+      "type": "text",
+      "id": "shadow-science-china-masthead",
+      "layer": "texts",
+      "decision": "redraw-shadow",
+      "x": 149,
+      "y": 158,
+      "text": "SCIENCE CHINA",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 69,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#081032",
+      "opacity": 0.78
+    },
+    {
+      "type": "text",
+      "id": "science-china-masthead",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "OCR verified against visible masthead.",
+      "x": 145,
+      "y": 154,
+      "text": "SCIENCE CHINA",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 69,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "issn-network",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Manually corrected from source; OCR mojibake was not trusted for Chinese labels.",
+      "x": 975,
+      "y": 108,
+      "text": "ISSN 1869-1919 (网络)",
+      "font_family": "Arial, Helvetica, Microsoft YaHei, sans-serif",
+      "font_size": 20,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "issn-print",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Manually corrected from source; OCR mojibake was not trusted for Chinese labels.",
+      "x": 975,
+      "y": 132,
+      "text": "ISSN 1674-733X (印刷)",
+      "font_family": "Arial, Helvetica, Microsoft YaHei, sans-serif",
+      "font_size": 20,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "journal-chinese-title",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Manually corrected from source.",
+      "x": 945,
+      "y": 157,
+      "text": "中国科学: 信息科学(英文版)",
+      "font_family": "Arial, Helvetica, Microsoft YaHei, sans-serif",
+      "font_size": 18,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "shadow-title-information",
+      "layer": "texts",
+      "decision": "redraw-shadow",
+      "x": 48,
+      "y": 361,
+      "text": "Information",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 157,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#00051d",
+      "opacity": 0.8
+    },
+    {
+      "type": "text",
+      "id": "title-information",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Primary title rebuilt as editable text.",
+      "x": 42,
+      "y": 354,
+      "text": "Information",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 157,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "shadow-title-sciences",
+      "layer": "texts",
+      "decision": "redraw-shadow",
+      "x": 51,
+      "y": 525,
+      "text": "Sciences",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 143,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#00051d",
+      "opacity": 0.8
+    },
+    {
+      "type": "text",
+      "id": "title-sciences",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Primary title rebuilt as editable text.",
+      "x": 45,
+      "y": 518,
+      "text": "Sciences",
+      "font_family": "Georgia, Times New Roman, serif",
+      "font_size": 143,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "issue-volume",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Issue metadata rebuilt as editable text.",
+      "x": 704,
+      "y": 470,
+      "text": "Volume 69 · Number 1",
+      "font_family": "Arial, Helvetica, sans-serif",
+      "font_size": 28,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "issue-month",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Issue date rebuilt as editable text.",
+      "x": 704,
+      "y": 502,
+      "text": "January",
+      "font_family": "Arial, Helvetica, sans-serif",
+      "font_size": 28,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "issue-year",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Issue year rebuilt as editable text.",
+      "x": 812,
+      "y": 502,
+      "text": "2026",
+      "font_family": "Arial, Helvetica, sans-serif",
+      "font_size": 28,
+      "font_weight": "700",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "footer-sponsor",
+      "layer": "texts",
+      "decision": "retype",
+      "decision_reason": "Sponsor text rebuilt as editable text.",
+      "x": 48,
+      "y": 1547,
+      "lines": [
+        "Sponsored by",
+        "Chinese Academy of Sciences and",
+        "National Natural Science Foundation of China"
+      ],
+      "font_family": "Arial, Helvetica, sans-serif",
+      "font_size": 21,
+      "font_weight": "400",
+      "text_anchor": "start",
+      "fill": "#ffffff"
+    },
+    {
+      "type": "image",
+      "id": "footer-science-china-press-logo-block",
+      "asset_id": "asset-footer-science-china-press",
+      "decision": "embed",
+      "decision_reason": "Source-preserved publisher logo block.",
+      "x": 545,
+      "y": 1534,
+      "w": 365,
+      "h": 66
+    },
+    {
+      "type": "image",
+      "id": "footer-springer-logo-block",
+      "asset_id": "asset-footer-springer",
+      "decision": "embed",
+      "decision_reason": "Source-preserved Springer logo block.",
+      "x": 965,
+      "y": 1534,
+      "w": 245,
+      "h": 66
+    }
+  ],
+  "provenance": {
+    "original_source_image": "source.jpg"
+  },
+  "quality_gates": {
+    "xml_editable": {
+      "status": "ok",
+      "message": "ok"
+    },
+    "xml_embedded": {
+      "status": "ok",
+      "message": "ok"
+    },
+    "preview_render": {
+      "status": "ok",
+      "renderer": "chrome.exe",
+      "returncode": 0,
+      "output": "2501241 bytes written to file n"
+    },
+    "low_confidence_elements": {
+      "status": "ok",
+      "count": 0
+    },
+    "crop_edge_checks": {
+      "status": "ok",
+      "count": 0
+    },
+    "background_plate": {
+      "status": "ok"
+    },
+    "background_plate_difference": {
+      "status": "ok",
+      "source_dimensions": [
+        1240,
+        1654
+      ],
+      "plate_dimensions": [
+        1086,
+        1448
+      ],
+      "aspect_ratio_error": 0.000403,
+      "message": null
+    },
+    "recognition_summary": {
+      "status": "ok",
+      "ocr_candidates": 47,
+      "asset_candidates": 3,
+      "overlays_inspected": 3
+    },
+    "asset_decision_policy": {
+      "status": "ok",
+      "crop_preserve": 3,
+      "redraw_allowed": 3,
+      "restore_or_generate": 1,
+      "flatten": 1,
+      "asset_count": 4
+    },
+    "route_decision": {
+      "status": "ok",
+      "strategy": "ai-clean-plate",
+      "initial_strategy": "ai-clean-plate",
+      "ai_clean_plate_required": true
+    },
+    "text_layer_policy": {
+      "status": "ok",
+      "editable_foreground": 6,
+      "preserve_in_plate": 1,
+      "suppress_or_reconstruct": 1
+    },
+    "foreground_asset_policy": {
+      "status": "ok",
+      "crop_preserve": 3,
+      "redraw": 2,
+      "restore_or_generate": 1,
+      "flatten_in_plate": 1
+    },
+    "editability_targets": {
+      "status": "ok",
+      "text_count": 13,
+      "structural_count": 3,
+      "movable_asset_count": 4,
+      "minimums": {
+        "text_count": 12,
+        "structural_count": 3,
+        "movable_asset_count": 4
+      }
+    },
+    "generation_provenance": {
+      "status": "ok",
+      "backend": "Codex native image_gen tool",
+      "model": "Codex image_gen default",
+      "job_id": "019f162f-9652-7293-9a8c-8fd777e00d56",
+      "reference_count": 1,
+      "candidate_checks": {
+        "no_text_or_annotation_residue": true,
+        "major_object_count_preserved": true,
+        "orientation_and_layout_usable": true,
+        "no_new_objects": true,
+        "aspect_ratio_acceptable": true
+      }
+    },
+    "generated_content_review": {
+      "status": "ok",
+      "count": 0
+    },
+    "pptx_export": {
+      "status": "ok",
+      "path": "editable.pptx",
+      "trace": "editable.pptx.trace.json"
+    },
+    "pptx_math_export": {
+      "status": "skipped",
+      "attempted_count": 0,
+      "prepared_count": 0,
+      "editable_count": 0,
+      "fallback_vector_count": 0,
+      "office_math_xml_count": 0,
+      "mml2omml_xsl": "MML2OMML.XSL",
+      "failures": []
+    },
+    "formula_text_leakage": {
+      "status": "ok",
+      "count": 0,
+      "samples": []
+    },
+    "editability": {
+      "status": "review",
+      "readable_ocr_count": 40,
+      "svg_text_count": 13,
+      "math_element_count": 0,
+      "formula_text_leak_count": 0,
+      "lifted_text_count": 12,
+      "text_lift_ratio": 0.3,
+      "structural_element_count": 3,
+      "image_element_count": 3,
+      "asset_text_risk_count": 28,
+      "missed_text_samples": [
+        {
+          "ocr": "ocr-text-0006",
+          "text": "<vib\\>",
+          "bbox": {
+            "x": 1176.0,
+            "y": 144.0,
+            "w": 56.0,
+            "h": 18.0
+          },
+          "confidence": 0.9175812602043152
+        },
+        {
+          "ocr": "ocr-text-0013",
+          "text": "\"nebbid\"=eqy Juqnt>",
+          "bbox": {
+            "x": 1032.0,
+            "y": 270.0,
+            "w": 202.0,
+            "h": 17.0
+          },
+          "confidence": 0.6930508613586426
+        },
+        {
+          "ocr": "ocr-text-0014",
+          "text": "nme",
+          "bbox": {
+            "x": 992.0,
+            "y": 289.0,
+            "w": 46.0,
+            "h": 19.0
+          },
+          "confidence": 0.591576874256134
+        },
+        {
+          "ocr": "ocr-text-0015",
+          "text": "\"nebbrd\"=eqv Juqnr>,",
+          "bbox": {
+            "x": 1037.0,
+            "y": 290.0,
+            "w": 201.0,
+            "h": 17.0
+          },
+          "confidence": 0.6220256090164185
+        },
+        {
+          "ocr": "ocr-text-0016",
+          "text": "sc",
+          "bbox": {
+            "x": 1219.0,
+            "y": 283.0,
+            "w": 17.0,
+            "h": 8.0
+          },
+          "confidence": 0.8607537746429443
+        },
+        {
+          "ocr": "ocr-text-0017",
+          "text": "uv \"nottud\"=eqy Juqnt>",
+          "bbox": {
+            "x": 993.0,
+            "y": 310.0,
+            "w": 246.0,
+            "h": 17.0
+          },
+          "confidence": 0.6504805088043213
+        },
+        {
+          "ocr": "ocr-text-0020",
+          "text": "meees/default_headpic.png':",
+          "bbox": {
+            "x": 390.0,
+            "y": 373.0,
+            "w": 321.0,
+            "h": 28.0
+          },
+          "confidence": 0.9194319844245911
+        },
+        {
+          "ocr": "ocr-text-0021",
+          "text": "/default_headpic.png':",
+          "bbox": {
+            "x": 380.0,
+            "y": 402.0,
+            "w": 282.0,
+            "h": 22.0
+          },
+          "confidence": 0.961216390132904
+        },
+        {
+          "ocr": "ocr-text-0022",
+          "text": "ong':",
+          "bbox": {
+            "x": 639.0,
+            "y": 432.0,
+            "w": 45.0,
+            "h": 18.0
+          },
+          "confidence": 0.9906511306762695
+        },
+        {
+          "ocr": "ocr-text-0025",
+          "text": "CONFIG['uid'] = '1 141300';",
+          "bbox": {
+            "x": 550.0,
+            "y": 513.0,
+            "w": 307.0,
+            "h": 23.0
+          },
+          "confidence": 0.8987199068069458
+        },
+        {
+          "ocr": "ocr-text-0026",
+          "text": "<\" :qedn:qedn\"uv \"[7 Jud ntd-",
+          "bbox": {
+            "x": 884.0,
+            "y": 528.0,
+            "w": 356.0,
+            "h": 21.0
+          },
+          "confidence": 0.6529486179351807
+        },
+        {
+          "ocr": "ocr-text-0027",
+          "text": "CONFIG['vip_type'] = '7':",
+          "bbox": {
+            "x": 549.0,
+            "y": 539.0,
+            "w": 286.0,
+            "h": 26.0
+          },
+          "confidence": 0.9430035352706909
+        },
+        {
+          "ocr": "ocr-text-0028",
+          "text": "tw//699pfc.com/tupian/junren.html':",
+          "bbox": {
+            "x": 73.0,
+            "y": 560.0,
+            "w": 425.0,
+            "h": 43.0
+          },
+          "confidence": 0.9244011044502258
+        },
+        {
+          "ocr": "ocr-text-0029",
+          "text": "CONFIG['isLogin'] = '1':",
+          "bbox": {
+            "x": 550.0,
+            "y": 563.0,
+            "w": 270.0,
+            "h": 28.0
+          },
+          "confidence": 0.9433050155639648
+        },
+        {
+          "ocr": "ocr-text-0030",
+          "text": "<\";enon :νqa",
+          "bbox": {
+            "x": 1120.0,
+            "y": 569.0,
+            "w": 120.0,
+            "h": 20.0
+          },
+          "confidence": 0.7432388663291931
+        },
+        {
+          "ocr": "ocr-text-0031",
+          "text": "84152':",
+          "bbox": {
+            "x": 79.0,
+            "y": 605.0,
+            "w": 90.0,
+            "h": 25.0
+          },
+          "confidence": 0.9530851244926453
+        },
+        {
+          "ocr": "ocr-text-0032",
+          "text": "CONFIG['sex'] =",
+          "bbox": {
+            "x": 551.0,
+            "y": 592.0,
+            "w": 176.0,
+            "h": 24.0
+          },
+          "confidence": 0.9479182958602905
+        },
+        {
+          "ocr": "ocr-text-0033",
+          "text": "CONI",
+          "bbox": {
+            "x": 551.0,
+            "y": 622.0,
+            "w": 51.0,
+            "h": 23.0
+          },
+          "confidence": 0.9759132266044617
+        },
+        {
+          "ocr": "ocr-text-0034",
+          "text": "fault_avatar']='http://static.699pic.com/images/",
+          "bbox": {
+            "x": 673.0,
+            "y": 616.0,
+            "w": 567.0,
+            "h": 24.0
+          },
+          "confidence": 0.9778364300727844
+        },
+        {
+          "ocr": "ocr-text-0035",
+          "text": "CONFIG['big_a",
+          "bbox": {
+            "x": 549.0,
+            "y": 647.0,
+            "w": 167.0,
+            "h": 26.0
+          },
+          "confidence": 0.9306900501251221
+        },
+        {
+          "ocr": "ocr-text-0036",
+          "text": "tp://static.699pic.com/images/defa",
+          "bbox": {
+            "x": 855.0,
+            "y": 641.0,
+            "w": 385.0,
+            "h": 27.0
+          },
+          "confidence": 0.9922098517417908
+        },
+        {
+          "ocr": "ocr-text-0037",
+          "text": "'http:",
+          "bbox": {
+            "x": 848.0,
+            "y": 673.0,
+            "w": 67.0,
+            "h": 18.0
+          },
+          "confidence": 0.9168791174888611
+        },
+        {
+          "ocr": "ocr-text-0038",
+          "text": "ic.com/imaq",
+          "bbox": {
+            "x": 1055.0,
+            "y": 673.0,
+            "w": 134.0,
+            "h": 17.0
+          },
+          "confidence": 0.9508559703826904
+        },
+        {
+          "ocr": "ocr-text-0039",
+          "text": "CONFIG['search_",
+          "bbox": {
+            "x": 550.0,
+            "y": 701.0,
+            "w": 191.0,
+            "h": 30.0
+          },
+          "confidence": 0.93412846326828
+        },
+        {
+          "ocr": "ocr-text-0040",
+          "text": "mode'] = 'all';",
+          "bbox": {
+            "x": 730.0,
+            "y": 696.0,
+            "w": 165.0,
+            "h": 27.0
+          },
+          "confidence": 0.9394552707672119
+        },
+        {
+          "ocr": "ocr-text-0041",
+          "text": "CONFIGI",
+          "bbox": {
+            "x": 552.0,
+            "y": 733.0,
+            "w": 86.0,
+            "h": 26.0
+          },
+          "confidence": 0.9601649045944214
+        },
+        {
+          "ocr": "ocr-text-0044",
+          "text": "Springer",
+          "bbox": {
+            "x": 1029.0,
+            "y": 1542.0,
+            "w": 169.0,
+            "h": 53.0
+          },
+          "confidence": 0.9999982714653015
+        },
+        {
+          "ocr": "ocr-text-0045",
+          "text": "SCIENCE CHINA PRESS",
+          "bbox": {
+            "x": 615.0,
+            "y": 1556.0,
+            "w": 275.0,
+            "h": 26.0
+          },
+          "confidence": 0.9985270500183105
+        }
+      ],
+      "asset_text_risk_samples": [
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "<vib\\>",
+          "bbox": {
+            "x": 1176.0,
+            "y": 144.0,
+            "w": 56.0,
+            "h": 18.0
+          },
+          "confidence": 0.9175812602043152
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "\"nebbid\"=eqy Juqnt>",
+          "bbox": {
+            "x": 1032.0,
+            "y": 270.0,
+            "w": 202.0,
+            "h": 17.0
+          },
+          "confidence": 0.6930508613586426
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "nme",
+          "bbox": {
+            "x": 992.0,
+            "y": 289.0,
+            "w": 46.0,
+            "h": 19.0
+          },
+          "confidence": 0.591576874256134
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "\"nebbrd\"=eqv Juqnr>,",
+          "bbox": {
+            "x": 1037.0,
+            "y": 290.0,
+            "w": 201.0,
+            "h": 17.0
+          },
+          "confidence": 0.6220256090164185
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "sc",
+          "bbox": {
+            "x": 1219.0,
+            "y": 283.0,
+            "w": 17.0,
+            "h": 8.0
+          },
+          "confidence": 0.8607537746429443
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "uv \"nottud\"=eqy Juqnt>",
+          "bbox": {
+            "x": 993.0,
+            "y": 310.0,
+            "w": 246.0,
+            "h": 17.0
+          },
+          "confidence": 0.6504805088043213
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "meees/default_headpic.png':",
+          "bbox": {
+            "x": 390.0,
+            "y": 373.0,
+            "w": 321.0,
+            "h": 28.0
+          },
+          "confidence": 0.9194319844245911
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "/default_headpic.png':",
+          "bbox": {
+            "x": 380.0,
+            "y": 402.0,
+            "w": 282.0,
+            "h": 22.0
+          },
+          "confidence": 0.961216390132904
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "ong':",
+          "bbox": {
+            "x": 639.0,
+            "y": 432.0,
+            "w": 45.0,
+            "h": 18.0
+          },
+          "confidence": 0.9906511306762695
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['uid'] = '1 141300';",
+          "bbox": {
+            "x": 550.0,
+            "y": 513.0,
+            "w": 307.0,
+            "h": 23.0
+          },
+          "confidence": 0.8987199068069458
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "<\" :qedn:qedn\"uv \"[7 Jud ntd-",
+          "bbox": {
+            "x": 884.0,
+            "y": 528.0,
+            "w": 356.0,
+            "h": 21.0
+          },
+          "confidence": 0.6529486179351807
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['vip_type'] = '7':",
+          "bbox": {
+            "x": 549.0,
+            "y": 539.0,
+            "w": 286.0,
+            "h": 26.0
+          },
+          "confidence": 0.9430035352706909
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "tw//699pfc.com/tupian/junren.html':",
+          "bbox": {
+            "x": 73.0,
+            "y": 560.0,
+            "w": 425.0,
+            "h": 43.0
+          },
+          "confidence": 0.9244011044502258
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['isLogin'] = '1':",
+          "bbox": {
+            "x": 550.0,
+            "y": 563.0,
+            "w": 270.0,
+            "h": 28.0
+          },
+          "confidence": 0.9433050155639648
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "<\";enon :νqa",
+          "bbox": {
+            "x": 1120.0,
+            "y": 569.0,
+            "w": 120.0,
+            "h": 20.0
+          },
+          "confidence": 0.7432388663291931
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "84152':",
+          "bbox": {
+            "x": 79.0,
+            "y": 605.0,
+            "w": 90.0,
+            "h": 25.0
+          },
+          "confidence": 0.9530851244926453
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['sex'] =",
+          "bbox": {
+            "x": 551.0,
+            "y": 592.0,
+            "w": 176.0,
+            "h": 24.0
+          },
+          "confidence": 0.9479182958602905
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONI",
+          "bbox": {
+            "x": 551.0,
+            "y": 622.0,
+            "w": 51.0,
+            "h": 23.0
+          },
+          "confidence": 0.9759132266044617
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "fault_avatar']='http://static.699pic.com/images/",
+          "bbox": {
+            "x": 673.0,
+            "y": 616.0,
+            "w": 567.0,
+            "h": 24.0
+          },
+          "confidence": 0.9778364300727844
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['big_a",
+          "bbox": {
+            "x": 549.0,
+            "y": 647.0,
+            "w": 167.0,
+            "h": 26.0
+          },
+          "confidence": 0.9306900501251221
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "tp://static.699pic.com/images/defa",
+          "bbox": {
+            "x": 855.0,
+            "y": 641.0,
+            "w": 385.0,
+            "h": 27.0
+          },
+          "confidence": 0.9922098517417908
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "'http:",
+          "bbox": {
+            "x": 848.0,
+            "y": 673.0,
+            "w": 67.0,
+            "h": 18.0
+          },
+          "confidence": 0.9168791174888611
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "ic.com/imaq",
+          "bbox": {
+            "x": 1055.0,
+            "y": 673.0,
+            "w": 134.0,
+            "h": 17.0
+          },
+          "confidence": 0.9508559703826904
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIG['search_",
+          "bbox": {
+            "x": 550.0,
+            "y": 701.0,
+            "w": 191.0,
+            "h": 30.0
+          },
+          "confidence": 0.93412846326828
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "mode'] = 'all';",
+          "bbox": {
+            "x": 730.0,
+            "y": 696.0,
+            "w": 165.0,
+            "h": 27.0
+          },
+          "confidence": 0.9394552707672119
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "CONFIGI",
+          "bbox": {
+            "x": 552.0,
+            "y": 733.0,
+            "w": 86.0,
+            "h": 26.0
+          },
+          "confidence": 0.9601649045944214
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "Springer",
+          "bbox": {
+            "x": 1029.0,
+            "y": 1542.0,
+            "w": 169.0,
+            "h": 53.0
+          },
+          "confidence": 0.9999982714653015
+        },
+        {
+          "asset": "asset-ai-clean-plate",
+          "text": "SCIENCE CHINA PRESS",
+          "bbox": {
+            "x": 615.0,
+            "y": 1556.0,
+            "w": 275.0,
+            "h": 26.0
+          },
+          "confidence": 0.9985270500183105
+        }
+      ],
+      "formula_text_leak_samples": []
+    }
+  }
+}

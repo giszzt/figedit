@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1654" viewBox="0 0 1240 1654">
+
+  <defs>
+    <marker id="arrow-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/>
+    </marker>
+    <marker id="arrow-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="context-stroke"/>
+    </marker>
+  </defs>
+
+  <style>
+    :root {
+      --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
+      --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
+    }
+  </style>
+  <rect id="canvas-background" x="0" y="0" width="1240" height="1654" fill="#0d2442"/>
+  <g id="background">
+    <image id="background-plate" href="assets/clean_plate_raw.png" x="0" y="0" width="1240" height="1654" preserveAspectRatio="none"/>
+  </g>
+  <g id="assets">
+    <image id="top-science-china-emblem" href="assets/top_science_china_emblem.png" x="48" y="80" width="82" height="105" preserveAspectRatio="xMidYMid meet"/>
+    <image id="footer-science-china-press-logo-block" href="assets/footer_science_china_press.png" x="545" y="1534" width="365" height="66" preserveAspectRatio="xMidYMid meet"/>
+    <image id="footer-springer-logo-block" href="assets/footer_springer.png" x="965" y="1534" width="245" height="66" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+  <g id="panels">
+    <rect id="footer-translucent-band" x="0" y="1484" width="1240" height="170" rx="0" ry="0" fill="#071326" opacity="0.42"/>
+  </g>
+  <g id="sections">
+    <line id="footer-divider-left" x1="507" y1="1484" x2="507" y2="1654" stroke="#dbe8f4" stroke-width="1.5" opacity="0.45" />
+    <line id="footer-divider-right" x1="930" y1="1484" x2="930" y2="1654" stroke="#dbe8f4" stroke-width="1.5" opacity="0.45" />
+  </g>
+  <g id="texts">
+    <text id="shadow-science-china-masthead" x="149" y="158" font-family="Georgia, Times New Roman, serif" font-size="69" font-weight="700" fill="#081032" text-anchor="start"><tspan x="149" dy="0">SCIENCE CHINA</tspan></text>
+    <text id="science-china-masthead" x="145" y="154" font-family="Georgia, Times New Roman, serif" font-size="69" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="145" dy="0">SCIENCE CHINA</tspan></text>
+    <text id="issn-network" x="975" y="108" font-family="Arial, Helvetica, Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="975" dy="0">ISSN 1869-1919 (网络)</tspan></text>
+    <text id="issn-print" x="975" y="132" font-family="Arial, Helvetica, Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="975" dy="0">ISSN 1674-733X (印刷)</tspan></text>
+    <text id="journal-chinese-title" x="945" y="157" font-family="Arial, Helvetica, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="945" dy="0">中国科学: 信息科学(英文版)</tspan></text>
+    <text id="shadow-title-information" x="48" y="361" font-family="Georgia, Times New Roman, serif" font-size="157" font-weight="700" fill="#00051d" text-anchor="start"><tspan x="48" dy="0">Information</tspan></text>
+    <text id="title-information" x="42" y="354" font-family="Georgia, Times New Roman, serif" font-size="157" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="42" dy="0">Information</tspan></text>
+    <text id="shadow-title-sciences" x="51" y="525" font-family="Georgia, Times New Roman, serif" font-size="143" font-weight="700" fill="#00051d" text-anchor="start"><tspan x="51" dy="0">Sciences</tspan></text>
+    <text id="title-sciences" x="45" y="518" font-family="Georgia, Times New Roman, serif" font-size="143" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="45" dy="0">Sciences</tspan></text>
+    <text id="issue-volume" x="704" y="470" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="704" dy="0">Volume 69 · Number 1</tspan></text>
+    <text id="issue-month" x="704" y="502" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="704" dy="0">January</tspan></text>
+    <text id="issue-year" x="812" y="502" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="start"><tspan x="812" dy="0">2026</tspan></text>
+    <text id="footer-sponsor" x="48" y="1547" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="400" fill="#ffffff" text-anchor="start"><tspan x="48" dy="0">Sponsored by</tspan><tspan x="48" dy="26.25">Chinese Academy of Sciences and</tspan><tspan x="48" dy="26.25">National Natural Science Foundation of China</tspan></text>
+  </g>
+</svg>

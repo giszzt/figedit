@@ -8,8 +8,7 @@ and maintained by Hugo He.
 
 FigEdit modifies and integrates that conversion work for single-figure export,
 manifest-driven raster assets, editable equations, and reconstruction quality
-checks. FigEdit is an independent project and is not affiliated with or
-endorsed by PPT Master or its author.
+checks.
 
 PPT Master is distributed under the MIT License:
 

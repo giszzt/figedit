@@ -1,0 +1,31 @@
+TASK:
+Edit the provided reference image into a clean full-bleed background plate for an editable reconstruction of the journal cover. This is not a redesign; it is a clean plate for later editable text and logo overlays.
+
+PRESERVE EXACTLY:
+- Portrait cover composition and full-bleed framing.
+- Blue and cyan digital fiber-optic light field.
+- Warm orange and white bokeh points.
+- Circuit-like white line details near the lower part of the cover.
+- Dark upper negative space where the title will later be rebuilt.
+- Faint ambient code-like background texture as technical atmosphere.
+
+REMOVE COMPLETELY:
+- SCIENCE CHINA masthead and red journal emblem.
+- ISSN metadata and Chinese journal metadata.
+- Main Information Sciences title.
+- Volume, issue, month, and year labels.
+- Sponsored by text, Science China Press footer block, Springer footer block, and translucent footer boxes.
+
+RECONSTRUCT:
+- Continue the blue/cyan background gradient and light field beneath removed foreground text.
+- Continue the bokeh, circuit linework, and lower light texture under the removed footer.
+
+DO NOT:
+- Do not redesign the image.
+- Do not add new logos, labels, readable words, borders, watermarks, or decorative typography.
+- Do not erase the source-classified faint background code-like texture entirely.
+
+OUTPUT:
+- Full-bleed portrait clean plate.
+- Same visual density and color balance as the reference.
+- Suitable for editable SVG/PPT typography overlay.

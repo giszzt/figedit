@@ -109,6 +109,62 @@ Example:
   - cropped cloud icon asset
   - editable text label
 
+## AI Clean Plate Overlay Assets
+
+An AI clean plate replaces the continuous background with an accepted generated
+plate. It does not make source-specific foreground assets safe to approximate as
+SVG, but it also does not require every foreground object to be cropped back on
+top.
+
+Default stack for Mode `E-ai`:
+
+- generated background plate
+- editable text and formulas
+- redrawn generic shapes and simple connectors
+- only the cropped source-specific foreground assets that truly need independent
+  source-preserved identity
+
+Crop a source asset over the plate only when all three conditions hold:
+
+1. exact source identity matters
+2. independent movement, replacement, or editing is useful
+3. the crop is clean, without old labels, leaders, halos, seams, or a large
+   rectangular patch of original background
+
+Leave the object flattened inside the clean plate when movement has low value,
+edges are inseparable, or extraction damage would be more visible than reduced
+editability.
+
+Strong candidates for source crops include, but are not limited to:
+
+- brand, institutional, product, app, publisher, journal, or project marks
+- distinctive pictograms, badges, seals, cover marks, legend keys, or status
+  symbols
+- scientific symbols, map thumbnails, screenshots, UI fragments, evidence
+  images, or domain-specific mini-illustrations
+- small icons whose exact style carries identity or semantic convention
+- textured, shaded, antialiased, hand-drawn, or raster-origin marks
+- icons paired with editable labels where the icon and text can be split
+
+Prefer SVG redraw for:
+
+- generic separators, boxes, simple bullets, simple arrows, and layout rules
+- icons that are intentionally schematic and can be matched exactly with basic
+  shapes
+- placeholder geometry where source identity is not important
+
+If the crop has surrounding background pixels, choose the least damaging option:
+
+1. leave it in the clean plate when movement has low value
+2. crop with tight padding only when the local background matches the final plate
+3. remove background only when edges remain clean
+4. generate or AI-clean the asset only when movement matters and approximation
+   is acceptable and documented
+
+Do not use a generated clean plate as the source for exact assets. Crop exact
+assets from the original source image. Do not use large dirty source crops to
+patch the plate.
+
 ## Integrated Text in Assets
 
 If text is integrated into a small icon, screenshot, or logo and is not intended for editing, keep it inside the cropped asset.
@@ -123,6 +179,25 @@ When cropping a visual asset:
 - remove the background only if this can be done cleanly
 - otherwise crop with slight surrounding background and align it onto the recreated panel
 - record the handling in the manifest
+
+If the object is visually bound to a continuous background, compare two final
+composites: an extracted version and a flattened version. Prefer the flattened
+version when extraction leaves halos, destroys internal holes, or removes fine
+structures.
+
+## Contaminated Assets
+
+An object crossed by text, leaders, dots, arrows, or neighboring content is not
+a clean source crop. Route it through `contaminated_asset_recovery.md`.
+
+Use `flatten-background` when independent editing has low value or the object is
+inseparable. Use `regenerate-chroma` (see `chroma_regeneration.md`) when
+movement matters and approximation is acceptable: the object is reproduced on a
+solid chroma background and keyed out as a clean transparent asset. Do not use
+local painting or local inpainting as the recovery route.
+
+Generated replacements must use `asset_fidelity: approximate-ok` or
+`semantic-only` and include `generation_provenance`.
 
 ## Asset Inventory Requirement
 
@@ -147,6 +222,10 @@ Do not:
 - simplify custom icons when visual fidelity is a user priority
 - redraw logos unless the user explicitly requests logo vectorization and licensing permits it
 - crop labels together with icons when labels should remain editable, unless the text is unreadable or integrated into the icon
+- present an image-generated approximation as an exact source asset
+- reject AI generation solely because an object is a logo, map, chart,
+  screenshot, measured geometry, or evidence image; decide by achievable
+  reconstruction fidelity and candidate validation
 
 ## Review Questions
 
