@@ -191,9 +191,9 @@ Reconstruction quality depends heavily on the model's visual understanding and S
 
 | Agent environment | Recommended models | Notes |
 | --- | --- | --- |
-| **Codex** | GPT-5.5 | Preferred. Strong visual understanding, spatial reasoning, and tool-use capabilities, and its built-in `image_gen` makes the clean-plate route work out of the box |
-| **Claude Code** | Claude Fable 5, with Claude Opus 4.8 as the second choice | Claude Fable 5 performed at least as well as GPT-5.5 in testing but is currently unavailable. Claude Opus 4.8 is usable, although its reconstruction of complex figures is weaker than GPT-5.5 |
-| **Other mainstream agents** | GPT-5.5, Claude Opus 4.8, Gemini 3.5 | Avoid models that are strong at coding but lack image input or spatial visual reasoning. They may execute the FigEdit scripts yet still make obvious mistakes in element classification, crop boundaries, layer relationships, and layout judgment |
+| **Codex** | GPT-5.6 | Preferred. Strong visual understanding, spatial reasoning, and tool-use capabilities, and its built-in `image_gen` makes the clean-plate route work out of the box |
+| **Claude Code** | Claude Fable 5 | Strongest SVG authoring ability in current testing. It handles complex paths, text layout, and layer relationships especially well, making it a good fit for high-quality editable SVG reconstruction |
+| **Other mainstream agents** | GPT-5.6, Claude Fable 5, Gemini 3.5 | Avoid models that are strong at coding but lack image input or spatial visual reasoning. They may execute the FigEdit scripts yet still make obvious mistakes in element classification, crop boundaries, layer relationships, and layout judgment |
 
 ### Install
 
