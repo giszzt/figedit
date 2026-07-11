@@ -204,7 +204,7 @@ https://github.com/giszzt/figedit
 
 只有涉及 AI 清版底板或色键再生的图才需要图像生成能力，普通图不用配置任何密钥。
 
-Agent 环境自带图像生成时（如 Codex 的内置 `image_gen`）会优先使用，零配置。没有内置能力时，把 `env.example` 复制为 `.env` 并填入你有的密钥即可，支持 Labnana（GPT-Image-2 / Gemini / Nano Banana）和 OpenAI、Gemini 官方 API，按可用性自动排序回退。`.env` 已被 `.gitignore` 排除，不会被提交。
+Agent 环境自带图像生成时（如 Codex 的内置 `image_gen`）会优先使用，零配置。没有内置能力时，把 `env.example` 复制为 `.env` 并填入你有的密钥即可，支持 Labnana（GPT-Image-2 / Gemini / Nano Banana）和 OpenAI、Gemini 官方 API，按可用性自动排序回退。
 
 ### 使用
 
