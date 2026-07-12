@@ -220,7 +220,7 @@ https://github.com/giszzt/figedit
 
 Only figures that need an AI clean plate or chroma regeneration require image generation. Ordinary figures need no keys at all.
 
-When the agent environment has a built-in image tool (such as Codex's `image_gen`), FigEdit uses it first with zero configuration. Otherwise, copy `env.example` to `.env` and fill in whichever keys you have. Labnana (GPT-Image-2 / Gemini / Nano Banana) and the official OpenAI and Gemini APIs are supported, with automatic fallback ordering. `.env` is excluded by `.gitignore` and is never committed.
+When the agent environment has a built-in image tool (such as Codex's `image_gen`), FigEdit uses it first with zero configuration. Otherwise, copy `env.example` to `.env` and fill in whichever keys you have. Labnana (GPT-Image-2 / Gemini / Nano Banana) and the official OpenAI and Gemini APIs are supported.
 
 ### Use
 
