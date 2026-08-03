@@ -51,7 +51,9 @@ def _mask_ocr_regions(gray: np.ndarray, ocr_items: list[dict[str, Any]]) -> np.n
 def _detect_with_cv(image_path: Path, ocr_items: list[dict[str, Any]]) -> dict[str, Any]:
     import cv2  # type: ignore
 
-    image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
+    with open(str(image_path), "rb") as _f:
+        _buf = np.frombuffer(_f.read(), dtype=np.uint8)
+    image = cv2.imdecode(_buf, cv2.IMREAD_COLOR)
     if image is None:
         raise ValueError(f"Could not read image: {image_path}")
     height, width = image.shape[:2]

@@ -33,6 +33,8 @@ def _ensure_ascii_source(manifest: dict, manifest_path: Path, out_dir: Path) -> 
     assets_dir.mkdir(parents=True, exist_ok=True)
     suffix = source.suffix.lower() or ".png"
     copied = assets_dir / f"source{suffix}"
+    if copied.exists() and copied.stat().st_size == source.stat().st_size:
+        return copied
     shutil.copy2(source, copied)
     return copied
 

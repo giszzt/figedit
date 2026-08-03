@@ -1,6 +1,0 @@
-interface:
-  display_name: "FigEdit"
-  short_description: "Rebuild raster figures as editable SVG/PPTX"
-  default_prompt: "Use $figedit to reconstruct this raster figure as a high-fidelity editable SVG and PowerPoint package."
-policy:
-  allow_implicit_invocation: true
