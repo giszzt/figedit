@@ -63,9 +63,9 @@ def sample_styles(image_path: Path, primitives: dict[str, Any] | None = None) ->
     }
 
 
-def save_style_outputs(image_path: Path, primitives_json: Path, out_json: Path, overlay_path: Path) -> dict[str, Any]:
+def save_style_outputs(image_path: Path, primitives_json: Path | None, out_json: Path, overlay_path: Path) -> dict[str, Any]:
     primitives = {}
-    if primitives_json.exists():
+    if primitives_json is not None and primitives_json.exists():
         primitives = json.loads(primitives_json.read_text(encoding="utf-8"))
     styles = sample_styles(image_path, primitives)
     out_json.parent.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare OCR/CV/style diagnostics for model-led SVG reconstruction."""
+"""Prepare OCR/style diagnostics for model-led SVG reconstruction."""
 
 from __future__ import annotations
 
@@ -16,7 +16,6 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from detect_ocr_paddle import save_ocr_outputs  # type: ignore
-from detect_primitives_cv import save_primitives_outputs  # type: ignore
 from sample_styles import save_style_outputs  # type: ignore
 
 
@@ -31,8 +30,7 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
     shutil.copy2(image_path, source_copy)
 
     ocr = save_ocr_outputs(source_copy, out_dir / "ocr_results.json", diagnostics / "ocr_overlay.png", lang=lang, use_gpu=gpu, profile=ocr_profile)
-    primitives = save_primitives_outputs(source_copy, out_dir / "ocr_results.json", out_dir / "detected_primitives.json", diagnostics / "structure_overlay.png")
-    styles = save_style_outputs(source_copy, out_dir / "detected_primitives.json", out_dir / "style_tokens.json", diagnostics / "style_overlay.png")
+    styles = save_style_outputs(source_copy, None, out_dir / "style_tokens.json", diagnostics / "style_overlay.png")
 
     with Image.open(source_copy) as im:
         width, height = im.size
@@ -46,18 +44,20 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
             "complexity": "model-to-classify",
             "style_type": "image-derived",
             "reconstruction_mode": "model-led-hybrid",
-            "reconstruction_intent": "Use OCR/CV measurements only as evidence; model must author semantic manifest.",
+            "reconstruction_intent": "Use OCR/style measurements only as evidence; model must author semantic manifest.",
         },
         "assets": [],
         "elements": [],
         "style_tokens": styles,
         "diagnostics": {
+            # Keep this field when authoring the final manifest: the compose
+            # step copies ocr_results.json from here into the package so the
+            # editability gate can compute text_lift_ratio.
+            "measurement_workspace": str(out_dir),
             "ocr_overlay": "diagnostics/ocr_overlay.png",
-            "structure_overlay": "diagnostics/structure_overlay.png",
             "style_overlay": "diagnostics/style_overlay.png",
             "ocr_status": ocr.get("status"),
             "ocr_profile": ocr.get("selected_profile"),
-            "opencv_status": primitives.get("status"),
         },
         "quality_gates": {"semantic_manifest_required": {"status": "review"}},
     }
@@ -70,12 +70,11 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
         f"- Working copy: {source_copy}",
         f"- Canvas: {width} x {height}",
         f"- OCR: {ocr.get('status')} ({len(ocr.get('items', []))} candidates; profile: {ocr.get('selected_profile')}; requested: {ocr.get('requested_profile')})",
-        f"- OpenCV: {primitives.get('status')} ({primitives.get('counts', {})})",
         "",
-        "These are measurement artifacts only. Do not directly convert all OpenCV candidates into final SVG elements.",
+        "These are measurement artifacts only. Do not directly convert OCR candidates into final SVG elements.",
     ]
     (out_dir / "measurement_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
-    return {"out_dir": str(out_dir), "ocr": ocr.get("status"), "opencv": primitives.get("status")}
+    return {"out_dir": str(out_dir), "ocr": ocr.get("status")}
 
 
 def main() -> None:

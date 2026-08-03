@@ -151,13 +151,16 @@ def _ai_patchwork_gate(manifest: dict[str, Any]) -> dict[str, Any]:
     return _status("ok", source_crop_count=len(crops), source_crop_area_ratio=round(total_ratio, 4))
 
 
-def _detector_noise_gate(manifest: dict[str, Any]) -> dict[str, Any]:
-    """Flag raw OpenCV/CV detections that leaked into the final SVG."""
+def _raw_detector_import_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Flag raw detector/measurement candidates that leaked into the final SVG.
+
+    Detector-agnostic: any tool's raw output imported wholesale into `elements`
+    without model review is the failure, whatever produced the numbers."""
 
     structural_types = {"rect", "line", "path", "polyline", "polygon", "circle", "ellipse"}
     raw_decisions = {"auto", "raw", "raw-detection", "detector-import", "opencv-import", "cv-import"}
     raw = []
-    unreviewed_cv = []
+    unreviewed_detector = []
 
     for element in manifest.get("elements", []):
         if element.get("type") not in structural_types:
@@ -168,18 +171,147 @@ def _detector_noise_gate(manifest: dict[str, Any]) -> dict[str, Any]:
         if decision in raw_decisions:
             raw.append(element.get("id"))
         if any(token in detector for token in ["opencv", "cv", "hough", "detected_primitives"]) and review not in {"verified", "ok", "accepted"}:
-            unreviewed_cv.append(element.get("id"))
+            unreviewed_detector.append(element.get("id"))
 
     if raw:
         return _status("failed", message="raw detector primitives were imported into final elements", samples=raw[:30])
-    if len(unreviewed_cv) > 20:
+    if len(unreviewed_detector) > 20:
         return _status(
             "review",
-            message="many OpenCV-sourced primitives lack explicit review; check for detector noise",
-            count=len(unreviewed_cv),
-            samples=unreviewed_cv[:30],
+            message="many detector-sourced primitives lack explicit review; check for detector noise",
+            count=len(unreviewed_detector),
+            samples=unreviewed_detector[:30],
         )
-    return _status("ok", unreviewed_cv_count=len(unreviewed_cv))
+    return _status("ok", unreviewed_detector_count=len(unreviewed_detector))
+
+
+def _hex_to_rgb(text: str) -> tuple[int, int, int]:
+    value = text.lstrip("#")
+    if len(value) != 6:
+        return (255, 255, 255)
+    try:
+        return tuple(int(value[i : i + 2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
+    except ValueError:
+        return (255, 255, 255)
+
+
+def _crop_window_gate(manifest: dict[str, Any], out_dir: Path) -> dict[str, Any]:
+    """Pixel back-check for the model's Crop Window Check verdicts.
+
+    The verdict itself is a visual judgment made while authoring the manifest
+    (`crop_window`: clean / clean-on-fill / contaminated). This gate only
+    audits it after the fact: for every coordinate-crop asset it inspects the
+    window's border ring (does the window straddle two backings? is the
+    backing the canvas background?) and whether ink touches the window edge
+    (clipped element or intruding neighbor). Contradictions come back as
+    review evidence for the model to re-examine — the gate does not overrule
+    the model, except for the hard case of cropping a declared-contaminated
+    window."""
+
+    crops = [
+        asset
+        for asset in manifest.get("assets", [])
+        if str(asset.get("decision", "")).lower() == "crop" and isinstance(asset.get("source_region"), dict)
+    ]
+    if not crops:
+        return _status("ok", reason="no coordinate-crop assets")
+
+    try:
+        import numpy as np
+        from PIL import Image
+
+        source = Path(str(manifest.get("source_image") or ""))
+        if not source.exists():
+            found = sorted((out_dir / "assets").glob("source.*"))
+            source = found[0] if found else None
+        if source is None:
+            return _status("skipped", reason="source image not found")
+        arr = np.asarray(Image.open(source).convert("RGB"), dtype=np.int64)
+    except Exception as exc:
+        return _status("skipped", reason=repr(exc))
+
+    background = _hex_to_rgb(str(((manifest.get("canvas") or {}).get("background")) or "#ffffff"))
+    height, width = arr.shape[:2]
+    failed = []
+    review = []
+
+    for asset in crops:
+        region = asset["source_region"]
+        try:
+            x, y = int(_num(region.get("x"))), int(_num(region.get("y")))
+            w, h = int(_num(region.get("w"))), int(_num(region.get("h")))
+        except Exception:
+            continue
+        if w <= 4 or h <= 4:
+            continue
+        declared = str(asset.get("crop_window", "")).lower() or None
+
+        if declared == "contaminated":
+            failed.append({"id": asset.get("id"), "reason": "crop_window is contaminated but decision is still crop; the window contains foreground or backing pixels that are not the element"})
+            continue
+
+        band = 3
+        rx1, ry1 = max(0, x - band), max(0, y - band)
+        rx2, ry2 = min(width, x + w + band), min(height, y + h + band)
+        ring_parts = []
+        if ry1 < y:
+            ring_parts.append(arr[ry1:y, rx1:rx2].reshape(-1, 3))
+        if y + h < ry2:
+            ring_parts.append(arr[y + h : ry2, rx1:rx2].reshape(-1, 3))
+        if rx1 < x:
+            ring_parts.append(arr[max(0, y) : min(height, y + h), rx1:x].reshape(-1, 3))
+        if x + w < rx2:
+            ring_parts.append(arr[max(0, y) : min(height, y + h), x + w : rx2].reshape(-1, 3))
+        if not ring_parts:
+            continue
+        try:
+            import numpy as np
+
+            ring = np.concatenate(ring_parts)
+            quantized = (ring // 16) * 16
+            colors, counts = np.unique(quantized, axis=0, return_counts=True)
+            mode_index = int(np.argmax(counts))
+            in_bucket = (quantized == colors[mode_index]).all(axis=1)
+            # Mean of the actual pixels in the dominant bucket, not the
+            # quantized bucket value — light card fills sit only ~25 units
+            # from white, so bucket-value precision loss would hide them.
+            mode_rgb = ring[in_bucket].mean(axis=0)
+            dominant_share = float(counts[mode_index]) / float(len(quantized))
+            bg_dist = float(np.sqrt(((mode_rgb - np.array(background, dtype=float)) ** 2).sum()))
+
+            window = arr[max(0, y) : min(height, y + h), max(0, x) : min(width, x + w)]
+            ink = np.sqrt(((window.astype(float) - mode_rgb.astype(float)) ** 2).sum(axis=2)) > 40.0
+            edge_touch = bool(ink[0, :].any() or ink[-1, :].any() or ink[:, 0].any() or ink[:, -1].any())
+        except Exception:
+            continue
+
+        evidence = {
+            "id": asset.get("id"),
+            "declared": declared,
+            "ring_dominant": "#{:02x}{:02x}{:02x}".format(*[int(v) for v in mode_rgb]),
+            "ring_dominant_share": round(dominant_share, 3),
+            "ink_touches_edge": edge_touch,
+        }
+        if dominant_share < 0.90:
+            evidence["reason"] = "window border ring straddles more than one backing color; likely mid-layer or neighbor contamination"
+            review.append(evidence)
+        elif bg_dist > 12.0 and declared in {None, "clean"}:
+            evidence["reason"] = "backing is a uniform non-background fill; declare crop_window clean-on-fill and redraw the backing with this exact fill"
+            review.append(evidence)
+        elif edge_touch and declared in {None, "clean", "clean-on-fill"}:
+            evidence["reason"] = "ink touches the crop window edge; the window may clip the element or include an intruding neighbor"
+            review.append(evidence)
+
+    if failed:
+        return _status("failed", message="assets with a contaminated crop window are still coordinate-cropped", samples=failed[:30])
+    if review:
+        return _status(
+            "review",
+            message="pixel evidence contradicts the declared crop_window verdicts; re-examine these windows against the source",
+            count=len(review),
+            samples=review[:30],
+        )
+    return _status("ok", checked=len(crops))
 
 
 def _ocr_fallback_gate(manifest: dict[str, Any]) -> dict[str, Any]:
@@ -374,7 +506,8 @@ def audit_output(out_dir: Path) -> dict[str, Any]:
         "background_route_consistency": _background_route_consistency_gate(manifest),
         "background_plate": _background_plate_gate(manifest),
         "ai_patchwork_source_crops": _ai_patchwork_gate(manifest),
-        "opencv_detector_noise": _detector_noise_gate(manifest),
+        "crop_window_consistency": _crop_window_gate(manifest, out_dir),
+        "raw_detector_import": _raw_detector_import_gate(manifest),
         "ocr_fallback_text": _ocr_fallback_gate(manifest),
         "text_math_layout_fidelity": _text_math_layout_gate(manifest),
     }
@@ -384,7 +517,6 @@ def audit_output(out_dir: Path) -> dict[str, Any]:
 def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
     ocr = json.loads((out_dir / "ocr_results.json").read_text(encoding="utf-8")) if (out_dir / "ocr_results.json").exists() else {}
-    primitives = json.loads((out_dir / "detected_primitives.json").read_text(encoding="utf-8")) if (out_dir / "detected_primitives.json").exists() else {}
     assets = manifest.get("assets", [])
     elements = manifest.get("elements", [])
     editability = (manifest.get("quality_gates") or {}).get("editability", {})
@@ -403,7 +535,6 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
         f"- Source image: {manifest.get('source_image')}",
         f"- Canvas: {manifest.get('canvas', {}).get('width')} x {manifest.get('canvas', {}).get('height')}",
         f"- OCR status: {ocr.get('status', 'missing')} ({len(ocr.get('items', []))} text candidates)",
-        f"- OpenCV status: {primitives.get('status', 'missing')} ({primitives.get('counts', {})})",
         f"- Background strategy: {background_plan.get('strategy', 'conventional')}",
         f"- Assets: {len(assets)}",
         f"- Elements: {len(elements)}",
@@ -421,8 +552,17 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
     if editability:
         lines.append(f"- editability: `{editability.get('status')}` text_lift_ratio={editability.get('text_lift_ratio')} asset_text_risks={editability.get('asset_text_risk_count')}")
     lines.extend(["", "## Items Needing Review", ""])
-    if not low_conf and not crop_issues and all(v.get("status") in {"ok", "skipped"} for v in gates.values()):
+    editability_ok = editability.get("status") in {None, "ok"}
+    if not low_conf and not crop_issues and editability_ok and all(v.get("status") in {"ok", "skipped"} for v in gates.values()):
         lines.append("- No high-priority review items detected by automated checks.")
+    if editability.get("status") == "unavailable":
+        lines.append(
+            "- Gate `editability` is `unavailable`: OCR evidence is missing, so text_lift_ratio could not be computed. "
+            "Manually verify that no editable text was baked into raster assets, or restore `ocr_results.json` "
+            "(set `diagnostics.measurement_workspace` in the manifest, or keep the measurement `work/` directory next to it) and rerun."
+        )
+    elif editability.get("status") == "review":
+        lines.append(f"- Gate `editability` needs review: text_lift_ratio={editability.get('text_lift_ratio')} asset_text_risks={editability.get('asset_text_risk_count')} formula_leaks={editability.get('formula_text_leak_count')}")
     for el in low_conf[:80]:
         lines.append(f"- Element `{el.get('id')}` needs review: status={el.get('review_status')} confidence={el.get('confidence')}")
     for asset in crop_issues[:80]:
@@ -454,7 +594,6 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
             "## Diagnostics",
             "",
             "- `diagnostics/ocr_overlay.png`",
-            "- `diagnostics/structure_overlay.png`",
             "- `diagnostics/placement_overlay.png`",
             "- `diagnostics/style_overlay.png`",
             "- `editability_report.md`",

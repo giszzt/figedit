@@ -65,14 +65,31 @@ def _draw_placement_overlay(source: Path, manifest: dict, out_path: Path) -> Non
     image.save(out_path)
 
 
-def _copy_measurement_artifacts(manifest: dict, out_dir: Path) -> None:
-    workspace = (manifest.get("diagnostics") or {}).get("measurement_workspace")
-    if not workspace:
+def _copy_measurement_artifacts(manifest: dict, manifest_path: Path, out_dir: Path) -> None:
+    """Copy OCR/style evidence into the package so the editability gate can
+    compute text_lift_ratio. `diagnostics.measurement_workspace` is the
+    declared location; when it is absent, fall back to the conventional
+    `work/` directories next to the manifest — a missing copy silently
+    disables the baked-text check downstream, so never fail quietly."""
+    declared = (manifest.get("diagnostics") or {}).get("measurement_workspace")
+    candidates = []
+    if declared:
+        declared_path = Path(declared)
+        if not declared_path.is_absolute():
+            declared_path = (manifest_path.parent / declared_path).resolve()
+        candidates.append(declared_path)
+    candidates.append(manifest_path.parent / "work")
+    candidates.append(manifest_path.parent.parent / "work")
+
+    src_dir = next((c for c in candidates if c.exists() and (c / "ocr_results.json").exists()), None)
+    if src_dir is None:
+        print(
+            "WARNING: no measurement workspace found (checked diagnostics.measurement_workspace and ./work, ../work); "
+            "ocr_results.json will be missing and the editability gate will report `unavailable`.",
+            file=sys.stderr,
+        )
         return
-    src_dir = Path(workspace)
-    if not src_dir.exists():
-        return
-    for name in ["ocr_results.json", "detected_primitives.json", "style_tokens.json", "measurement_report.md"]:
+    for name in ["ocr_results.json", "style_tokens.json", "measurement_report.md"]:
         src = src_dir / name
         if src.exists():
             shutil.copy2(src, out_dir / name)
@@ -135,7 +152,7 @@ def compose(manifest_path: Path, out_dir: Path) -> dict:
             asset_path = Path(asset["file"])
             if not asset_path.is_absolute():
                 asset["file"] = str((manifest_path.parent / asset_path).resolve())
-    _copy_measurement_artifacts(manifest, out_dir)
+    _copy_measurement_artifacts(manifest, manifest_path, out_dir)
     _copy_background_artifacts(manifest, manifest_path, out_dir)
     _copy_generation_artifacts(manifest, manifest_path, out_dir)
     ascii_source = _ensure_ascii_source(manifest, manifest_path, out_dir)
