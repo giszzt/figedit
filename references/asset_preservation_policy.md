@@ -1,240 +1,215 @@
-# Asset Preservation Policy
+# 素材保留策略（Asset Preservation Policy）
 
-## Purpose
+## 目的
 
-This policy prevents over-vectorization. Many raster figures contain source-specific icons, pictograms, screenshots, maps, thumbnails, logos, or custom illustrations. These objects should usually be preserved by accurate cropping rather than replaced with newly drawn SVG approximations.
+本策略防止过度矢量化。许多位图图形含有源图专有的图标、象形图、截图、地图、缩略图、logo 或定制插画。这些对象通常应通过精确裁剪保留，而不是被新画的 SVG 近似物替换。
 
-The default for non-structural visual objects is:
+非结构性视觉对象的默认规则：
 
-> **Crop first. Redraw only when the object is clearly generic, structurally simple, and safe to approximate.**
+> **先裁剪。只有对象明显通用、结构简单、可安全近似时才重画。**
 
-## Definitions
+## 定义
 
-### Structural elements
+### 结构性元素
 
-Elements whose main function is layout, grouping, or relationship expression:
+主要功能是布局、分组或表达关系的元素：
 
-- panels
-- cards
-- frames
-- rules and separators
-- grid lines
-- table borders
-- arrows and connector lines
-- simple flow indicators
-- background blocks
+- 面板
+- 卡片
+- 边框
+- 标尺线和分隔线
+- 网格线
+- 表格边框
+- 箭头和连接线
+- 简单流向指示
+- 背景块
 
-Structural elements should normally be redrawn as editable SVG.
+结构性元素通常应重画为可编辑 SVG。
 
-### Visual assets
+### 视觉素材
 
-Elements whose main function is pictorial identity, visual evidence, iconographic meaning, or source-specific appearance:
+主要功能是图形身份、视觉证据、图标含义或源图专有外观的元素：
 
-- pictorial icons
-- custom icons
-- UI screenshots
-- maps and remote-sensing imagery
-- photos and thumbnails
-- logos and marks
-- inserted illustrations
-- hand-drawn characters or objects
-- detailed chart screenshots
-- product images
-- collage images
-- model outputs or example images
+- 图形性图标
+- 定制图标
+- UI 截图
+- 地图和遥感影像
+- 照片和缩略图
+- Logo 和标记
+- 插入的插画
+- 手绘角色或物体
+- 精细图表截图
+- 产品图
+- 拼贴图
+- 模型输出或示例图
 
-Visual assets should normally be cropped from the source image and embedded with `<image>`.
+视觉素材通常应从源图裁剪并用 `<image>` 嵌入。
 
-## Default Decision Rule
+## 默认决策规则
 
-Use this rule for every non-text visual object:
+每个非文字视觉对象用这条规则：
 
-1. If the element is structural, redraw it.
-2. If the element is pictorial, source-specific, or visually distinctive, crop it.
-3. If the element is a simple generic primitive, redraw it.
-4. If uncertain, crop it.
+1. 结构性的，重画。
+2. 图形性、源图专有或视觉有辨识度的，裁剪。
+3. 简单通用图元，重画。
+4. 拿不准，裁剪（先过 SKILL.md 的裁剪窗检查）。
 
-## Redraw Eligibility Test
+## 重画资格测试
 
-A visual object may be redrawn only if all of the following are true:
+视觉对象只有同时满足以下全部条件才可以重画：
 
-- It can be recreated with a small number of basic SVG primitives.
-- Its exact silhouette, texture, shading, or icon style is not important.
-- It is not a brand/logo/source-specific pictogram.
-- It is not a screenshot, map, photo, thumbnail, or model output.
-- It does not contain embedded raster detail.
-- Replacing it with a clean SVG equivalent will not change the perceived source figure.
+- 能用少量基础 SVG 图元重建。
+- 精确轮廓、纹理、明暗或图标风格不重要。
+- 不是品牌/logo/源图专有象形图。
+- 不是截图、地图、照片、缩略图或模型输出。
+- 不含内嵌位图细节。
+- 用干净 SVG 等价物替换不会改变源图观感。
 
-If any condition fails, crop the object instead.
+任一条不满足，改裁剪。
 
-## Strong Crop Triggers
+## 强裁剪触发条件
 
-Always prefer cropping when an element has any of these properties:
+元素具备以下任一属性时始终优先裁剪：
 
-- custom silhouette or non-generic drawing style
-- hand-drawn or paper-like texture
-- realistic shading, gradient, blur, grain, or shadow
-- embedded mini image, thumbnail, screenshot, or map
-- brand mark, application icon, institutional logo, or model logo
-- pictorial object such as clothing, person, drone, database illustration, camera, folder, city model, mountain model, vehicle, chart screenshot, phone UI, route map, or face/avatar
-- visual identity that would be degraded by approximation
-- repeated source image asset whose consistency matters across the figure
+- 定制轮廓或非通用画风
+- 手绘或纸纹质感
+- 真实感明暗、渐变、模糊、颗粒或阴影
+- 内嵌小图、缩略图、截图或地图
+- 品牌标记、应用图标、机构 logo 或模型 logo
+- 图形性对象：服装、人物、无人机、数据库插画、相机、文件夹、城市模型、山体模型、车辆、图表截图、手机 UI、路线图、面孔/头像
+- 近似会损伤的视觉身份
+- 在图中重复出现且一致性重要的源图素材
 
-## Weak Redraw Candidates
+## 弱重画候选
 
-These may be redrawn when doing so improves editability:
+以下内容在重画能改善可编辑性时可以重画：
 
-- plain circles, squares, rectangles, rounded rectangles
-- simple plus, minus, check, cross, bullet, dot
-- simple line arrows
-- plain dashed boxes
-- simple table/grid structures
-- basic geometric placeholder icons used only as structural markers
+- 朴素圆形、方形、矩形、圆角矩形
+- 简单加减号、对勾、叉、圆点
+- 简单线条箭头
+- 朴素虚线框
+- 简单表格/网格结构
+- 只作结构标记的基础几何占位图标
 
-## Composite Elements
+## 复合元素
 
-Many visual regions contain both editable and non-editable subparts.
+许多视觉区域同时含可编辑与不可编辑的子部分。
 
-Recommended split:
+推荐拆分：
 
-- crop pictorial icon or screenshot
-- retype nearby label
-- redraw surrounding card or panel
-- redraw connector lines and arrows
+- 裁剪图形图标或截图
+- 重打邻近标签
+- 重画周边卡片或面板
+- 重画连接线和箭头
 
-Example:
+例：一个含定制云图标和标签的灰色圆角图块，通常应变成：
 
-- A rounded gray tile containing a custom cloud icon and a label should usually become:
-  - SVG rounded tile
-  - cropped cloud icon asset
-  - editable text label
+- SVG 圆角图块
+- 裁剪的云图标素材
+- 可编辑文字标签
 
-## AI Clean Plate Overlay Assets
+## AI 清版底的叠层素材
 
-An AI clean plate replaces the continuous background with an accepted generated
-plate. It does not make source-specific foreground assets safe to approximate as
-SVG, but it also does not require every foreground object to be cropped back on
-top.
+AI 清版底用一张验收的生成底板替换连续背景。它不使源图专有前景素材变得可以安全近似为 SVG，但也不要求每个前景对象都被裁回顶上。
 
-Default stack for Mode `E-ai`:
+模式 `E-ai` 的默认叠层：
 
-- generated background plate
-- editable text and formulas
-- redrawn generic shapes and simple connectors
-- only the cropped source-specific foreground assets that truly need independent
-  source-preserved identity
+- 生成的背景底板
+- 可编辑文字和公式
+- 重画的通用形状和简单连接线
+- 只有真正需要独立源图身份的前景素材
 
-Crop a source asset over the plate only when all three conditions hold:
+只有三条同时成立才在底板上裁源图素材：
 
-1. exact source identity matters
-2. independent movement, replacement, or editing is useful
-3. the crop is clean, without old labels, leaders, halos, seams, or a large
-   rectangular patch of original background
+1. 精确源图身份重要
+2. 独立移动、替换或编辑有用
+3. 裁剪干净——无旧标签、引线、光晕、接缝或大块矩形原背景
 
-Leave the object flattened inside the clean plate when movement has low value,
-edges are inseparable, or extraction damage would be more visible than reduced
-editability.
+移动价值低、边缘不可分离、或提取损伤比编辑性损失更显眼时，把对象压平留在清版底里。
 
-Strong candidates for source crops include, but are not limited to:
+源图裁剪的强候选包括但不限于：
 
-- brand, institutional, product, app, publisher, journal, or project marks
-- distinctive pictograms, badges, seals, cover marks, legend keys, or status
-  symbols
-- scientific symbols, map thumbnails, screenshots, UI fragments, evidence
-  images, or domain-specific mini-illustrations
-- small icons whose exact style carries identity or semantic convention
-- textured, shaded, antialiased, hand-drawn, or raster-origin marks
-- icons paired with editable labels where the icon and text can be split
+- 品牌、机构、产品、应用、出版方、期刊或项目标记
+- 有辨识度的象形图、徽章、印章、封面标记、图例键或状态符号
+- 科学符号、地图缩略图、截图、UI 片段、证据图像或领域专有小插画
+- 精确风格承载身份或语义惯例的小图标
+- 有纹理、明暗、抗锯齿、手绘或位图出身的标记
+- 与可编辑标签配对、图标和文字可拆分的图标
 
-Prefer SVG redraw for:
+优先 SVG 重画的：
 
-- generic separators, boxes, simple bullets, simple arrows, and layout rules
-- icons that are intentionally schematic and can be matched exactly with basic
-  shapes
-- placeholder geometry where source identity is not important
+- 通用分隔线、方框、简单圆点、简单箭头和布局标尺线
+- 有意示意化、可用基础形状精确匹配的图标
+- 源图身份不重要的占位几何
 
-If the crop has surrounding background pixels, choose the least damaging option:
+裁剪带周边背景像素时，选损伤最小的选项：
 
-1. leave it in the clean plate when movement has low value
-2. crop with tight padding only when the local background matches the final plate
-3. remove background only when edges remain clean
-4. generate or AI-clean the asset only when movement matters and approximation
-   is acceptable and documented
+1. 移动价值低就留在清版底里
+2. 局部背景与最终底板一致时才紧凑裁剪
+3. 只在边缘能保持干净时移除背景
+4. 只在移动重要且近似可接受并有记录时生成或 AI 清理素材
 
-Do not use a generated clean plate as the source for exact assets. Crop exact
-assets from the original source image. Do not use large dirty source crops to
-patch the plate.
+不要把生成的清版底当精确素材的来源。精确素材从原始源图裁剪。不要用大块脏源图裁剪给底板打补丁。
 
-## Integrated Text in Assets
+## 素材内嵌文字
 
-If text is integrated into a small icon, screenshot, or logo and is not intended for editing, keep it inside the cropped asset.
+文字融入小图标、截图或 logo 且无意编辑时，留在裁剪素材内。
 
-If the text functions as a readable label or annotation, retype it separately and crop only the pictorial component.
+文字作为可读标签或注释使用时，单独重打，只裁图形部分。
 
-## Background Handling
+## 背景处理
 
-When cropping a visual asset:
+裁剪视觉素材时：
 
-- preserve the original background if it is visually part of the asset
-- remove the background only if this can be done cleanly
-- otherwise crop with slight surrounding background and align it onto the recreated panel
-- record the handling in the manifest
+- 背景是素材视觉的一部分就保留
+- 只在能干净移除时移除背景
+- 否则带少量周边背景裁剪，对齐到重建面板上
+- 处理方式记入 manifest
 
-If the object is visually bound to a continuous background, compare two final
-composites: an extracted version and a flattened version. Prefer the flattened
-version when extraction leaves halos, destroys internal holes, or removes fine
-structures.
+对象与连续背景视觉绑定时，比较两个最终合成：提取版和压平版。提取留下光晕、破坏内部孔洞或抹掉细结构时，选压平版。
 
-## Contaminated Assets
+## 污染素材
 
-An object crossed by text, leaders, dots, arrows, or neighboring content is not
-a clean source crop. Route it through `contaminated_asset_recovery.md`.
+被文字、引线、圆点、箭头或邻近内容穿过的对象不是干净源图裁剪。走 `contaminated_asset_recovery.md`。
 
-Use `flatten-background` when independent editing has low value or the object is
-inseparable. Use `regenerate-chroma` (see `chroma_regeneration.md`) when
-movement matters and approximation is acceptable: the object is reproduced on a
-solid chroma background and keyed out as a clean transparent asset. Do not use
-local painting or local inpainting as the recovery route.
+独立编辑价值低或对象不可分离时用 `flatten-background`。移动重要且近似可接受时用 `regenerate-chroma`（见 `chroma_regeneration.md`）：对象复现在纯色 chroma 底上，键控为干净透明素材。不要把本地涂抹或局部 inpaint 当恢复路线。
 
-Generated replacements must use `asset_fidelity: approximate-ok` or
-`semantic-only` and include `generation_provenance`.
+生成的替代物必须用 `asset_fidelity: approximate-ok` 或 `semantic-only`，并带 `generation_provenance`。
 
-## Asset Inventory Requirement
+## 素材清单要求
 
-Before SVG authoring, create an asset inventory for all pictorial objects. Each entry should include:
+SVG 编写前为所有图形对象建素材清单。每条包括：
 
-- asset ID
-- element type
-- source bounding box
-- target bounding box
-- decision reason
-- crop padding
-- background handling
-- verification status
+- 素材 ID
+- 元素类型
+- 源包围盒
+- 目标包围盒
+- 决策理由
+- 裁剪 padding
+- 背景处理
+- 核验状态
 
-## Prohibited Behavior
+## 禁止行为
 
-Do not:
+不要：
 
-- replace source-specific icons with generic invented SVG icons
-- redraw complex pictorial assets merely because they look simple at first glance
-- omit small pictorial objects without documenting the omission
-- simplify custom icons when visual fidelity is a user priority
-- redraw logos unless the user explicitly requests logo vectorization and licensing permits it
-- crop labels together with icons when labels should remain editable, unless the text is unreadable or integrated into the icon
-- present an image-generated approximation as an exact source asset
-- reject AI generation solely because an object is a logo, map, chart,
-  screenshot, measured geometry, or evidence image; decide by achievable
-  reconstruction fidelity and candidate validation
+- 用发明的通用 SVG 图标替换源图专有图标
+- 仅因第一眼看着简单就重画复杂图形素材
+- 不加记录地省略小图形对象
+- 视觉保真是用户优先级时简化定制图标
+- 重画 logo，除非用户明确要求矢量化且许可允许
+- 标签应保持可编辑时把标签和图标裁在一起，除非文字不可读或已融入图标
+- 把图像生成的近似物当精确源图素材呈现
+- 仅因对象是 logo、地图、图表、截图、测量几何或证据图像就拒绝 AI 生成；按可达到的重建保真和候选验证来决定
 
-## Review Questions
+## 复查问题
 
-Before finalizing an element decision, ask:
+定稿元素决策前自问：
 
-1. Is this object part of the diagram structure or a visual source asset?
-2. Would a user expect this object to look like the original?
-3. Would redrawing it create a visibly different or generic substitute?
-4. Can it be accurately cropped with acceptable padding?
-5. Does the label need to be editable separately?
+1. 这个对象是图表结构的一部分，还是视觉源素材？
+2. 用户会期望它看起来和原图一样吗？
+3. 重画会造出明显不同或通用化的替代物吗？
+4. 能以可接受的 padding 精确裁剪吗（裁剪窗干净吗）？
+5. 标签需要单独可编辑吗？
 
-If the answer favors original visual fidelity, crop it.
+答案偏向"保持原始视觉保真"，就裁剪。

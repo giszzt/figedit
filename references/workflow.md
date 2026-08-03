@@ -1,170 +1,169 @@
-# Reconstruction Workflow
+# 重建工作流（Reconstruction Workflow）
 
-## 1. Intake and Intent
+## 1. 需求与意图
 
-Determine the user's intent before reconstruction:
+重建前先确定用户意图：
 
-- pixel-faithful reconstruction
-- editable structural reconstruction
-- asset-preserving hybrid reconstruction
-- semantic redraw
-- publication cleanup or redesign
+- 像素级忠实重建
+- 可编辑结构重建
+- 保素材混合重建
+- 语义重画
+- 出版清理或重新设计
 
-If the user does not specify, default to asset-preserving hybrid reconstruction.
+用户未指明时，默认保素材混合重建。
 
-Background-aware reconstruction extends the standard FigEdit workflow. It does not replace OCR review, structure redraw, formula reconstruction, asset preservation, native PPTX export, or visual repair.
+背景感知重建是标准 FigEdit 工作流的扩展，不替代 OCR 复核、结构重画、公式重建、素材保留、原生 PPTX 导出和视觉修复。
 
-## 2. Recognition and Measurement Pass
+## 2. 识别与测量
 
-Run `scripts/prepare_measurements.py` for every figure before manifest authoring. Inspect:
+每张图在编写 manifest 前先跑 `scripts/prepare_measurements.py`。检视：
 
-- OCR candidates and `diagnostics/ocr_overlay.png`
-- detected primitives and `diagnostics/structure_overlay.png`
-- sampled style tokens and `diagnostics/style_overlay.png`
+- OCR 候选和 `diagnostics/ocr_overlay.png`
+- 采样的风格 token 和 `diagnostics/style_overlay.png`
 - `measurement_report.md`
-- `draft_manifest.json`
-- source image copied to the task workspace
+- `draft_manifest.json`（注意保留其中的 `diagnostics.measurement_workspace` 字段到最终 manifest）
+- 拷贝到任务工作区的源图
 
-Use diagnostics for measurement and verification only. Do not use `draft_manifest.json` as the final manifest. Do not bulk-import OpenCV segments, false arrows, or OCR fallback text into `elements`.
+诊断产物只用于测量和验证。不要把 `draft_manifest.json` 当最终 manifest 用。不要把 OCR 备选文字或任何检测器的原始候选整批导入 `elements`。
 
-## 3. Classify the Figure
+## 3. 图形分类
 
-Record:
+记录：
 
-- layout topology
-- content complexity
-- style type
-- reconstruction mode
-- expected asset fidelity level
+- 布局拓扑
+- 内容复杂度
+- 风格类型
+- 重建模式
+- 预期素材保真级别
 
-Use `taxonomy.md` when the type is unfamiliar. The default route remains conventional FigEdit; the background route is decided only by the Background Gate in `background_reconstruction.md`.
+类型陌生时用 `taxonomy.md`。默认路线始终是常规 FigEdit；背景路线只由 `background_reconstruction.md` 的背景门决定。
 
-## 4. Build Inventories
+## 4. 建立清单
 
-### Structure inventory
+### 结构清单
 
-Include panels, cards, frames, table/grid structures, separators, background blocks, connectors, and arrows.
+面板、卡片、边框、表格/网格结构、分隔线、背景块、连接线、箭头。
 
-Default decision: `redraw`.
+默认决策：`redraw`。
 
-### Text and formula inventory
+### 文字与公式清单
 
-Include titles, section headers, labels, annotations, legends, captions, mathematical formulas, equations, and inline math spans.
+标题、节标题、标签、注释、图例、图注、数学公式、方程和行内数学片段。
 
-Default decision: ordinary prose labels use `retype`; math-bearing spans use editable `math` with normalized LaTeX. For dense figures, record the source slot, baseline, and neighboring collision constraints before final placement. OCR boxes are hints; verify each tight label or formula against the source crop or tile.
+默认决策：普通散文标签 `retype`；含数学的片段用带规范化 LaTeX 的可编辑 `math`。密集图形先记录源槽位、基线和相邻碰撞约束再定最终位置。OCR 框只是提示；每个紧凑标签或公式都对照源图裁剪或分块核实。
 
-### Asset inventory
+### 素材清单
 
-Include icons, pictograms, illustrations, logos, maps, screenshots, thumbnails, photos, hand-drawn objects, model outputs, UI fragments, and other source-specific visuals.
+图标、象形图、插画、logo、地图、截图、缩略图、照片、手绘对象、模型输出、UI 片段和其他源图专有视觉。
 
-Default decision: `crop` unless the object passes the redraw eligibility test in `asset_preservation_policy.md`.
+默认决策：`crop`，除非对象通过 `asset_preservation_policy.md` 的重画资格测试。**每个 `crop` 决策先过 SKILL.md 的裁剪窗检查（Crop Window Check）**：肉眼判定窗口内除元素外还有没有别的东西（承载层、邻居），三档结果写进 `crop_window` 字段；contaminated 的先试收窗，不行走 `regenerate-chroma` 或留在原位。
 
-Do not redraw source-specific icons, logos, screenshots, custom pictograms, evidence thumbnails, technical symbols, or distinctive decorative marks just because they are small. If uncertain, crop.
+不要因为源图专有图标、logo、截图、定制象形图、证据缩略图、技术符号或有辨识度的装饰标记小就重画。拿不准就裁剪（前提是裁剪窗干净）。
 
-### Background inventory
+### 背景清单
 
-Identify the visual field behind foreground text and marks:
+识别前景文字和标记背后的视觉场：
 
-- flat fills and simple single-zone gradients
-- clean crop regions
-- photographs, illustrations, rendered scenes, textures, grain, stars, terrain, atmosphere, water, clouds, glow, lighting, collage, or painterly fields
-- regions where foreground labels hide unknown pixels
-- text-like material that may be background detail rather than editable foreground
+- 纯色填充和简单单区渐变
+- 干净的裁剪区域
+- 照片、插画、渲染场景、纹理、颗粒、星点、地形、大气、水、云、辉光、光照、拼贴或绘画场
+- 前景标签遮住未知像素的区域
+- 可能是背景细节而非可编辑前景的类文字内容
 
-Then ask the Background Gate question from `background_reconstruction.md`: can clean crops plus simple deterministic SVG faithfully reconstruct the background field without inventing scene pixels?
+然后问 `background_reconstruction.md` 的背景门问题：干净裁剪加简单确定性 SVG 能否在不发明场景像素的前提下忠实重建背景场？
 
-## 5. Decide Element Strategy
+## 5. 决定元素策略
 
-Apply these gates:
+应用这些门：
 
-1. Formula Gate: formulas and inline math become `math`.
-2. Text Gate: readable foreground text becomes SVG text.
-3. Structure Gate: panels, connectors, simple marks, and primitives are redrawn.
-4. Raster Asset Gate: source-specific visuals are cropped when exact identity matters.
-5. Background Gate: continuous scene-like backgrounds with foreground overlays become `ai-clean-plate` unless mechanically recoverable.
+1. 公式门：公式和行内数学变 `math`。
+2. 文字门：可读前景文字变 SVG 文字。
+3. 结构门：面板、连接线、简单标记和图元重画。
+4. 位图素材门：源图专有视觉在精确身份重要时裁剪（先过裁剪窗检查）。
+5. 背景门：带前景叠层的连续场景背景在非机械可恢复时走 `ai-clean-plate`。
 
-Record decisions and reasons in the manifest. Keep optional summaries concise; do not add fields as ceremony.
+决策和理由记入 manifest。可选摘要保持简洁；不要把字段当仪式加。
 
-## 6. Prepare Background and Assets
+## 6. 准备背景与素材
 
-### Conventional route
+### 常规路线
 
-No `background_plan`. Use this only when the background is mechanically recoverable: ordinary SVG fills, simple regular gradients, measured geometric regions, or clean source crops. Prepare assets normally:
+无 `background_plan`。仅在背景机械可恢复时使用：普通 SVG 填充、简单规则渐变、测量几何区域或干净源图裁剪。正常准备素材：
 
-- create source bounding boxes
-- add padding
-- crop to `assets/` as rectangles (`crop_assets.py`); a standalone transparent asset comes from chroma regeneration per `chroma_regeneration.md`, not from salient-object matting
-- record target placement
-- generate contact sheet
-- verify crops are not clipped, dirty, or missing
+- 建立源图包围盒
+- 加 padding
+- 按矩形裁到 `assets/`（`crop_assets.py`）；独立透明素材来自 chroma 再生（`chroma_regeneration.md`），不来自显著性抠图
+- 记录目标位置
+- 生成 contact sheet
+- 核实裁剪没有切边、污染或缺失
 
-### AI clean-plate route
+### AI 清版底路线
 
-Use this after the Background Gate selects `ai-clean-plate`, or when the user's own words request the AI route regardless of the gate's default (record `route_decision.source: "user-directive"`).
+在背景门选定 `ai-clean-plate` 后使用，或用户自己的话要求 AI 路线时使用（记录 `route_decision.source: "user-directive"`）。
 
-1. Build the foreground inventory and make the Foreground Depth Decision (`background_reconstruction.md`). This is a hard checkpoint: unless the user's own words state a depth preference, stop and present the mode options (with inventory, cost, and a recommendation) before any generation call. Record `background_plan.foreground_mode` and `foreground_mode_source`.
-2. Write a dynamic generation brief using `ai_clean_plate_prompting.md`; its remove list mirrors the extraction scope.
-3. Invoke a reference-capable image backend according to `image_backend_policy.md` — the agent's own built-in image tool first, scriptable backends as fallback.
-4. Accept only a full-canvas clean plate that removes the in-scope foreground and preserves the declared visual identity.
-5. Add the accepted plate as the bottom background asset.
-6. Regenerate the in-scope foreground objects on a chroma sheet and key them apart (`chroma_regeneration.md`) — the whole inventory on one sheet, split only if a single sheet visibly fails. Do not crop these objects from the original and do not run salient-object matting or improvised cutout scripts.
-7. Overlay editable text, formulas, simple marks, and the extracted assets.
+1. 建前景清单并做前景深度决策（`background_reconstruction.md`）。这是硬检查点：除非用户自己的话表明深度偏好，停下呈现模式选项（含清单、具体计费调用数预算和推荐）再做任何生成调用。记录 `background_plan.foreground_mode` 和 `foreground_mode_source`。
+2. 按 `ai_clean_plate_prompting.md` 写动态生成简报；移除清单与提取范围互为镜像。
+3. 按 `image_backend_policy.md` 调用支持参考图的后端——agent 自己的内置图像工具优先，可脚本后端作后备。
+4. 只验收移除了范围内前景、保留了声明视觉身份的整幅清版底；配准存疑时用 `check_plate_registration.py` 量化。
+5. 把验收底板加为最底层背景素材。
+6. 范围内前景对象在 chroma sheet 上再生并键控分离（`chroma_regeneration.md`）——先跑 `probe_palette.py --boxes` 分区，整份清单一张 sheet，只有单张明显失败才拆。不从原图裁这些对象，不跑显著性抠图或临时抠图脚本。
+7. 叠加可编辑文字、公式、简单标记和提取的素材。
 
-Do not crop large rectangular blocks from the original source over the plate. Do not crop old labels, leaders, or callout residue back into the final output. If an object is inseparable and low-edit-value even for regeneration, leave it in the clean plate.
+不要把大块矩形源图裁到底板上。不要把旧标签、引线或标注残留裁回最终输出。对象即使对再生来说也不可分离且编辑价值低时，留在清版底里。
 
-If no acceptable clean plate can be produced, report a blocker rather than downgrading silently.
+产不出可接受的清版底时，报告阻塞，不静默降级。
 
-## 7. Rebuild Structural SVG
+## 7. 重建结构 SVG
 
-Draw:
+绘制：
 
-- canvas background or clean plate placement
-- panel outlines
-- cards and content blocks
-- separators
-- arrows and connectors
-- table/grid lines
-- simple structural symbols
+- 画布背景或清版底放置
+- 面板轮廓
+- 卡片和内容块
+- 分隔线
+- 箭头和连接线
+- 表格/网格线
+- 简单结构符号
 
-Use semantic groups and IDs.
+使用语义分组和 ID。
 
-## 8. Retype Text and Rebuild Formulas
+## 8. 重打文字、重建公式
 
-Retype text as SVG text:
+文字重打为 SVG 文字：
 
-- preserve visual hierarchy
-- use readable fallback fonts
-- manually split long lines
-- preserve source-region fit, alignment, and baseline for dense labels
-- mark uncertain text in the manifest
+- 保持视觉层级
+- 使用可读的备选字体
+- 手动拆分长行
+- 密集标签保住源区域适配、对齐和基线
+- 不确定的文字在 manifest 标注
 
-For formulas, use `type: "math"` and a normalized `latex` string. Do not approximate formulas with plain text, and do not crop formulas as images to avoid layout work. Every detected formula should remain editable in PPTX unless the user explicitly waives formula editability for that specific item.
+公式用 `type: "math"` 和规范化 `latex` 字符串。不要用纯文本近似公式，也不要为回避排位工作把公式裁成图。每个检出公式在 PPTX 中都应保持可编辑，除非用户对该项明确豁免。
 
-For formula-heavy or small-text-dense figures:
+公式密集或小字密集的图形：
 
-1. place each formula/text element into a measured source slot
-2. render SVG preview and repair local collisions
-3. export native PPTX
-4. inspect or render the PPTX and repair PowerPoint-specific reflow, baseline, and overflow issues
+1. 每个公式/文字元素放进测量好的源槽位
+2. 渲染 SVG 预览并修复局部碰撞
+3. 导出原生 PPTX
+4. 检查或渲染 PPTX，修复 PowerPoint 特有的回流、基线和溢出问题
 
-Passing `pptx_math_export` means the formulas are editable; it does not prove that the PowerPoint layout is visually correct.
+`pptx_math_export` 通过意味着公式可编辑；不证明 PowerPoint 排版视觉正确。
 
-Before finalizing, scan text elements for formula cues, OCR artifacts, and fallback garbage.
+定稿前扫描文字元素找公式痕迹、OCR 伪影和备选垃圾。
 
-## 9. Place Assets
+## 9. 放置素材
 
-Place cropped assets using `<image>` elements.
+用 `<image>` 元素放置裁剪素材。
 
-- Preserve aspect ratio.
-- Use masks or clipping only when necessary.
-- Do not stretch assets unless the source itself is stretched.
-- Align assets to the recreated structure.
-- Mark generated assets as approximate.
-- Keep source-specific assets source-preserved when exact identity matters.
+- 保持宽高比。
+- 只在必要时用蒙版或裁剪。
+- 不拉伸素材，除非源图本身是拉伸的。
+- 素材对齐重建的结构。
+- 生成的素材标注为近似。
+- 精确身份重要的源图专有素材保持源图原样。
 
-## 10. Generate Deliverables
+## 10. 生成交付物
 
-Create:
+创建：
 
 - `editable.svg`
 - `editable_embedded.svg`
@@ -176,23 +175,23 @@ Create:
 - `editability_report.md`
 - `assets/`
 
-The `editable.pptx` is a native PowerPoint export of the same reconstruction. Formula elements should appear as editable Office Math objects when `pptx_math_export` is `ok`. Ordinary layer/layout groups are flattened during PPTX export so users can select text, shapes, connectors, and cropped assets directly; preserve only explicit atomic groups that need to stay together for fidelity.
+`editable.pptx` 是同一重建的原生 PowerPoint 导出。`pptx_math_export` 为 `ok` 时公式元素以可编辑 Office Math 对象呈现。PPTX 导出时普通图层/布局分组被压平，用户可直接选中文字、形状、连接线和裁剪素材；只保留为保真必须成组的显式原子组。
 
-For tight text or formula layouts, treat PPTX export as another render target, not as a packaging afterthought. Native PPT text and Office Math may reflow differently from SVG; repair the manifest until both deliverables are acceptable.
+紧凑文字或公式布局要把 PPTX 导出当作另一个渲染目标，不是打包收尾。原生 PPT 文字和 Office Math 的回流可能不同于 SVG；修 manifest 直到两个交付物都可接受。
 
-## 11. Validate and Repair
+## 11. 验证与修复
 
-Use `quality_checklist.md`.
+用 `quality_checklist.md`。
 
-Repair order:
+修复顺序：
 
-1. raw detector candidates, OCR fallback text, or OpenCV noise leaked into SVG
-2. missing information
-3. wrong structure or arrow direction
-4. missing or wrongly redrawn source-specific assets
-5. contaminated, clipped, haloed, or misplaced crops
-6. background route errors, ghosts, seams, or patchwork source blocks
-7. unreviewed generated content
-8. formula and text editability problems
-9. formula/text placement problems in SVG or PPTX
-10. visual polish
+1. 泄漏进 SVG 的原始检测候选、OCR 备选文字或检测器噪声
+2. 缺失信息
+3. 错误结构或箭头方向
+4. 缺失或被错误重画的源图专有素材
+5. 被污染、切边、带光晕或错位的裁剪（含裁剪窗问题）
+6. 背景路线错误、鬼影、接缝或源图块拼贴
+7. 未复查的生成内容
+8. 公式和文字可编辑性问题
+9. SVG 或 PPTX 里的公式/文字排位问题
+10. 视觉抛光

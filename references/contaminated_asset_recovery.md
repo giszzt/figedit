@@ -1,147 +1,118 @@
-# Contaminated Asset Recovery
+# 污染素材恢复（Contaminated Asset Recovery）
 
-## Definition
+## 定义
 
-A contaminated asset is a useful visual object whose source pixels include
-unwanted material such as:
+污染素材是源像素中混入了不需要的内容的有用视觉对象，混入内容包括：
 
-- labels or captions printed across the object
-- leader lines, arrowheads, dots, or callout markers
-- neighboring objects or panel boundaries
-- partial occlusion
-- background color trapped inside thin structures
-- glow, shadow, reflection, smoke, or transparency tied to the scene
+- 印在对象上的标签或图注
+- 引线、箭头、圆点或标注标记
+- 相邻对象或面板边界
+- 部分遮挡
+- 困在细结构内部的背景色
+- 与场景绑定的辉光、阴影、反射、烟雾或透明效果
 
-Direct cropping preserves the contamination. Naive background removal often
-damages the object.
+直接裁剪会把污染一起保留。朴素的背景移除常常损伤对象本身。
 
-## Recovery Gate
+**触发条件（客观）**：Crop Window Check（见 SKILL.md 位图素材门）判定某资产为 `contaminated`，或 `clean-on-fill` 的两个前提（承载面用采样实色重画、窗口不压边框/圆角/其他元素）不满足时，读本文件走恢复流程。
 
-### Crop Clean
+## 恢复门
 
-Use when the object has a complete boundary and the crop contains no unwanted
-overlay. Preserve background pixels only when they are part of the asset.
+### 干净裁剪（Crop Clean）
 
-### Transparent Cutout
+对象边界完整、裁剪窗内没有不需要的叠加物时使用。这是第一选项，也是最便宜的修复：**先试收缩或挪动裁剪窗**，能在不切掉元素本体的前提下排除入侵物（邻居图形、文字、边框），就用更紧的窗口裁。背景像素只在属于素材本身时保留。
 
-When a contaminated object must become a movable transparent asset,
-regeneration (AI-Assisted Cleanup, below) is the method: reproduce the object
-on a flat chroma sheet and key it apart (`chroma_regeneration.md`). There is
-no salient-object matting step — cutting the object out of its natural,
-contaminated source background with rembg / U2-Net or hand-rolled
-GrabCut/difference/threshold scripts is exactly what produced the clipped,
-ghosted assets this gate exists to avoid. If the object sits on a flat or
-separable background and simply needs a rectangle, coordinate-crop it instead
-(`crop_assets.py`); no alpha is needed.
+### 透明抠出（Transparent Cutout）
 
-### AI-Assisted Cleanup
+被污染的对象必须成为可移动透明素材时，方法是再生（下文"AI 辅助清理"）：在纯色 chroma sheet 上复现对象再键控分离（`chroma_regeneration.md`）。没有显著性抠图这一步——用 rembg / U2-Net 或手搓 GrabCut/差值/阈值脚本从自然的污染背景里抠对象，正是本门要杜绝的"切碎、鬼影"素材的来源。如果对象坐在平整或可分离的背景上、只需要一个矩形，就坐标裁剪（`crop_assets.py`），不需要 alpha。
 
-Use when annotations cross an object that should remain movable and exact
-cropping would preserve the contamination.
+### AI 辅助清理（AI-Assisted Cleanup）
 
-Preferred order:
+标注穿过一个需要保持可移动的对象、精确裁剪会保留污染时使用。
 
-1. Try a cleaner source crop if the object boundary allows it.
-2. If the object does not need movement, flatten it in the clean plate.
-3. If movement matters, regenerate the object on a solid chroma background and
-   key it out (`chroma_regeneration.md`). This is the standard execution path
-   for generation-based recovery: it produces a clean transparent asset with
-   no halo, no residue, and no manual matting.
+优先顺序：
 
-Do not use clone painting or local inpainting as a final asset recovery path.
-Preserve the object's silhouette and internal geometry in the generation brief.
+1. 对象边界允许的话，先试更干净的源图裁剪（收窗/挪窗）。
+2. 对象不需要移动，就压平留在清版底里。
+3. 移动性重要，就在纯色 chroma 底上再生该对象并键控分离（`chroma_regeneration.md`）。这是生成式恢复的标准执行路径：产出无光晕、无残留、无手工抠图的干净透明素材。
 
-### Flatten Background
+不要把克隆涂抹或局部 inpaint 当作素材恢复的最终路径。在生成简报里保住对象的轮廓和内部几何。
 
-Use when independent editing is not valuable enough to justify a fragile
-cutout. This is often best for:
+### 压平背景（Flatten Background）
 
-- objects with hundreds of fine intersections
-- large transparent or reflective surfaces
-- strongly integrated shadows and atmospheric effects
-- elements partly hidden behind multiple labels
-- decorative objects that never need to move
+独立编辑的价值不足以支撑脆弱抠图时使用。常见于：
 
-Remove editable labels and leaders from the plate, but leave the object itself.
+- 有成百上千精细交叠的对象
+- 大面积透明或反射表面
+- 与背景强绑定的阴影和大气效果
+- 被多个标签部分遮挡的元素
+- 永远不需要移动的装饰性对象
 
-### Generate Replacement
+从底板移除可编辑标签和引线，对象本体留下。
 
-Use only when:
+### 生成替代（Generate Replacement）
 
-- the original cannot be cleaned adequately
-- the candidate can be independently reviewed
+仅当以下条件同时成立时使用：
 
-Record the generated origin separately from the requested fidelity target.
-Generated assets must never be misreported as untouched source crops.
+- 原件无法充分清理
+- 候选可以被独立复查
 
-For tasks targeting stricter fidelity, generation is still eligible. Expand the
-preserve constraints and reject candidates that alter identity, geometry,
-values, boundaries, or source-specific relationships beyond the task tolerance.
+生成来源与要求的保真目标分开记录。生成素材绝不能被误报为未处理的源图裁剪。
 
-## Whole-Plate Alternative
+保真要求更严的任务，生成仍然有资格。扩充保留约束，拒收改变身份、几何、数值、边界或源图特有关系超出任务容差的候选。
 
-Before restoring many contaminated assets independently, ask whether the user
-actually needs them to move. If most large visuals can remain fixed, use one AI
-clean plate and rebuild only the annotation layer. This is usually superior
-when:
+## 整版底板替代方案
 
-- five or more pictorial objects are crossed by annotations
-- thin structures make alpha extraction fragile
-- shadows and glows bind objects to the background
-- restoring every object would create visible seams
-- editability is mainly needed for text and callouts
+在逐个恢复大量污染素材之前，先问用户是否真的需要它们能移动。如果多数大型视觉对象可以固定不动，就用一张 AI 清版底、只重建标注层。以下情况通常更优：
 
-## Generation Targets
+- 五个以上图形对象被标注穿过
+- 细结构使 alpha 提取脆弱
+- 阴影和辉光把对象绑在背景上
+- 逐个恢复会产生可见接缝
+- 可编辑性主要集中在文字和标注上
 
-### Clean Asset
+## 生成目标
 
-Generate the object alone on a solid chroma background chosen by
-`probe_palette.py`, then extract it with `chroma_key.py` (full workflow and
-prompt framework in `chroma_regeneration.md`). Use a tight source crop as
-reference. Ask for:
+### 干净素材
 
-- the same view and orientation
-- the same approximate proportions and lighting
-- an exactly flat key-color background, no cast shadows onto it
-- no labels, lines, arrows, dots, logos, or text
-- no extra parts
+把对象单独生成在 `probe_palette.py` 选定的纯色 chroma 底上，再用 `chroma_key.py` 提取（完整工作流和提示词框架见 `chroma_regeneration.md`）。参考图用紧凑源图裁剪。要求：
 
-For many small contaminated objects, batch them into one grid sheet and slice
-with `slice_grid.py` instead of generating one by one.
+- 相同视角和朝向
+- 相同的大致比例和光照
+- 完全平整的键色背景，无投影
+- 无标签、线条、箭头、圆点、logo 或文字
+- 无多余零件
 
-### Repair Patch
+多个小型污染对象批量放一张网格 sheet，用 `slice_grid.py` 切分（多部件图标用 `--cells`），不要一个一个生成。
 
-Generate only the damaged region plus context. Composite it into a
-source-locked crop. This is safer than regenerating the entire object when
-shape fidelity matters.
+### 修补块
 
-### Background Plate
+只生成受损区域加上下文，合成回源图锁定的裁剪里。形状保真重要时，这比重生整个对象安全。
 
-Generate a full plate only when coordinate drift is acceptable. For
-coordinate-sensitive work, generate patches and preserve unaffected source
-pixels.
+### 背景底板
 
-## Manifest Requirements
+只在坐标漂移可接受时生成整版底板。坐标敏感的工作生成补丁块并保留未受影响的源像素。
 
-Record:
+## Manifest 要求
 
-- `contamination`: types of unwanted overlap
+记录：
+
+- `contamination`：不需要的重叠类型
 - `separation_strategy`
-- `edit_value`: high, medium, or low
+- `edit_value`：high / medium / low
 - `fidelity_requirement`
-- `generation_provenance` when used
+- 使用生成时的 `generation_provenance`
 - `review_status`
 
-Document why flattening or generation was chosen over extraction.
+说明为何选择压平或生成而不是提取。
 
-## Rejection Conditions
+## 拒收条件
 
-Reject a candidate when:
+出现以下情况拒收候选：
 
-- silhouette or orientation changes materially
-- missing parts are invented
-- labels or pseudo-text appear
-- scientific or technical structure changes
-- highlights and shadows conflict with the final background
-- the edge still shows a source-colored halo
-- the candidate is cleaner but no longer represents the source object
+- 轮廓或朝向实质性改变
+- 缺失部分被凭空发明
+- 出现标签或伪文字
+- 科学或技术结构改变
+- 高光和阴影与最终背景冲突
+- 边缘仍有源图色光晕
+- 候选更干净了，但已经不能代表源对象

@@ -1,204 +1,163 @@
-# Background Reconstruction
+# 背景重建（Background Reconstruction）
 
-Use this reference only when a continuous background field may not be faithfully recoverable by the normal FigEdit hybrid route.
+仅当连续背景场可能无法由常规 FigEdit 混合路线忠实恢复时使用本参考。
 
-This file is the single authoritative definition of the Background Gate. Other documents (SKILL.md, taxonomy, workflow, quality checklist) summarize or check against it; when wording differs, this file wins, and criteria changes are made here only.
+本文件是背景门（Background Gate）的唯一权威定义。其他文档（SKILL.md、taxonomy、workflow、quality checklist）只是它的摘要或对照；措辞有出入时以本文件为准，判据修改只在这里进行。
 
-## First Principle
+## 第一性原理
 
-Background handling is not a separate reconstruction workflow. It is one extra gate inside FigEdit:
+背景处理不是一套独立的重建工作流，只是 FigEdit 里多出的一道门：
 
-**Can clean source crops plus simple deterministic SVG primitives faithfully reconstruct the background field without inventing scene pixels?**
+**干净源图裁剪加简单确定性 SVG 图元，能否在不发明场景像素的前提下忠实重建背景场？**
 
-If yes, use the conventional FigEdit route and do not add `background_plan`.
+能，走常规 FigEdit 路线，不加 `background_plan`。
 
-If no, use `ai-clean-plate`.
+不能，走 `ai-clean-plate`。
 
-The gate is about mechanical recoverability, not visual density, genre, or how many objects the image contains. A background is mechanically recoverable only when it can be rebuilt from measured geometry, flat fills, regular gradients, repeatable patterns, or clean source crops. If the plan requires painting a plausible scene, texture, or illustration, it is not mechanically recoverable.
+本门关心的是机械可恢复性，不是视觉密度、体裁或图里有多少对象。背景只有在能由测量几何、纯色填充、规则渐变、可重复图案或干净源图裁剪重建时才算机械可恢复。如果方案需要绘制一个"貌似合理"的场景、纹理或插画，它就不是机械可恢复的。
 
-## User Route Directive
+## 用户路线指令（User Route Directive）
 
-The gate answers the default question for figures where the user has not chosen a route. An explicit route request in the user's own words overrides the gate, in both directions:
+本门回答的是用户未选路线时的默认问题。用户用自己的话提出的路线要求在两个方向上都优先于本门：
 
-- **User asks for the AI route on a figure the gate would route conventionally** ("走清版路线", "regenerate the background", "don't crop it, generate it clean"). Honor it. Add `background_plan`, run the full clean-plate workflow, and record `route_decision.source: "user-directive"` with the user's wording in `route_decision.reason`. This is a legitimate choice, not an error to argue away: coordinate crops can carry compression artifacts, contaminated edges, or tight-boundary losses that a regenerated plate and regenerated assets avoid. All clean-plate acceptance standards still apply — the directive changes the route, never the quality bar.
-- **User insists on the conventional route for a figure the gate would send to `ai-clean-plate`**. Honor that too. State the expected fidelity cost in one or two sentences (approximate SVG scenery or visible crop patchwork), then proceed as directed and record `route_decision.source: "user-directive"`.
+- **用户对本门会判常规的图要求 AI 路线**（"走清版路线"、"把背景重新生成"、"别裁了，生成一张干净的"）。照办。加 `background_plan`，跑完整清版底工作流，记录 `route_decision.source: "user-directive"` 并在 `route_decision.reason` 引用用户原话。这是正当选择，不是需要劝阻的错误：坐标裁剪可能携带压缩伪影、污染边缘或紧边界损失，而再生底板和再生素材可以避免。所有清版底验收标准照常适用——指令改变路线，从不降低质量线。
+- **用户对本门会判 `ai-clean-plate` 的图坚持常规路线**。也照办。用一两句话说明预期的保真代价（近似 SVG 风景或可见的裁剪拼贴），然后按指令执行，记录 `route_decision.source: "user-directive"`。
 
-A directive must come from the user's own words in this task. Do not infer one from the figure's genre, and do not use this section to skip the gate when the user has not spoken. When the gate decides, record `route_decision.source: "background-gate"`.
+指令必须来自本次任务中用户自己的话。不要从图形体裁推断指令，也不要在用户没发话时用本节跳过门判定。由门决定时，记录 `route_decision.source: "background-gate"`。
 
-## Conventional Route
+## 常规路线
 
-Use the conventional route for backgrounds that can be rebuilt by ordinary FigEdit methods without visual invention:
+背景能用普通 FigEdit 方法重建、无需视觉发明时走常规路线：
 
-- flat fills
-- simple single-zone gradients with measurable endpoints
-- regular geometric regions
-- clean screenshot, chart, map, or photo crops
-- white or light diagram backgrounds
-- diagrams with many icons but separable backgrounds and assets
+- 纯色填充
+- 端点可测量的简单单区渐变
+- 规则几何区域
+- 干净的截图、图表、地图或照片裁剪
+- 白色或浅色图表背景
+- 图标多但背景与素材可分离的图
 
-The manifest has no `background_plan`. Treat the background as ordinary shapes and assets. Continue to crop source-specific visuals, retype text, rebuild formulas, and redraw structure by the normal element gates.
+manifest 不含 `background_plan`。背景当普通形状和素材处理。源图专有视觉照常裁剪、文字照常重打、公式照常重建、结构照常重画。
 
-## AI Clean Plate Route
+## AI 清版底路线
 
-Use `ai-clean-plate` when the background is a continuous visual field and the foreground is embedded in it, so removing text, marks, or foreground assets reveals unknown pixels that clean crops and simple SVG primitives cannot reproduce.
+背景是连续视觉场、前景嵌在其中，移除文字、标记或前景素材会露出干净裁剪和简单 SVG 图元无法复现的未知像素时，走 `ai-clean-plate`。
 
-Common examples:
+常见例子：
 
-- photographs under titles or labels
-- illustrated, painterly, rendered, or collage fields
-- irregular or multi-zone gradients, especially when they represent a scene rather than a plain style fill
-- layered visual fields such as sky, space, water, land, terrain, atmosphere, clouds, glow, bokeh, smoke, lighting, and painterly or rendered surfaces
-- magazine covers, posters, and social cards with typography over imagery
-- technical scenes where labels, leaders, or legends cross a continuous visual field
+- 标题或标签压着的照片
+- 插画、绘画、渲染或拼贴场
+- 不规则或多区渐变，尤其是表达场景而非纯风格填充时
+- 分层视觉场：天空、太空、水面、地形、大气、云、辉光、虚化、烟雾、光照、绘画或渲染表面
+- 文字压在影像上的杂志封面、海报和社交卡片
+- 标签、引线或图例穿过连续视觉场的技术场景
 
-Strong AI-route signals:
+强 AI 路线信号：
 
-- the same continuous field runs behind many labels or icons
-- labels, arrows, leader lines, callout dots, legend blocks, or icon shadows overlap the field
-- removing those foreground elements would require reconstructing hidden pixels
-- foreground assets are visually entangled with glows, shadows, transparency, or background texture
-- the conventional plan would say "redraw the background as SVG" but cannot describe it as a small set of measured primitives
+- 同一连续场延伸到许多标签或图标背后
+- 标签、箭头、引线、标注点、图例块或图标阴影与场重叠
+- 移除这些前景元素需要重建被遮像素
+- 前景素材与辉光、阴影、透明度或背景纹理在视觉上缠结
+- 常规方案嘴上说"把背景重画成 SVG"，却给不出一小组可测量图元的描述
 
-When these signals appear, select `ai-clean-plate` early. Do not downgrade because a determined illustrator could approximate the scene in SVG.
+这些信号出现时尽早选 `ai-clean-plate`。不要因为"一个执着的插画师能近似画出这个场景"就降级。
 
-This route creates a clean non-editable visual bottom layer. It should remove foreground annotations that will be rebuilt, while preserving visual content that belongs to the background.
+本路线产出一张干净的不可编辑视觉底层。它应移除将被重建的前景标注，同时保留属于背景的视觉内容。
 
-## Foreground Depth Decision
+## 前景深度决策（Foreground Depth Decision）
 
-Once the gate selects `ai-clean-plate`, there are two overlay strategies, and
-they require **different plates**, so this decision must be made before plate
-generation:
+门选定 `ai-clean-plate` 后，前景叠层有两种策略，且需要**不同的底板**，所以必须在底板生成前决定：
 
-- **full-extract**: every movable foreground pictorial object is regenerated
-  as an independent transparent asset (`chroma_regeneration.md`) and layered
-  over a plate that has them all removed. Maximum editability; each object can
-  be moved, replaced, or reused. Costs extra generation sheets and review.
-- **flatten**: all pictorial objects stay baked into the plate; only text,
-  formulas, and simple SVG marks are editable. One plate call, fast and cheap.
-- **selective**: user-named objects are extracted, the rest stay flattened.
-  The plate's remove list contains exactly the extracted subset.
+- **full-extract（完全打散）**：每个可移动的前景图形对象都再生为独立透明素材（`chroma_regeneration.md`），叠在一张移除了它们全部的底板上。编辑性最高；每个对象可移动、可替换、可复用。代价是额外的生成 sheet 和逐元素复查。
+- **flatten（仅文字可编辑）**：所有图形对象烘在底板里；只有文字、公式和简单 SVG 标记可编辑。一次底板调用，快且省。
+- **selective（指定提取）**：用户点名的对象被提取，其余压平。底板的移除清单恰好等于被提取子集。
 
-**This is a hard checkpoint, not a judgment call.** Asking the user is the
-default action. The only condition that skips the question is an explicit
-preference in the user's own words — "我要能拖动/替换里面的元素" implies
-full-extract, "只改文字/翻译一下" implies flatten, naming specific objects
-implies selective. What the figure looks like (many objects, fiddly edges,
-entangled boundaries) may shape which option you *recommend*; it never
-authorizes choosing for the user. An agent that selects a mode from its own
-reading of the figure while the user is available has violated this gate.
+**这是硬检查点，不是自由裁量。** 默认动作就是问用户。唯一可以跳过提问的条件是用户自己的话里已有明确偏好——"我要能拖动/替换里面的元素"意味着 full-extract，"只改文字/翻译一下"意味着 flatten，点名具体对象意味着 selective。图形长什么样（对象多、边缘细碎、边界缠结）只影响你**推荐**哪个选项，绝不授权替用户选择。用户在场时 agent 凭自己对图的解读选模式，就是违反本门。
 
-Procedure:
+流程：
 
-1. Build the foreground inventory first (all movable pictorial objects), so
-   the choice is made over a concrete list, not an abstraction.
-2. Scan the user's request for explicit depth wording. Found: record it and
-   proceed. Not found: **stop and ask**, before any generation call.
-3. Present the options with what each buys and costs, over the concrete
-   inventory. A serviceable framing (adapt names and detail to the user):
+1. 先建前景清单（所有可移动图形对象），让选择建立在具体清单而非抽象概念上。
+2. 扫描用户请求找显式深度措辞。找到：记录并继续。没找到：**停下来问**，先于任何生成调用。
+3. 呈现选项时说明每种模式换来什么、代价是什么，对着具体清单讲，**预算写成具体数字**。可用的框架（名称和详略按用户调整）：
 
-   - **完全打散 (full-extract)** — every listed object becomes an
-     independent movable/replaceable asset. Highest editability; costs one
-     plate + one foreground-sheet generation (usually a single sheet for the
-     whole inventory) + per-element review; slowest.
-   - **指定提取 (selective)** — you name the objects worth extracting, the
-     rest stay in the background. Middle cost; good when only a few objects
-     will ever move.
-   - **仅文字可编辑 (flatten)** — objects stay baked into the clean plate;
-     text, formulas, and annotations become editable. One plate call;
-     fastest and cheapest.
+   - **完全打散（full-extract）** —— 清单上每个对象都成为独立可移动/可替换素材。编辑性最高；预算 **1 张清版底 + K 张前景 sheet =（1+K）次计费生成**（K 由 `probe_palette.py --boxes` 的色相分区结果给出，通常 1–2），外加逐元素复查；最慢。
+   - **指定提取（selective）** —— 你点名值得提取的对象，其余留在背景里。成本居中；只有少数对象需要移动时合适。
+   - **仅文字可编辑（flatten）** —— 对象烘在清版底里；文字、公式和标注可编辑。1 次底板调用；最快最省。
 
-   Attach your recommendation and the reason, and note that the choice fixes
-   the plate: switching later means regenerating it.
-4. Record the choice in `background_plan.foreground_mode`
-   (`full-extract` | `selective` | `flatten`) and its origin in
-   `background_plan.foreground_mode_source`
-   (`user-choice` | `explicit-request` | `auto-default`) before writing the
-   plate brief. The plate remove list and the regeneration inventory must
-   both match the recorded mode.
+   附上你的推荐和理由，并说明这个选择会锁定底板：之后换模式意味着重生底板。
+4. 在写底板简报之前，把选择记入 `background_plan.foreground_mode`（`full-extract` | `selective` | `flatten`），来源记入 `background_plan.foreground_mode_source`（`user-choice` | `explicit-request` | `auto-default`）。底板移除清单和再生清单都必须与所记模式一致。
 
-`auto-default` (flatten, the cheaper lower-risk deliverable) is legitimate
-only when no user can respond — an unattended batch run. In an interactive
-session it is a gate violation, and the report must say that full-extract
-would require a new plate.
+`auto-default`（flatten，更便宜风险更低的交付）只在无人可应答时合法——无人值守的批量运行。交互会话里它是违门行为，且报告必须说明 full-extract 需要一张新底板。
 
-## Foreground Policy After AI Clean Plate
+交付说明必须含一行「预算 N 次 / 实际 M 次」计费生成调用对照，超出的每一次（含被拒重生）写明原因。
 
-Do not treat AI clean plate as permission to recrop every object. After the plate is accepted, restore only what needs to be editable or source-exact.
+## 清版底通过后的前景策略
 
-Default overlay:
+不要把 AI 清版底当成"把每个对象都重新裁一遍"的许可。底板验收后，只恢复真正需要可编辑或需要源图精确性的内容。
 
-- editable titles, labels, captions, legends, and ordinary text
-- `math` elements for formulas
-- simple leader lines, arrows, dots, frames, rules, and markers
+默认叠层：
 
-Crop a source asset over the plate only when all three conditions hold:
+- 可编辑的标题、标签、图注、图例和普通文字
+- 公式的 `math` 元素
+- 简单引线、箭头、圆点、边框、标尺线和标记
 
-1. exact source identity matters
-2. independent movement, replacement, or editing is useful
-3. the crop can be clean, without old text, callouts, halos, seams, or a large rectangular patch of original background
+只有三个条件同时成立才在底板上裁源图素材：
 
-Under `full-extract` and `selective`, every in-scope object is obtained by
-`regenerate-chroma` (`chroma_regeneration.md`): reproduced on a chroma sheet
-and keyed apart. This handles composite, entangled, and plain pictorial
-objects alike. Do not crop these objects from the original image and do not
-run salient-object matting on them — the whole point of this route is that the
-hidden pixels behind the foreground are unrecoverable from the source, so the
-foreground is rebuilt by the model, not extracted from it. No rectangle-crop
-attempts, no improvised local matting. Scope follows the Foreground Depth Decision: the whole inventory under
-`full-extract` (one regeneration sheet carries many elements at no extra
-cost), exactly the user-named subset under `selective`, none under `flatten`.
-A clean flattened plate is still better than a visibly patched
-reconstruction — but a regenerated transparent asset is not a patch.
+1. 源图精确身份重要
+2. 独立移动、替换或编辑有用
+3. 裁剪能干净——不带旧文字、标注、光晕、接缝或一大块矩形原背景
 
-## Background Text-Like Content
+`full-extract` 和 `selective` 下，每个范围内对象都通过 `regenerate-chroma`（`chroma_regeneration.md`）获得：在 chroma sheet 上复现再键控分离。复合对象、缠结对象、普通图形对象一视同仁。不要从原图裁这些对象，也不要对它们跑显著性抠图——这条路线的意义就在于前景背后的隐藏像素无法从源图恢复，所以前景由模型重建，不从源图提取。不试矩形裁剪，不试临时抠图。范围跟随前景深度决策：`full-extract` 是整份清单（一张再生 sheet 承载多个元素，无额外成本），`selective` 恰好是点名子集，`flatten` 为零。干净的压平底板仍然好于打了可见补丁的重建——但再生的透明素材不算补丁。
 
-Do not blindly remove every formula, code fragment, handwriting mark, glyph, or faint label. Classify text-like content by role:
+## 背景中的类文字内容
 
-- **Foreground to rebuild**: titles, labels, captions, legends, callouts, explanatory text, primary formulas, readable code panels, and annotations that users may edit.
-- **Background to preserve**: faint formulas, code texture, graph ticks, schematic glyphs, handwriting, or microtext that functions as visual atmosphere, surface detail, or low-edit-value context.
+不要盲目移除每个公式、代码片段、手写标记、字形或淡色标签。按角色分类：
 
-The same visual token can be foreground in one image and background in another. Decide from reading role, contrast, layering, edit value, and whether removing it would damage the visual identity.
+- **待重建前景**：标题、标签、图注、图例、标注、说明文字、主要公式、可读代码面板，以及用户可能编辑的注释。
+- **待保留背景**：作为视觉氛围、表面细节或低编辑价值语境存在的淡色公式、代码纹理、图轴刻度、示意字形、手写体或微缩文字。
 
-## Prompt Brief
+同一个视觉符号在一张图里是前景，在另一张图里可以是背景。从阅读角色、对比度、层次、编辑价值、以及"移除是否破坏视觉身份"来判断。
 
-When `ai-clean-plate` is selected, write a dynamic brief before invoking any backend. Read `ai_clean_plate_prompting.md`.
+## 提示词简报
 
-The brief must specify:
+选定 `ai-clean-plate` 后，先写动态简报再调用任何后端。读 `ai_clean_plate_prompting.md`。
 
-- what to preserve
-- what to remove
-- what hidden pixels to reconstruct
-- which text-like background inscriptions, if any, should remain
-- what would cause candidate rejection
+简报必须写明：
 
-Do not delegate this classification to the image model.
+- 保留什么
+- 移除什么
+- 重建哪些被遮像素
+- 哪些类文字背景铭刻（如有）应当留下
+- 什么情况拒收候选
 
-## Minimal Manifest Requirements
+不要把这套分类甩给图像模型。
 
-Conventional route:
+## Manifest 最低要求
 
-- no `background_plan`
+常规路线：
 
-AI clean plate route:
+- 无 `background_plan`
+
+AI 清版底路线：
 
 - `background_plan.strategy: "ai-clean-plate"`
-- route reason explaining why crop + SVG cannot faithfully reconstruct the background
-- accepted clean plate asset aligned to the canvas
-- generation provenance for the accepted plate
-- candidate review showing why the plate was accepted
+- 路线理由，说明为何裁剪+SVG 无法忠实重建背景
+- 已验收、对齐画布的清版底素材
+- 已验收底板的生成来源记录
+- 说明底板为何被接受的候选复查记录
 
-`recognition_summary`, `asset_decision_policy`, and detailed text/asset policy objects are optional. Use them when they clarify a difficult case, not as required ceremony.
+`recognition_summary`、`asset_decision_policy` 和详细的文字/素材策略对象是可选的。在困难案例上用于澄清，不作为例行仪式。
 
-## Failure Conditions
+## 失败条件
 
-Reject or repair the output if:
+出现以下情况拒收或修复：
 
-- the untouched source image is used as the clean plate while old foreground text remains visible
-- local blur, clone, mask-fill, or OpenCV/PIL inpaint is presented as an AI clean plate
-- large rectangular source crops cover the generated plate
-- source crops contain old labels, leaders, or annotation residue that should have been rebuilt
-- editable text or simple marks were left baked into a raster asset without justification
-- the clean plate changes major object count, orientation, placement, or visual identity beyond the declared tolerance
-- the final result looks like a collage of patches instead of one coherent background plus editable foreground
+- 未处理的源图被当作清版底使用，旧前景文字仍可见
+- 本地模糊、克隆、蒙版填充或 OpenCV/PIL inpaint 被冒充为 AI 清版底
+- 大块矩形源图裁剪盖在生成底板上
+- 源图裁剪携带本应重建的旧标签、引线或标注残留
+- 可编辑文字或简单标记被无理由烘在位图素材里
+- 清版底改变了主要对象数量、朝向、位置或视觉身份，超出声明容差
+- 底板未通过配准检查（`check_plate_registration.py`：最优对齐明显偏离 scale 1.00 / offset 0）——这是 composition drift（重新取景），必须重生；补偿方法见 `image_backend_policy.md` 的 Fixed-Aspect Backends
+- 最终结果看起来像补丁拼贴，而不是一张连贯背景加可编辑前景
 
-If no acceptable clean plate can be generated, stop and report a blocker rather than downgrading silently.
+如果生成不出可接受的清版底，停下报告阻塞，不要静默降级。

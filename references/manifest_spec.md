@@ -1,28 +1,28 @@
-# Manifest Specification
+# Manifest 规范（Manifest Specification）
 
-The manifest records the reconstruction plan and enables reproducible updates.
+manifest 记录重建方案，支撑可复现的更新。
 
-## Required Sections
+## 必需部分
 
-- `project`: project slug
-- `source_image`: original image path
-- `canvas`: source dimensions and background
-- `classification`: figure type and selected mode
-- `panels`: major layout regions
-- `assets`: cropped or generated raster assets
-- `elements`: editable SVG elements and embedded asset placements
+- `project`：项目 slug
+- `source_image`：原图路径
+- `canvas`：源图尺寸与背景色
+- `classification`：图形类型与所选模式
+- `panels`：主要布局区域
+- `assets`：裁剪或生成的位图素材
+- `elements`：可编辑 SVG 元素与素材放置
 
-Conventional FigEdit manifests do not require `background_plan`. Add `background_plan` when the Background Gate selects `ai-clean-plate`, or when the user explicitly requests the AI route for a figure the gate would route conventionally.
+常规 FigEdit manifest 不需要 `background_plan`。只有背景门选定 `ai-clean-plate`、或用户明确要求 AI 路线时才添加。
 
-## Coordinate System
+## 坐标系
 
-Use source image pixel coordinates.
+使用源图像素坐标。
 
 ```json
 { "x": 120, "y": 80, "w": 300, "h": 180 }
 ```
 
-## Recommended Fields
+## 推荐字段
 
 ### Classification
 
@@ -36,7 +36,19 @@ Use source image pixel coordinates.
 }
 ```
 
-Use `reconstruction_mode: "E-ai"` only when `background_plan.strategy` is `ai-clean-plate`.
+`reconstruction_mode: "E-ai"` 仅在 `background_plan.strategy` 为 `ai-clean-plate` 时使用。
+
+### Diagnostics（推荐）
+
+```json
+{
+  "diagnostics": {
+    "measurement_workspace": "figure-task/work"
+  }
+}
+```
+
+`measurement_workspace` 指向 `prepare_measurements.py --out` 的目录。合成步骤靠它把 `ocr_results.json` 等证据拷进产物包，可编辑性门才能计算 `text_lift_ratio`；缺失时合成会回退搜索 manifest 同级的 `work/`、`../work/`，都找不到则该门报 `unavailable`。`prepare_measurements.py` 产出的 `draft_manifest.json` 已自动带上这个字段——编写最终 manifest 时保留它。
 
 ### Panel
 
@@ -66,15 +78,14 @@ Use `reconstruction_mode: "E-ai"` only when `background_plan.strategy` is `ai-cl
   "pad": 4,
   "panel_id": "panel-left",
   "kind": "screenshot",
-  "decision": "crop"
+  "decision": "crop",
+  "crop_window": "clean"
 }
 ```
 
-`pad` may be negative to inset the crop inside the region — the standard fix
-for flush-mounted assets whose eyeballed box would otherwise catch slivers of
-a neighboring border (see `asset_extraction.md`).
+`pad` 可以为负，把裁剪内缩进区域内部——齐平嵌装素材（目测框会带进邻居边框几个像素的那种）的标准修法（见 `asset_extraction.md`）。
 
-For generated background plates:
+生成的背景底板：
 
 ```json
 {
@@ -108,7 +119,7 @@ For generated background plates:
 }
 ```
 
-### Math Element
+### Math 元素
 
 ```json
 {
@@ -127,14 +138,11 @@ For generated background plates:
 }
 ```
 
-For ordinary sparse figures, `source_region`, `w`, `h`, `baseline_y`, and
-`layout_lock` are optional. For dense text/formula figures, use them whenever a
-label or equation must fit a tight visual slot. They make it clear that
-editability and placement are both required.
+普通稀疏图形里 `source_region`、`w`、`h`、`baseline_y`、`layout_lock` 是可选的。密集文字/公式图形里，凡是标签或公式必须放进紧凑视觉槽位的地方都要用它们——它们明确了可编辑性和排位是双重要求。
 
-## Element Types
+## 元素类型
 
-Supported by the helper scripts:
+助手脚本支持：
 
 - `rect`
 - `text`
@@ -147,40 +155,38 @@ Supported by the helper scripts:
 - `polyline`
 - `image`
 
-Additional types may be hand-authored in SVG when the compose scripts support them.
+其他类型可在合成脚本支持时手写 SVG。
 
-## Asset Fidelity Fields
+## 素材保真字段
 
-For every cropped visual asset, include fidelity metadata when possible:
+每个裁剪的视觉素材尽量附带保真元数据：
 
 ```json
 {
   "asset_fidelity": "source-preserve",
   "decision_reason": "custom pictorial icon; preserve original appearance",
   "background_handling": "tight-crop",
-  "crop_status": "verified"
+  "crop_status": "verified",
+  "crop_window": "clean"
 }
 ```
 
-Recommended values:
+推荐取值：
 
-- `asset_fidelity`: `source-preserve`, `source-close`, `approximate-ok`, `semantic-only`
-- `decision_reason`: brief explanation for `crop`, `redraw`, `flatten`, `regenerate-chroma`, or `generate-replacement`
+- `asset_fidelity`：`source-preserve`、`source-close`、`approximate-ok`、`semantic-only`
+- `decision_reason`：对 `crop`、`redraw`、`flatten`、`regenerate-chroma` 或 `generate-replacement` 的简要说明
+- `crop_window`：`clean`、`clean-on-fill`、`contaminated` —— Crop Window Check（SKILL.md 位图素材门）的肉眼判定结果。`clean-on-fill` 时附带承载面实色并确保 manifest 用同色重画承载面；`contaminated` 的资产不允许 `decision: "crop"`（`quality_audit.py` 的 `crop_window_consistency` 门会判 failed）。
+- `background_handling`：`tight-crop`、`transparent`、`preserve-background`、`remove-background`、`mask`、`full-canvas`、`uncertain`
+- `crop_status`：`pending`、`verified`、`needs-padding`、`wrong-region`、`background-issue`、`dirty-residue`
+- `text_policy`：`extract-editable`、`preserve-raster`、`allow-embedded-text`、`review`
 
-Assets produced by chroma regeneration use `source_mode: "external"`,
-`decision: "regenerate-chroma"`, and a `generation_provenance` object; the
-full entry shape and workflow are in `chroma_regeneration.md`.
+chroma 再生产出的素材用 `source_mode: "external"`、`decision: "regenerate-chroma"` 和 `generation_provenance` 对象；完整条目形态和工作流见 `chroma_regeneration.md`。
 
-Conventional-route assets are coordinate-cropped rectangles from the source
-(`scripts/crop_assets.py` reads each asset's `source_region`); they carry
-`decision: "crop"`.
-- `background_handling`: `tight-crop`, `transparent`, `preserve-background`, `remove-background`, `mask`, `full-canvas`, `uncertain`
-- `crop_status`: `pending`, `verified`, `needs-padding`, `wrong-region`, `background-issue`, `dirty-residue`
-- `text_policy`: `extract-editable`, `preserve-raster`, `allow-embedded-text`, `review`
+常规路线素材是从源图坐标裁剪的矩形（`scripts/crop_assets.py` 读取各素材的 `source_region`），带 `decision: "crop"`。
 
-## Decision Audit
+## 决策审计
 
-The manifest should make inappropriate redraws easy to find. For each visual object that is redrawn instead of cropped, include a reason:
+manifest 应让不当重画一目了然。每个被重画（而非裁剪）的视觉对象都写理由：
 
 ```json
 {
@@ -191,25 +197,25 @@ The manifest should make inappropriate redraws easy to find. For each visual obj
 }
 ```
 
-If a redrawn object is pictorial, source-specific, brand-specific, evidence-bearing, or visually distinctive, the decision should be considered suspect and reviewed.
+被重画的对象若是图形性、源图专有、品牌性、证据性或视觉上有辨识度的，该决策应视为可疑并复查。
 
-## Optional Evidence Fields
+## 可选证据字段
 
-These fields are useful on difficult cases but are not required for ordinary tasks:
+这些字段在困难案例上有用，普通任务不要求：
 
-- `recognition_summary`: OCR/CV/style diagnostics inspected and how they informed the manifest
-- `asset_decision_policy`: short summary of which objects were cropped, redrawn, flattened, or generated
-- `editability_targets`: minimum expected editable text/structure/assets for a difficult reconstruction
-- `layout_fidelity_targets`: dense text/formula regions that must be visually checked in SVG and PPTX
-- `pptx_visual_review`: summary of the PPTX render/open review for tight text and formula layout
+- `recognition_summary`：检视过的 OCR/风格诊断及其如何影响 manifest
+- `asset_decision_policy`：哪些对象被裁剪、重画、压平或生成的简述
+- `editability_targets`：困难重建的最低可编辑文字/结构/素材预期
+- `layout_fidelity_targets`：必须在 SVG 和 PPTX 中视检的密集文字/公式区域
+- `pptx_visual_review`：PPTX 渲染/打开复查的摘要
 
-Do not add these fields as ceremony. Use them when they prevent ambiguity.
+不要把这些字段当仪式添加。它们用于消除歧义。
 
 ## Background Plan
 
-`background_plan` exists only for `ai-clean-plate`.
+`background_plan` 只为 `ai-clean-plate` 存在。
 
-Conventional route:
+常规路线：
 
 ```json
 {
@@ -219,9 +225,9 @@ Conventional route:
 }
 ```
 
-No `background_plan` is present.
+不含 `background_plan`。
 
-AI clean-plate route:
+AI 清版底路线：
 
 ```json
 {
@@ -254,26 +260,26 @@ AI clean-plate route:
 }
 ```
 
-Minimum requirements:
+最低要求：
 
-- `strategy` is exactly `ai-clean-plate`
-- `route_decision.reason` states why crop + SVG cannot faithfully reconstruct the background, or quotes the user's route request
-- `route_decision.source` is `background-gate` or `user-directive` (user's own words chose the route)
-- `foreground_mode` is `full-extract`, `selective`, or `flatten`, and `foreground_mode_source` is `user-choice`, `explicit-request` (quote the user's wording in `route_decision`), or `auto-default` (unattended runs only) — see the Foreground Depth Decision in `background_reconstruction.md`
-- `plate_asset_id` points to a full-canvas `background-plate` asset
-- `generation_provenance` records the actual generation path and output
-- `candidate_review.accepted` is true
+- `strategy` 恰为 `ai-clean-plate`
+- `route_decision.reason` 说明为何裁剪+SVG 无法忠实重建背景，或引用用户的路线要求
+- `route_decision.source` 为 `background-gate` 或 `user-directive`（用户自己的话选的路线）
+- `foreground_mode` 为 `full-extract`、`selective` 或 `flatten`，`foreground_mode_source` 为 `user-choice`、`explicit-request`（在 `route_decision` 引用用户措辞）或 `auto-default`（仅限无人值守运行）——见 `background_reconstruction.md` 的前景深度决策
+- `plate_asset_id` 指向整幅画布的 `background-plate` 素材
+- `generation_provenance` 记录实际生成路径与输出
+- `candidate_review.accepted` 为 true
 
-Detailed `text_layer_policy`, `foreground_asset_policy`, and `generation_brief` objects are optional. Store them when useful, but do not require them for every clean-plate manifest.
+详细的 `text_layer_policy`、`foreground_asset_policy`、`generation_brief` 对象是可选的。有用就存，不强制每个清版底 manifest 都带。
 
-## AI Clean-Plate Foreground Assets
+## AI 清版底的前景素材
 
-After a clean plate is accepted, source-specific assets are still decided by the normal Raster Asset Gate.
+清版底验收后，源图专有素材仍由常规位图素材门决定。
 
-Crop an asset over the plate only when:
+只有以下条件同时成立才在底板上裁素材：
 
-- exact identity matters
-- independent movement or replacement is useful
-- the crop is clean
+- 精确身份重要
+- 独立移动或替换有用
+- 裁剪干净
 
-Do not crop large rectangular patches of original background over the clean plate. Do not crop old labels, leaders, or callout fragments back into the final package.
+不要把大块矩形原背景裁到清版底上。不要把旧标签、引线或标注碎片裁回最终包。

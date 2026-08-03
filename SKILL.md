@@ -1,176 +1,189 @@
 ---
-name: figedit
-description: Convert raster figures into high-fidelity editable SVG and native PowerPoint packages. Use for screenshots, paper figures, workflow diagrams, architecture diagrams, infographics, UI schematics, charts/maps, posters, covers, and image-heavy technical figures when labels, formulas, structure, source-specific assets, and complex continuous backgrounds must be reconstructed with useful editability.
+name: figedit-v2
+description: 将位图图表重建为高保真可编辑的 SVG 与原生 PowerPoint 包。适用于截图、论文插图、流程图、架构图、信息图、UI 示意图、图表/地图、海报、封面等图像密集型技术图形，当标签、公式、结构、源图专有素材和复杂连续背景都需要以可用的可编辑性重建时使用。
 ---
 
 # FigEdit
 
-Use this skill to rebuild a non-editable raster figure as a high-fidelity editable graphics package. It keeps the base FigEdit workflow as the default, and adds one extra decision gate for complex continuous backgrounds.
+用本 skill 把不可编辑的位图图形重建为高保真可编辑图形包。以 FigEdit 基础工作流为默认路线，并为复杂连续背景增加一道额外的决策门。
 
-The goal is not "vectorize everything," "crop everything," or "send everything to AI." Route each part of the source image to the representation that preserves both fidelity and useful editability:
+目标不是"全部矢量化"、"全部裁剪"或"全部交给 AI"。把源图的每个部分路由到既保真又保留可用编辑性的表达方式：
 
-- structural elements become editable SVG shapes
-- readable labels become editable SVG text
-- formulas become normalized `math` elements and editable PowerPoint equations
-- source-specific raster visuals become cropped assets placed with `image` elements
-- dense charts, maps, screenshots, thumbnails, and pictorial evidence are cropped unless the user explicitly needs them rebuilt
-- a complex continuous background becomes an AI clean plate when crop + simple, deterministic SVG cannot faithfully reconstruct it
+- 结构性元素重画为可编辑 SVG 形状
+- 可读标签重打为可编辑 SVG 文字
+- 公式规范化为 `math` 元素和可编辑的 PowerPoint 公式
+- 源图专有的位图视觉对象裁剪为素材，用 `image` 元素放置
+- 密集图表、地图、截图、缩略图、图像证据一律裁剪保留，除非用户明确要求重建
+- 复杂连续背景在"裁剪 + 简单确定性 SVG 无法忠实重建"时走 AI 清版底（clean plate）
 
-OpenCV and OCR evidence can guide measurements and validation, but they do not decide what enters the final SVG. Do not dump all OpenCV candidates, OCR boxes, or draft-manifest objects into the final package.
+OCR 与像素测量证据可以辅助定位和验证，但不决定什么进入最终 SVG。不要把 OCR 框或草稿 manifest 对象整批倒进最终包。
 
-## Working Location
+## 工作位置
 
-Run every command from the user's project directory, not from the skill folder. Create one task directory per figure in the user's workspace, and write all intermediates and outputs there. Never write run artifacts back into the skill directory.
+所有命令都在用户的项目目录下执行，不在 skill 目录下执行。每张图在用户工作区建一个任务目录，所有中间产物和输出写在那里。绝不把运行产物写回 skill 目录。
 
-The examples below use `figure-task/work` for evidence and `figure-task/out` for the final package.
+下文示例使用 `figure-task/work` 存证据、`figure-task/out` 存最终包。
 
-## Default Workflow
+## 默认工作流
 
-### 1. Prepare Measurement Evidence
+### 1. 准备测量证据
 
-Run:
+运行：
 
 ```powershell
 python scripts/prepare_measurements.py input.png --out figure-task/work
 ```
 
-Use forward slashes in all script arguments; trailing backslashes are swallowed by some shells.
+脚本参数一律用正斜杠；结尾反斜杠会被部分 shell 吞掉。
 
-This creates:
+产出：
 
 - `ocr_results.json`
-- `detected_primitives.json`
 - `style_tokens.json`
-- `draft_manifest.json`
+- `draft_manifest.json`（其中 `diagnostics.measurement_workspace` 已指向本工作目录——**编写最终 manifest 时保留这个字段**，合成步骤靠它把 OCR 证据拷进产物包，缺了它可编辑性门会报 `unavailable`）
 - `measurement_report.md`
 - `diagnostics/ocr_overlay.png`
-- `diagnostics/structure_overlay.png`
 - `diagnostics/style_overlay.png`
 - `assets/source.*`
 
-Treat these files as evidence only.
+这些文件只作证据使用。
 
-OCR defaults to PaddleOCR's PP-OCRv6 medium profile when available. Use smaller profiles for fast drafts, not for final small-text review. OCR is never ground truth: verify high-confidence confusions, code tokens, CJK near-neighbor characters, and formula symbols against the source.
+OCR 默认使用 PaddleOCR 的 PP-OCRv6 medium 配置。小配置只用于快速草稿，不用于最终小字复核。OCR 从来不是标准答案：高置信混淆字、代码 token、中文形近字、公式符号都要对照源图核实。
 
-### 2. Route The Figure
+### 2. 判定图形路线
 
-Inspect the source image and diagnostics before authoring the manifest. Classify the semantic figure route first; do not choose an AI background route merely because the image is visually dense, and do not reject it merely because the background could be redrawn by a skilled illustrator. The question is whether FigEdit can reconstruct it reliably from simple SVG primitives and clean source crops.
+编写 manifest 之前先看源图和诊断产物。先做语义路线分类；不要因为画面视觉密集就选 AI 背景路线，也不要因为"一个熟练的插画师能画出来"就拒绝它。问题只有一个：FigEdit 能否用简单 SVG 图元加干净源图裁剪可靠地重建它。
 
-- **Simple text/shape diagram**: mostly labels, boxes, arrows, grids, and basic geometric marks. Usually redraw structure and retype text.
-- **Workflow, architecture, method, or infographic composite**: mixed panels, text, formulas, connectors, icons, screenshots, logos, document/folder graphics, or pictorial marks. Decompose panel-by-panel and apply the element gates below.
-- **Screenshot, UI, map, photo, chart, thumbnail, or dense visual body**: preserve the visual body as a raster asset unless the user explicitly asks for a data/editable rebuild; lift surrounding readable labels separately.
-- **Formula-heavy figure**: route every equation and inline math span through editable `math` reconstruction, with source-bbox and baseline constraints so formulas remain visually aligned after SVG and PPTX export.
-- **Design-led or image-heavy figure**: posters, covers, social cards, illustrated scenes, rendered scenes, and other visuals whose labels sit on a continuous visual field. This may need AI clean plate, but the Background Gate decides by background recoverability, not by genre.
+- **简单文字/形状图**：以标签、方框、箭头、网格和基础几何标记为主。通常重画结构、重打文字。
+- **工作流、架构、方法或信息图复合体**：面板、文字、公式、连接线、图标、截图、logo、文档/文件夹图形、图形标记混排。逐面板拆解，套用下面的元素门。
+- **截图、UI、地图、照片、图表、缩略图或密集视觉主体**：视觉主体整体保留为位图素材（除非用户明确要求数据级/可编辑重建），周边可读标签单独提取。
+- **公式密集图**：所有公式和行内数学片段都走可编辑 `math` 重建，带源图 bbox 和基线约束，保证 SVG 和 PPTX 导出后公式仍在原视觉位置。
+- **设计导向或图像密集图**：海报、封面、社交卡片、插画场景、渲染场景等标签落在连续视觉场上的图形。可能需要 AI 清版底，但由背景门按"背景可恢复性"判定，不按体裁判定。
 
-Reference loading is route-based:
+参考文件按路线加载：
 
-- Always use `references/manifest_spec.md`, `references/svg_authoring.md`, and `references/quality_checklist.md`.
-- If the figure type is unfamiliar or mixed, read `references/taxonomy.md` and `references/workflow.md`.
-- If any formula or inline math appears, read `references/formula-reconstruction.md`.
-- If any pictorial, raster, screenshot, logo, map, chart body, thumbnail, avatar, hand-drawn object, model mark, document/folder graphic, or source-specific icon appears, read `references/element_decision_matrix.md`, `references/asset_preservation_policy.md`, and `references/asset_extraction.md`.
-- If any asset routes to `regenerate-chroma` (contaminated, entangled, or continuous-background elements), read `references/chroma_regeneration.md` and `references/image_backend_policy.md`.
-- If the background is not plainly mechanical, or if labels/marks/assets sit over a continuous visual field, read `references/background_reconstruction.md`.
-- If the Background Gate selects `ai-clean-plate`, also read `references/ai_clean_plate_prompting.md` and `references/image_backend_policy.md`.
+- 永远使用 `references/manifest_spec.md`、`references/svg_authoring.md`、`references/quality_checklist.md`。
+- 图形类型陌生或混合时，读 `references/taxonomy.md` 和 `references/workflow.md`。
+- 出现任何公式或行内数学时，读 `references/formula-reconstruction.md`。
+- 出现任何图形性、位图、截图、logo、地图、图表主体、缩略图、头像、手绘对象、模型标记、文档/文件夹图形或源图专有图标时，读 `references/element_decision_matrix.md`、`references/asset_preservation_policy.md`、`references/asset_extraction.md`。
+- **任一资产的裁剪窗判定（见下文 Crop Window Check）不是 clean 时，必读 `references/contaminated_asset_recovery.md` 和 `references/chroma_regeneration.md`。**
+- 任何素材路由到 `regenerate-chroma`（被污染、被缠结或连续背景元素）时，读 `references/chroma_regeneration.md` 和 `references/image_backend_policy.md`。
+- 背景不是明显机械可复现的，或标签/标记/素材落在连续视觉场上时，读 `references/background_reconstruction.md`。
+- 背景门选择 `ai-clean-plate` 时，另读 `references/ai_clean_plate_prompting.md` 和 `references/image_backend_policy.md`。
 
-### 3. Apply Element Decision Gates
+### 3. 应用元素决策门
 
-Author the manifest by deciding every significant element through these gates. These rules are peers; none is a universal first step.
+通过这些门决定每个重要元素，写出 manifest。各门是平级的，没有哪一个是万能的第一步。
 
-#### Structure Gate
+#### 结构门（Structure Gate）
 
-Redraw structural elements as editable SVG shapes:
+把结构性元素重画为可编辑 SVG 形状：
 
-- panels, cards, frames, section headers, dividers, rules, grids, table borders
-- simple arrows, connectors, dashed boxes, brackets, axes, and plain geometric markers
-- simple flat color backgrounds
+- 面板、卡片、边框、栏目标题、分隔线、标尺线、网格、表格边框
+- 简单箭头、连接线、虚线框、括号、坐标轴、朴素几何标记
+- 简单的纯色背景
 
-Use OpenCV coordinates as measurement hints, not as automatic truth. Reject detector-only texture lines, compression edges, false arrowheads, duplicate hatching, and raw contour noise.
+用像素测量和 OCR 坐标作提示，不作自动事实。拒绝纹理线、压缩边缘、假箭头、重复排线和原始轮廓噪声。
 
-#### Text Gate
+#### 文字门（Text Gate）
 
-Retype readable labels, titles, captions, legends, axis labels, callouts, and ordinary annotations as SVG text. Use OCR only as candidate evidence. Mark uncertain text in the manifest; do not accept OCR fallback text merely because it exists.
+把可读的标签、标题、图注、图例、轴标签、标注、普通注释重打为 SVG 文字。OCR 只是候选证据。不确定的文字在 manifest 里标注；不要因为 OCR 给了备选文字就照单接受。
 
-For dense paper figures, architecture diagrams, and formula-heavy composites, text placement is part of the reconstruction, not a cosmetic pass. Record or infer the source region, line breaks, alignment anchor, and baseline for small labels before writing the final text element. A label is not complete just because the characters are correct; it must fit the same visual slot without colliding with boxes, arrows, formulas, or neighboring labels in both SVG preview and native PPTX.
+对密集论文图、架构图、公式密集复合图，文字排位是重建的一部分，不是修饰性收尾。写最终文字元素之前，记录或推断小标签的源区域、断行、对齐锚点和基线。字符正确不等于标签完成；它必须放进同一个视觉槽位，在 SVG 预览和原生 PPTX 中都不与方框、箭头、公式、相邻标签碰撞。
 
-#### Formula Gate
+#### 公式门（Formula Gate）
 
-Mathematical formulas are first-class semantic objects. Author equations, inequalities, fractions, sums, Greek symbols, scripts, recurrences, and inline math spans as `math` elements with normalized LaTeX, never as formula strings inside `type: "text"`.
+数学公式是一等语义对象。方程、不等式、分式、求和、希腊字母、上下标、递推式和行内数学片段一律写成带规范化 LaTeX 的 `math` 元素，绝不写成 `type: "text"` 里的公式字符串。
 
-For mixed prose/formula regions, split the prose into `text` and the formula span into a separate adjacent `math` element. Before finalizing, scan text elements for formula cues and repair leaks.
+散文与公式混排的区域，把散文拆成 `text`，公式片段拆成相邻的独立 `math` 元素。定稿前扫描所有 text 元素找公式痕迹并修复泄漏。
 
-Formula editability is a core requirement. Do not solve formula density by cropping equations as images or by leaving formula-like strings as plain text. The correct repair for a misplaced editable formula is better measurement and layout control: source bounding box, width/height, font size, anchor, baseline, and local collision checks.
+公式可编辑性是核心要求。不要用"把公式裁成图"或"公式留成纯文本"来回避公式密度。可编辑公式放错位置的正确修法是更好的测量与布局控制：源图 bbox、宽高、字号、锚点、基线和局部碰撞检查。
 
-Treat PPTX formula export as a two-part requirement:
+PPTX 公式导出是双重要求：
 
-- the formula must become an editable Office Math object
-- the resulting Office Math object must still occupy the intended visual slot after PowerPoint reflows it
+- 公式必须成为可编辑的 Office Math 对象
+- 该对象在 PowerPoint 回流后必须仍占据预期视觉槽位
 
-If PowerPoint's equation layout changes the formula size, baseline, or spacing, adjust the manifest and rerun composition. Do not mark the result complete merely because `editable.pptx.math_report.json` shows a successful conversion.
+如果 PowerPoint 的公式排版改变了大小、基线或间距，调整 manifest 重跑合成。不要因为 `editable.pptx.math_report.json` 显示转换成功就标记完成。
 
-#### Raster Asset Gate
+#### 位图素材门（Raster Asset Gate）
 
-Crop source-specific raster visuals as assets. This includes pictorial icons, logos, application/model marks, screenshots, maps, chart bodies, thumbnails, photos, UI fragments, avatars, robots, hand-drawn props, document/folder graphics, and dense visual examples.
+把源图专有的位图视觉对象裁剪为素材，包括图形性图标、logo、应用/模型标记、截图、地图、图表主体、缩略图、照片、UI 片段、头像、机器人、手绘道具、文档/文件夹图形和密集视觉示例。
 
-Do not replace source-specific visual objects with generic invented SVG. Redraw only when the object is a clearly generic primitive or the user explicitly requests editable vectorization. When uncertain, crop.
+不要用凭空发明的通用 SVG 替换源图专有视觉对象。只有对象明显是通用图元、或用户明确要求可编辑矢量化时才重画。拿不准就裁剪——但"裁剪"必须先通过下面的裁剪窗检查。
 
-How a raster asset is obtained depends on the route, and there are exactly two methods — no salient-object matting anywhere. The route sets the default method; the user's explicit request can send any individual asset to either method (e.g. regenerate a crop-eligible asset for cleaner edges, or keep a crop the user prefers):
+##### 裁剪窗检查（Crop Window Check）
 
-- **Conventional route — coordinate crop.** Crop the smallest visually meaningful rectangle from the source (`crop_assets.py` from the manifest's `source_region`), keeping surrounding labels, frames, and arrows editable. Do not drag unrelated background, old labels, callout lines, or neighboring objects into the crop. The asset is placed as a rectangular `image`; assets on flat/white/simple backgrounds need no alpha at all. This is the default for screenshots, chart bodies, maps, logos on flat fields, and any figure whose assets sit on a separable background.
-- **AI route — generate, then key.** When the Background Gate selects `ai-clean-plate` with `full-extract`/`selective`, the foreground is not cropped from the original at all. A reference-capable image model reproduces the in-scope elements on a solid chroma sheet chosen by `probe_palette.py`; `chroma_key.py` + `slice_grid.py` then separate each element as a clean transparent PNG. This "generate a clean foreground sheet, then key it apart" path is the only way in-scope objects become transparent assets on this route. Record `decision: "regenerate-chroma"`, `asset_fidelity: "approximate-ok"`, and `generation_provenance`.
+坐标裁剪交付的是整个矩形窗口，不只是你想要的元素。看图决定每个资产的去向时，对着它问一个问题：**这个矩形窗口里，除了元素自身，还有没有别的东西？**
 
-Anything can be AI-regenerated — photos, people, illustrations, icons, badges, logos, screenshots, charts, maps, composite objects — with no content-category approval gate; quality is a function of the model and prompt, so hard cases call for a sharper preserve-the-element prompt, not a refusal. Put the whole foreground inventory on **one sheet** (`chroma_regeneration.md`) and only split when the model visibly cannot fit or resolve them all; regenerate each distinct element once and place repeats by shared `asset_id`. Never improvise GrabCut/difference/threshold/rembg matting scripts to separate objects from a natural background — on the AI route the sheet background is already flat and keys exactly; on the conventional route a rectangle crop is enough.
+混进窗口的东西可能来自下方（元素压着填充卡片、描边框、渐变条、底纹、另一个资产），也可能来自旁边（元素形状不规整——L 形、斜置、细长、带出头部件——外接矩形圈进了邻近的图标、文字、连线、面板边框）。来源不重要，处置相同。逐资产用眼睛判定，三档：
 
-#### Background Gate
+- **clean** —— 窗口内非元素像素为画布底色，无任何邻居入侵。坐标裁剪安全。
+- **clean-on-fill** —— 非元素像素为单一均匀实色，但该色不是画布底色（元素坐在纯色卡片中央）。仍可坐标裁剪，前提两条同时成立：manifest 用**采样到的同一实色**重画承载面，且窗口不压到卡片的边框、圆角或其他元素。任一条不满足，按 contaminated 处理。
+- **contaminated** —— 窗口里有承载层杂色、渐变，或圈进了邻居前景。先试最便宜的修复：**收缩或挪动窗口**，能在不切掉元素本体的前提下排除入侵物，就用更紧的窗口裁。做不到则走 `regenerate-chroma`；若该对象无需独立移动，让它留在原位不提取。
 
-Apply this gate after the structure, text, formula, and asset gates have claimed everything they can faithfully represent. It answers one question:
+这是肉眼判断，不需要跑任何脚本。拿不准的地方（承载色与画布底色极接近的浅色卡片、密集小图标）放大源图看，不要猜。把判定结果写进该资产的 `crop_window` 字段。只有 clean 与合规的 clean-on-fill 适用"拿不准就裁剪"；判定为 contaminated 却仍直接坐标裁剪的，属于交付缺陷。（`quality_audit.py` 的 `crop_window_consistency` 门会在事后对每个裁剪资产做像素核验兜底，与你的判定矛盾时报 review 附证据。）
 
-**Can the base FigEdit hybrid route, using clean source crops plus simple deterministic SVG primitives, faithfully reconstruct the background field without asking the model to invent or hand-paint scene pixels?**
+##### 素材的两种获取方式
 
-- **Yes: use the conventional FigEdit route.** Do not add `background_plan` unless the user explicitly requests the AI route. Redraw structure and text as SVG, crop source-specific visuals as raster assets, and mix them panel-by-panel. This is the default for regular paper figures, workflow diagrams, architecture diagrams, white/light-background diagrams, charts, maps, UI screenshots, and cleanly framed visual assets whose background is flat, regular, or mechanically reproducible.
-- **No: use `ai-clean-plate`.** Use this when foreground text, labels, leader lines, markers, or icons are embedded in a continuous photograph, illustration, rendering, texture, irregular/multi-zone gradient, scene-like infographic, magazine-cover field, poster scene, or technical scene where crop + simple SVG cannot reveal or reproduce the hidden pixels.
+素材如何获得取决于路线，且只有两种方法——任何地方都没有显著性抠图（salient-object matting）。路线设定默认方法；用户的明确要求可以把任何单个素材送到另一种方法（例如为了更干净的边缘再生一个本可裁剪的素材，或保留用户偏爱的裁剪）：
 
-The gate decides the default; an explicit route request in the user's own words overrides it in either direction — a user may send a regular figure to `ai-clean-plate` for extraction precision, or keep a scene figure conventional after hearing the fidelity cost. Record `route_decision.source: "user-directive"` and keep the full quality bar (see User Route Directive in `references/background_reconstruction.md`).
+- **常规路线——坐标裁剪。** 从源图裁出最小的有视觉意义的矩形（`crop_assets.py` 读取 manifest 的 `source_region`），周边标签、边框、箭头保持可编辑。不要把无关背景、旧标签、标注线或相邻对象拖进裁剪。素材作为矩形 `image` 放置；平底/白底/简单底上的素材完全不需要 alpha。截图、图表主体、地图、平底 logo，以及素材坐在可分离背景上的图形都默认走这条路。
+- **AI 路线——先生成再键控。** 背景门选择 `ai-clean-plate` 且 `full-extract`/`selective` 时，前景完全不从原图裁剪。由支持参考图的图像模型把范围内元素复现在一张纯色 chroma 底 sheet 上（键色由 `probe_palette.py` 选定），再用 `chroma_key.py` + `slice_grid.py` 把每个元素分离为干净透明 PNG。"生成干净前景 sheet 再键控分离"是这条路线上范围内对象变成透明素材的唯一方式。记录 `decision: "regenerate-chroma"`、`asset_fidelity: "approximate-ok"` 和 `generation_provenance`。
 
-This gate is about background recoverability, not content category, visual density, or genre. Do not count hand-recreating a scene as faithful SVG reconstruction; approximate SVG scenery is a redesign, not a high-fidelity rebuild. The authoritative definition of this gate — the recoverability test, the strong-signal list, and the foreground policy after an accepted plate — is `references/background_reconstruction.md`; read it whenever the answer is not obviously "yes".
+万物皆可 AI 再生——照片、人物、插画、图标、徽章、logo、截图、图表、地图、复合对象——没有内容类别审批门；质量取决于模型和提示词，难对付的案例要的是更锋利的"保持原样"提示词，不是拒绝。整份前景清单放**一张 sheet**（`chroma_regeneration.md`），只有模型明显放不下或画不清时才拆分——"明显（visibly）"指你看过一张失败的成品，不是你预判它会失败。每个不同元素只再生一次，重复出现的用同一 `asset_id` 多次放置。绝不临时编写 GrabCut/差值/阈值/rembg 抠图脚本从自然背景里抠对象——AI 路线上 sheet 底色已知且键控精确；常规路线上矩形裁剪就够了。
 
-For `ai-clean-plate`, the clean plate is a complete non-editable visual bottom layer. It must be an **edit of the source that removes the foreground-to-rebuild and reconstructs the pixels behind it, while keeping the original background otherwise unchanged** — same tone, gradient/haze zones, texture, star/grain density, lighting, and structure as the source. It is not a fresh scene: a plate that resynthesizes the background into a visibly different field (different haze placement, different star pattern density, restyled colors) is a redesign and must be rejected and regenerated, even though behind-foreground fill inevitably differs pixel-for-pixel. Overlay editable text, `math`, and simple marks on top. Under `full-extract`/`selective`, in-scope pictorial objects come back as transparent assets from the generated foreground sheet (never as source rectangle crops); under `flatten` they stay in the plate. Prefer a clean flattened plate over a patchwork of dirty source crops.
+#### 背景门（Background Gate）
 
-Before generating the plate, make the **Foreground Depth Decision** (`background_reconstruction.md`): full-extract (all pictorial objects become independent assets), selective (user-named subset), or flatten (objects stay in the plate). The modes need different plates, so decide first. **This is a hard checkpoint: unless the user's own words state a depth preference, stop and present the options — inventory, what each mode buys, relative cost and time, plus your recommendation — before any generation call.** The figure's characteristics inform the recommendation, never a silent choice. Record the mode and its origin in `background_plan.foreground_mode` / `foreground_mode_source`.
+在结构、文字、公式、素材各门认领完它们能忠实表达的内容之后应用本门。它只回答一个问题：
 
-If `ai-clean-plate` is selected but no reference-capable image backend is available or accepted, stop and report the blocker. Do not silently downgrade to a conventional reconstruction, keep the untouched source as the plate, or fake a clean plate with local blur/clone/inpaint scripts.
+**FigEdit 基础混合路线（干净源图裁剪 + 简单确定性 SVG 图元）能否忠实重建背景场，而不要求模型发明或手绘场景像素？**
 
-#### Composite Split Rule
+- **能：走常规 FigEdit 路线。** 不加 `background_plan`（除非用户明确要求 AI 路线）。结构和文字重画为 SVG，源图专有视觉裁剪为位图素材，逐面板混排。常规论文图、流程图、架构图、白底/浅底图、图表、地图、UI 截图，以及背景平整规则或机械可复现的图形都默认走这条路。
+- **不能：走 `ai-clean-plate`。** 前景文字、标签、引线、标记或图标嵌在连续照片、插画、渲染、纹理、不规则/多区渐变、场景式信息图、杂志封面场、海报场景或技术场景中，裁剪 + 简单 SVG 无法揭示或复现被遮像素时使用。
 
-Do panel-by-panel semantic decomposition. Do not crop a whole panel merely because it is dense, and do not redraw a whole panel merely because the structure is regular. Split each panel by function:
+本门决定的是默认值；用户用自己的话提出的路线要求在两个方向上都优先于本门——用户可以把常规图送去 `ai-clean-plate` 换取提取精度，也可以在听过保真代价后坚持让场景图走常规路线。记录 `route_decision.source: "user-directive"`，质量标准不变（见 `references/background_reconstruction.md` 的 User Route Directive）。
 
-- structural shell: redraw
-- readable label: retype
-- formula span: `math`
-- flow relation: redraw connector
-- source-specific visual evidence: crop asset
-- complex continuous background: AI clean plate only if the Background Gate requires it
-- tiny chart/map/screenshot-internal text: preserve inside raster unless the user needs it editable
+本门只关心背景可恢复性，不关心内容类别、视觉密度或体裁。手工重画场景不算忠实的 SVG 重建；近似的 SVG 风景是重新设计，不是高保真重建。本门的权威定义——可恢复性测试、强信号清单、底板通过后的前景策略——在 `references/background_reconstruction.md`；答案不是明显的"能"时就去读它。**本门同样不回答任何一个前景资产能否干净裁出：一张纯色底架构图完全可能背景走常规路线、而其中若干资产必须收窗或再生，后者由 Crop Window Check 逐资产判定，与本门相互独立。**
 
-Layer carefully:
+对 `ai-clean-plate`，清版底是一张完整的不可编辑视觉底层。它必须是**对源图的编辑：移除待重建的前景、重建其背后的像素，其余背景保持不变**——色调、渐变/雾带分区、纹理、星点/颗粒密度、光照和结构都与源图一致。它不是一张新场景：把背景重新合成为明显不同的场（雾带位置变了、星点密度变了、颜色重新风格化了）属于重新设计，必须拒收重生，尽管被遮区域的填充像素不可能逐像素一致。可编辑文字、`math` 和简单标记叠加在上面。`full-extract`/`selective` 下，范围内图形对象以透明素材形式来自生成的前景 sheet（绝不来自源图矩形裁剪）；`flatten` 下它们留在底板里。一张干净的压平底板胜过一堆脏源图裁剪拼贴。
 
-- Put canvas fills and clean plates on `layer: background`.
-- Put raster evidence on `layer: assets`.
-- Put panel borders and box borders on `layer: panels` with `fill: none`.
-- Put raster assets that sit **on top of** filled panels or cards (icon tiles inside info cards, badges on banners) on `layer: icons` — it is drawn after `panels`, while `layer: assets` is drawn before and would be hidden by any filled panel.
-- Put arrows/connectors on `layer: connectors`.
-- Put labels and rendered formulas on `layer: texts`.
+生成底板之前，先做**前景深度决策**（Foreground Depth Decision，见 `background_reconstruction.md`）：full-extract（所有图形对象独立成素材）、selective（用户点名的子集）或 flatten（对象留在底板）。不同模式需要不同的底板，所以必须先定。**这是硬检查点：除非用户自己的话表明了深度偏好，否则停下来呈现选项——清单、每种模式换来什么、相对成本和时间（含具体的计费生成次数）、你的推荐——然后才允许任何生成调用。**图形特征只影响推荐，绝不允许替用户默默选择。把模式及其来源记入 `background_plan.foreground_mode` / `foreground_mode_source`。
 
-Draw order is background → assets → panels → sections → icons → connectors → texts → annotations. Do not draw a filled panel rectangle above an image asset; it will hide the asset in the preview.
+如果选择了 `ai-clean-plate` 但没有可用或被认可的参考图像后端，停下报告阻塞。不要静默降级为常规重建、把未处理的源图当底板，或用本地模糊/克隆/inpaint 脚本伪造清版底。
 
-### 4. Compose The SVG Package
+#### 复合拆分规则
 
-Run:
+逐面板做语义拆解。不要因为面板密集就整体裁剪，也不要因为结构规整就整体重画。每个面板按功能拆：
+
+- 结构外壳：重画
+- 可读标签：重打
+- 公式片段：`math`
+- 流向关系：重画连接线
+- 源图专有视觉证据：裁剪素材
+- 复杂连续背景：仅当背景门要求时走 AI 清版底
+- 图表/地图/截图内部小字：保留在位图里，除非用户需要可编辑
+
+分层要小心：
+
+- 画布填充和清版底放 `layer: background`。
+- 位图证据放 `layer: assets`。
+- 面板边框、方框边框放 `layer: panels`，`fill: none`。
+- **压在**填充面板或卡片之上的位图素材（信息卡里的图标块、横幅上的徽章）放 `layer: icons`——它在 `panels` 之后绘制；`layer: assets` 在之前绘制，会被任何填充面板盖住。
+- 箭头/连接线放 `layer: connectors`。
+- 标签和渲染后的公式放 `layer: texts`。
+
+绘制顺序是 background → assets → panels → connectors → sections → icons → texts → annotations（与 `build_svg_from_manifest.py` 的 `group_order` 一致：连接线画在图标之下，图标盖住线头）。不要把填充面板矩形画在图像素材之上，预览里会盖住素材。实操建议：元素显式写 `layer` 字段，不要依赖按类型推断的默认分组。
+
+### 4. 合成 SVG 包
+
+运行：
 
 ```powershell
 python scripts/compose_svg_package.py manifest.json --out figure-task/out
 ```
 
-This creates:
+产出：
 
 - `editable.svg`
 - `editable_embedded.svg`
@@ -182,115 +195,108 @@ This creates:
 - `editability_report.md`
 - `assets/`
 - `diagnostics/placement_overlay.png`
-- `diagnostics/visual_qa/` (side_by_side, blend, diff_heatmap, per-tile scores)
+- `diagnostics/visual_qa/`（对照图、混合图、差异热力图、分块得分）
 
-The PPTX is a native DrawingML export. Prefer it when the user needs to edit the figure in PowerPoint. By default, the export uses semantic top-level ungrouping: layer/layout groups are flattened so text, shapes, connectors, and cropped assets can be selected directly, while formulas, masks, filters, rotations, and explicitly atomic groups remain grouped for fidelity.
+PPTX 是原生 DrawingML 导出。用户需要在 PowerPoint 里编辑时优先交付它。导出默认做语义级顶层解组：图层/布局分组被压平，文字、形状、连接线和裁剪素材可以直接选中；公式、蒙版、滤镜、旋转和显式原子分组保持成组以保真。
 
-PowerPoint can reflow text boxes and Office Math differently from the SVG preview. This is expected and must be validated. For formula-heavy or small-text-dense figures, inspect the exported PPTX or a PPTX-rendered preview before delivery and repair any formula/text drift, overflow, baseline shift, or collision.
+PowerPoint 对文本框和 Office Math 的回流可能不同于 SVG 预览。这是预期行为，必须验证。公式密集或小字密集的图，交付前检查导出的 PPTX 或其渲染预览，修复公式/文字漂移、溢出、基线偏移和碰撞。
 
-### 5. Validate And Repair
+### 5. 验证与修复
 
-Inspect:
+检查：
 
 - `preview.png`
 - `contact_sheet.png`
-- `editable.pptx` when PowerPoint editability is requested
-- a PPTX-rendered visual check when the figure has dense labels, many formulas, or tight text/connector spacing
+- 需要 PowerPoint 可编辑性时检查 `editable.pptx`
+- 标签密集、公式多、文字/连线间距紧的图，做 PPTX 渲染视检
 - `quality_report.md`
 - `editability_report.md`
 - `diagnostics/placement_overlay.png`
-- `diagnostics/visual_qa/diff_heatmap.png` and the worst-tile scores in `quality_report.md` (report-only: high-difference tiles are review triggers, not automatic failures)
-- regenerated-asset contact sheets and `chroma_key` reports when `regenerate-chroma` is used
-- clean-plate candidates and prompt/provenance records when `ai-clean-plate` is used
+- `diagnostics/visual_qa/diff_heatmap.png` 与 `quality_report.md` 里的最差分块得分（仅报告：高差异分块是复查触发，不是自动失败）
+- 使用 `regenerate-chroma` 时检查再生素材 contact sheet 和 `chroma_key` 报告（含 `component_hue_drift`）
+- 使用 `ai-clean-plate` 时检查底板候选与提示词/来源记录
 
-Repair against `references/quality_checklist.md` before delivery; its High-Priority Failure Conditions section is the authoritative list. The most frequent blockers: missing panels or wrong arrows, detector/OCR noise in the final SVG, editable content baked into rasters, formula-like text not split into `math`, source-specific visuals replaced by generic redraws or missing entirely (`Assets: 0` without a documented reason), clipped or contaminated crops, clean-plate results patched with dirty source crops, and PPTX exports whose math or tight text has not been visually checked.
+交付前对照 `references/quality_checklist.md` 修复；其高优先级失败条件一节是权威清单。最常见的阻塞项：面板缺失或箭头错误、检测/OCR 噪声进入最终 SVG、可编辑内容被烘进位图、公式样文字未拆成 `math`、源图专有视觉被通用重画替换或整体缺失（`Assets: 0` 且无书面理由）、裁剪被切边或被污染（裁剪窗混入承载层或邻居像素）、清版底被脏源图裁剪打补丁、以及未做视检的 PPTX 公式/密排文字。
 
-## Role Split
+## 职责分工
 
-### Model Responsibilities
+### 模型职责
 
-- Classify figure route and reconstruction mode.
-- Decide semantic groups and reading order.
-- Decide crop vs redraw vs retype vs math by element gate.
-- Decide the Background Gate only after element gates have been considered.
-- Author final `manifest.json`.
-- Keep the final SVG clean and interpretable.
+- 分类图形路线和重建模式。
+- 决定语义分组和阅读顺序。
+- 逐元素门决定裁剪 / 重画 / 重打 / math。
+- 逐资产做裁剪窗检查（肉眼判定），把结果写进 `crop_window`。
+- 元素门考虑完之后才决定背景门。
+- 编写最终 `manifest.json`。
+- 保持最终 SVG 干净可读。
 
-### PaddleOCR Responsibilities
+### PaddleOCR 职责
 
-- Provide text candidates, bounding boxes, and confidence.
-- Help locate labels and estimate font sizes.
-- Flag low-confidence text for review.
-- OCR is not ground truth; verify against the source image.
+- 提供文字候选、包围盒和置信度。
+- 帮助定位标签、估计字号。
+- 标记低置信文字供复核。
+- OCR 不是标准答案；对照源图核实。
 
-### OpenCV Responsibilities
+### 图像生成职责
 
-- Provide candidate lines, rectangles, arrowheads, and dashed groups.
-- Sample colors and style tokens.
-- Help verify crop boundaries and structure alignment.
+图像生成在背景门选择 `ai-clean-plate` 之后使用，或在用户自己的话要求 AI 生成路线时使用。它根据源图和模型撰写的"保留/移除/重建"简报产出被验收的清版底。
 
-OpenCV candidates are never automatically final. They must be accepted, merged, ignored, or replaced by the model-authored manifest.
+碰任何可脚本调用的后端之前，先盘点自己的工具：如果 agent 环境有内置图像生成/编辑工具（Codex `image_gen`、自带图像工具、图像 MCP），先用它。内置工具从可见的对话上下文接收参考图，不从参数接收：先把源图显示进对话（如 `view_image`）使其成为编辑目标，再调用工具并在提示词中指明"刚显示的这张图是唯一编辑目标"，然后从工具的保存位置取输出（Codex：`~/.codex/generated_images/<session>/`）。参数表里没有参考图或输出路径选项对内置工具是常态，绝不是跳过它的理由；完整协议在 `references/image_backend_policy.md`。只有内置工具确实不存在或实际调用失败时，才按该文件的顺序下沉到可脚本后端：Labnana GPT-Image-2 第一，Labnana Gemini/Nano Banana 第二，然后是官方 OpenAI/Gemini API 或已配置的命令适配器。`--precheck` 为正只说明可脚本后备存在，不是跳过内置工具的许可。后端适配器执行简报；它们不决定图形路线或前景素材策略。
 
-### Image Generation Responsibilities
+## 质量标准
 
-Image generation is used after the Background Gate selects `ai-clean-plate`, or when the user's own words request an AI generation route. It creates an accepted clean visual plate from the source image and the model-authored preserve/remove/reconstruct brief.
+可接受的产出保留源图全部信息（标题、标签、面板、箭头、源图专有视觉），普通文字和每个检出公式在 SVG 与原生 PPTX 中都可编辑，PPTX 回流后位置不变，没有检测噪声、没有公式文字泄漏、没有可编辑内容被烘进位图。AI 清版底路线的交付物是一张干净视觉底板加可编辑前景叠层，绝不是源图块拼贴。完整验收维度见 `references/quality_checklist.md`。
 
-Before touching any scriptable backend, inventory your own tools: if the agent environment has any built-in image generation/editing tool (Codex `image_gen`, a bundled image tool, an image MCP), use it first. Built-in tools take the reference image from the visible conversation context, not from parameters: display the source image into the conversation (e.g. `view_image`) so it becomes the edit target, then invoke the tool with a prompt that names the just-displayed image as the sole edit target, and collect the output from the tool's save location (Codex: `~/.codex/generated_images/<session>/`). A parameter schema without reference-image or output-path options is normal for built-in tools and is never a reason to skip them; the full protocol is in `references/image_backend_policy.md`. Only when the built-in tool is genuinely absent or an actual invocation fails, fall through the scriptable order in that file: Labnana GPT-Image-2 first, Labnana Gemini/Nano Banana second, then official OpenAI/Gemini APIs or a configured command adapter. A positive `--precheck` only means scriptable fallbacks exist; it is not permission to skip the built-in tool. Backend adapters execute the brief; they do not decide the figure route or foreground asset strategy.
+合成后运行 `scripts/audit_editability.py manifest.json`。以下情况触发复查：
 
-## Quality Standard
+- OCR 证据可用时 text lift ratio 低于约 `0.45`
+- 十几个以上疑似可编辑的 OCR 框困在素材内部
+- 大量大素材带 `text_policy: review`
 
-Acceptable output preserves all information from the source (titles, labels, panels, arrows, source-specific visuals), keeps ordinary text and every detected formula editable in both SVG and native PPTX, holds their placement after PPTX reflow, and contains no detector noise, no formula-text leakage, and no editable content baked into rasters. For AI clean plate, the deliverable is a clean visual plate plus an editable foreground overlay, never a patchwork of source blocks. The full acceptance dimensions live in `references/quality_checklist.md`.
+editability 门为 `unavailable` 表示 OCR 证据缺失、头号指标没有算出来——这不是通过：要么补上测量工作目录（`diagnostics.measurement_workspace`）重跑，要么人工核对没有可编辑文字被烘进位图。
 
-Use `scripts/audit_editability.py manifest.json` after composing. Treat these as review triggers:
+## 参考文件
 
-- text lift ratio below roughly `0.45` when OCR evidence is available
-- more than a dozen likely-editable OCR boxes trapped inside assets
-- many large assets with `text_policy: review`
+按路线和元素门加载：
 
-## Reference Files
+- `references/manifest_spec.md`：manifest 字段参考。每个任务必用。
+- `references/svg_authoring.md`：SVG 编写约定、分层与字体。每个任务必用。
+- `references/quality_checklist.md`：交付前验证清单。每个任务必用。
+- `references/workflow.md`：端到端重建工作流细节。复杂、陌生或混合路线时读。
+- `references/taxonomy.md`：图形分类与重建模式。为陌生图形定重建方案前读。
+- `references/formula-reconstruction.md`：完整 `math` 元素 schema 与行内数学拆分规则。出现公式或行内数学时必读。
+- `references/element_decision_matrix.md`：元素级重画/裁剪/重打决策。图形同时含可编辑结构与非结构视觉对象时必读。
+- `references/asset_preservation_policy.md`：源图视觉对象保留为位图素材的规则。图形含图标、logo、截图、缩略图、图形对象、地图、图表主体或源图专有标记时必读。
+- `references/asset_extraction.md`：裁剪与素材边界验证规则。需要素材或判断位图/源图专有视觉能否安全重画时必读。
+- `references/background_reconstruction.md`：背景门与 AI 清版底前景策略。连续视觉场可能无法用裁剪+SVG 恢复时读。
+- `references/ai_clean_plate_prompting.md`：动态提示词框架。仅在选择 `ai-clean-plate` 时必读。
+- `references/image_backend_policy.md`：环境中立的图像后端策略。仅在需要图像生成时必读。
+- `references/chroma_regeneration.md`：被污染或被缠结素材的"再生-键控"流水线。任何素材路由到 `regenerate-chroma` 时必读。
+- `references/contaminated_asset_recovery.md`：被标签、引线或邻居压盖的素材的恢复决策。Crop Window Check 判定 contaminated、或 clean-on-fill 的前提不满足时读。
+- `references/text_layer_policy.md`：连续视觉场上的文字处理。源图在场景或底板上有公式、代码或密集文字时读。
 
-Read reference files according to the route and element gates:
+## 脚本地图
 
-- `references/manifest_spec.md`: manifest field reference. Use for every task.
-- `references/svg_authoring.md`: SVG authoring conventions, layering, and fonts. Use for every task.
-- `references/quality_checklist.md`: validation checklist before delivery. Use for every task.
-- `references/workflow.md`: detailed end-to-end reconstruction workflow. Read for complex, unfamiliar, or mixed-route figures.
-- `references/taxonomy.md`: figure classification and reconstruction modes. Read before deciding the reconstruction approach for an unfamiliar figure type.
-- `references/formula-reconstruction.md`: full `math` element schema and inline-math splitting rules. Required when formulas or inline math appear.
-- `references/element_decision_matrix.md`: element-level redraw vs crop vs retype decisions. Required when the figure contains both editable structure and non-structural visual objects.
-- `references/asset_preservation_policy.md`: rules for preserving source visual objects as raster assets. Required when the figure contains icons, logos, screenshots, thumbnails, pictorial objects, maps, chart bodies, or source-specific marks.
-- `references/asset_extraction.md`: cropping and asset boundary verification rules. Required when assets are needed or when deciding whether raster/source-specific visuals can be safely redrawn.
-- `references/background_reconstruction.md`: Background Gate and AI clean-plate foreground policy. Read when a continuous visual field may be unrecoverable by crop + SVG.
-- `references/ai_clean_plate_prompting.md`: dynamic prompt framework. Required only when `ai-clean-plate` is selected.
-- `references/image_backend_policy.md`: environment-neutral image backend policy. Required only when image generation is needed.
-- `references/chroma_regeneration.md`: regenerate-then-key pipeline for contaminated or entangled assets. Required when any asset routes to `regenerate-chroma`.
-- `references/contaminated_asset_recovery.md`: recovery decisions for assets overlapped by labels, leader lines, or neighbors. Read when a wanted asset cannot be cropped cleanly.
-- `references/text_layer_policy.md`: text handling over continuous visual fields. Read when the source has formulas, code, or dense text sitting on a scene or plate.
+- `scripts/prepare_measurements.py`：仅产出 OCR/风格证据。
+- `scripts/compose_svg_package.py`：从模型撰写的 manifest 合成完整包。
+- `scripts/crop_assets.py`：按 manifest 各资产的 `source_region` 从源图坐标裁剪矩形素材；常规路线的素材方法。
+- `scripts/probe_palette.py`：为再生 sheet 选择键控色。整图模式保证键色远离源图色板（背景可分离）；`--boxes` 模式逐元素检查色相撞色并输出分 sheet 方案（前景不掉色）。走再生路线必须带 `--boxes` 在首次生成前跑。
+- `scripts/chroma_key.py`：从再生 sheet 中键控掉纯色底；去除边缘污染、投影和封闭孔洞；报告边缘质量和逐连通域的 `component_hue_drift`（同色系元素被损伤的唯一检测器）。
+- `scripts/slice_grid.py`：把键控后的 sheet 按连通域切成独立透明素材，吸收小的分离部件；多部件图标被切碎时用 `--cells` 按已知格子框重切。
+- `scripts/check_plate_registration.py`：量化清版底与源区域的配准（scale/offset/IoU 暴力搜索）。判定"重新取景"的量化依据；通过标志是 scale ≈ 1.00、offset ≈ 0。
+- `scripts/visual_compare_qa.py`：源图与预览的像素级对比（对照图、混合图、差异热力图、最差分块）；合成时自动运行，仅报告。
+- `scripts/export_pptx_from_svg.py`：把 `editable.svg` 导出为原生 PPTX。
+- `scripts/pptx_math.py`：把 manifest LaTeX 转换为可编辑的 PPTX Office Math。
+- `scripts/formula_text_detection.py`：检测遗留在 text 元素里的公式样内容。
+- `scripts/svg_to_pptx/`：内置 SVG 转 DrawingML 转换器。
+- `scripts/svg_finalize/flatten_tspan.py`：PPTX 安全的多行 SVG 文字布局助手。
+- `scripts/pptx_animations.py`：PPTX 转换器使用的可选过渡/动画 XML 助手。
+- `scripts/audit_editability.py`：审计 text lift ratio、素材文字风险和 SVG 可编辑性；OCR 证据缺失时报 `unavailable`。
+- `scripts/detect_ocr_paddle.py`：PaddleOCR 适配器。
+- `scripts/sample_styles.py`：颜色/风格采样。
+- `scripts/quality_audit.py`：XML/渲染/报告检查加按路线适配的复查门（含 `crop_window_consistency` 裁剪窗核验）。
+- `scripts/validate_manifest.py`：manifest 校验。
+- `scripts/generate_clean_plate.py`：可选的参考图后端适配器。仅在模型选定 `ai-clean-plate` 并写好提示词简报后使用。
+- `scripts/prepare_clean_plate_mask.py`：可选的蒙版/叠加图准备工具。它不产出最终清版底。
 
-## Script Map
-
-- `scripts/prepare_measurements.py`: OCR/CV/style evidence only.
-- `scripts/compose_svg_package.py`: compose a package from a model-authored manifest.
-- `scripts/crop_assets.py`: coordinate-crop rectangular assets from the source using each asset's `source_region`; the conventional-route asset method.
-- `scripts/probe_palette.py`: pick a chroma-key color guaranteed far from the source palette, per regeneration sheet.
-- `scripts/chroma_key.py`: key a solid chroma background out of a regenerated sheet; decontaminates edges, cast shadows, and enclosed holes; reports edge quality.
-- `scripts/slice_grid.py`: slice a keyed sheet into individual transparent assets by connected components, absorbing small detached parts.
-- `scripts/visual_compare_qa.py`: pixel-level source-vs-preview comparison (side-by-side, blend, diff heatmap, worst tiles); compose runs it automatically as a report-only gate.
-- `scripts/export_pptx_from_svg.py`: export `editable.svg` to native PPTX.
-- `scripts/pptx_math.py`: convert manifest LaTeX to editable PPTX Office Math.
-- `scripts/formula_text_detection.py`: detect formula-like content left in text elements.
-- `scripts/svg_to_pptx/`: bundled SVG-to-DrawingML converter used for PPTX output.
-- `scripts/svg_finalize/flatten_tspan.py`: bundled text-layout helper for PPTX-safe multi-line SVG text.
-- `scripts/pptx_animations.py`: bundled optional transition/animation XML helpers used by the PPTX converter.
-- `scripts/audit_editability.py`: audit text lift ratio, asset text risk, and SVG editability.
-- `scripts/detect_ocr_paddle.py`: PaddleOCR adapter.
-- `scripts/detect_primitives_cv.py`: OpenCV diagnostics.
-- `scripts/sample_styles.py`: color/style sampling.
-- `scripts/infer_assets.py`: experimental asset inference utilities.
-- `scripts/generate_diagnostics.py`: diagnostic overlays.
-- `scripts/quality_audit.py`: XML/render/report checks plus route-appropriate review gates.
-- `scripts/validate_manifest.py`: manifest validation.
-- `scripts/generate_clean_plate.py`: optional reference-capable image backend adapter. Use only after the model has selected `ai-clean-plate` and written the prompt brief.
-- `scripts/prepare_clean_plate_mask.py`: optional mask/overlay preparation for image-generation prompts. It does not create a final clean plate.
-
-`build_svg_from_manifest.py`, `embed_svg_assets.py`, `math_renderer.py`, and `api_keys.py` are internal helpers imported by the scripts above; do not run them directly.
+`build_svg_from_manifest.py`、`embed_svg_assets.py`、`math_renderer.py`、`api_keys.py` 是被上述脚本导入的内部助手，不要直接运行。

@@ -1,44 +1,37 @@
-# SVG Authoring Conventions
+# SVG 编写约定（SVG Authoring Conventions）
 
-## Canvas
+## 画布
 
-Use source image dimensions as the SVG coordinate system unless rescaling is requested.
+除非要求缩放，SVG 坐标系使用源图尺寸。
 
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" width="W" height="H" viewBox="0 0 W H">
 ```
 
-## File Organization
+## 文件组织
 
-Recommended group order:
+分组顺序（与 `build_svg_from_manifest.py` 的 `group_order` 一致——连接线画在 sections/icons 之下，图标盖住线头）：
 
 ```xml
 <g id="background">...</g>
-<g id="panels">...</g>
-<g id="sections">...</g>
 <g id="assets">...</g>
-<g id="icons">...</g>
+<g id="panels">...</g>
 <g id="connectors">...</g>
+<g id="sections">...</g>
+<g id="icons">...</g>
 <g id="texts">...</g>
 <g id="annotations">...</g>
 ```
 
-When `background_plan.plate_asset_id` or `plate_file` is present, the generator
-places a full-canvas `<image id="background-plate">` in the background group
-with `preserveAspectRatio="none"`. The plate dimensions must already match the
-canvas; the attribute prevents accidental letterboxing, not geometry repair.
+实操建议：manifest 元素显式写 `layer` 字段指定分组，不要依赖按类型推断的默认分组——类型推断的落组结果和你预想的绘制次序不一定一致。
 
-## PPTX Grouping
+当 `background_plan.plate_asset_id` 或 `plate_file` 存在时，生成器在 background 组放置整幅 `<image id="background-plate">`，带 `preserveAspectRatio="none"`。底板尺寸必须已经与画布一致；该属性防的是意外信箱化，不是几何修复。
 
-Author SVG groups for layer order and maintainability, but do not rely on
-ordinary groups staying grouped in PowerPoint. Native PPTX export defaults to
-semantic ungrouping: non-semantic layout groups such as `background`, `assets`,
-`panels`, `connectors`, and `texts` are flattened after their transforms and
-styles are applied, so the final PowerPoint file is directly selectable without
-manual ungrouping.
+## PPTX 分组
 
-Keep a group atomic only when ungrouping would hurt visual fidelity or
-editability. Use one of these explicit markers:
+为图层次序和可维护性组织 SVG 分组，但不要依赖普通分组在 PowerPoint 里保持成组。原生 PPTX 导出默认做语义解组：`background`、`assets`、`panels`、`connectors`、`texts` 这类非语义布局组在应用变换和样式后被压平，最终 PowerPoint 文件无需手动解组即可直接选中元素。
+
+只在解组会损害视觉保真或编辑性时保持分组原子性。使用显式标记：
 
 ```xml
 <g id="logo-mark" data-pptx-group="atomic">...</g>
@@ -46,14 +39,11 @@ editability. Use one of these explicit markers:
 <g id="masked-photo" data-pptx-group="preserve" clip-path="url(#clip)">...</g>
 ```
 
-The exporter also preserves groups with formulas, group-level clip paths,
-masks, filters, opacity, or rotations that require a group wrapper. Avoid
-wrapping an entire figure, panel, or asset layer as an atomic group unless the
-user explicitly asked for that object to move as one piece.
+导出器还会保留带公式、组级裁剪路径、蒙版、滤镜、不透明度或需要组包装的旋转的分组。除非用户明确要求某对象整体移动，不要把整幅图、整个面板或整个素材层包成原子组。
 
-## Naming
+## 命名
 
-Use stable semantic IDs:
+使用稳定的语义 ID：
 
 - `panel-data-source`
 - `section-evaluation-metrics`
@@ -61,17 +51,17 @@ Use stable semantic IDs:
 - `label-stage-1`
 - `asset-route-map`
 
-Avoid generic names such as `rect1`, `image2`, or `path-final`.
+避免 `rect1`、`image2`、`path-final` 这类通用名。
 
-## Text
+## 文字
 
-- Keep text editable with `<text>` and `<tspan>`.
-- Use manual line breaks for multi-line labels.
-- Use `text-anchor` and `dominant-baseline` for alignment.
-- Mark uncertain text in the manifest.
-- For dense figures, preserve the source slot and baseline rather than relying on default browser or PowerPoint text metrics.
+- 用 `<text>` 和 `<tspan>` 保持文字可编辑。
+- 多行标签手动断行。
+- 用 `text-anchor` 和 `dominant-baseline` 控制对齐。
+- 不确定的文字在 manifest 里标注。
+- 密集图形保留源图槽位和基线，不依赖浏览器或 PowerPoint 的默认文字度量。
 
-Recommended font stacks:
+推荐字体栈：
 
 ```css
 --font-sans: "Inter", "Arial", "Helvetica", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
@@ -79,15 +69,13 @@ Recommended font stacks:
 --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
 ```
 
-Do not convert normal text to outlines unless explicitly requested.
+除非明确要求，不要把普通文字转成轮廓路径。
 
-## Math
+交付目标包含 PPTX 时的字符集约束见 `text_layer_policy.md`（弯引号等易触发 PowerPoint 字体回退的字符会留下可见空档）。
 
-Use manifest `math` elements for formulas instead of approximating them as
-plain text. The generator renders `latex` to vector paths and keeps the source
-formula in `data-latex`. The PPTX exporter uses the same `latex` value to
-create editable Office Math equations, so malformed or approximate LaTeX should
-be treated as a reconstruction defect.
+## 公式
+
+公式用 manifest 的 `math` 元素，不要用纯文字近似。生成器把 `latex` 渲染为矢量路径并在 `data-latex` 保留源公式。PPTX 导出器用同一个 `latex` 值创建可编辑 Office Math 公式，所以畸形或近似的 LaTeX 应视为重建缺陷。
 
 ```json
 {
@@ -103,22 +91,13 @@ be treated as a reconstruction defect.
 }
 ```
 
-Use `math` for fractions, summations, products, integrals, Greek symbols,
-scripts, hats/bars, matrix notation, and recurrence formulas. Use ordinary
-`text` for prose labels, file names, code snippets, and captions.
+分式、求和、乘积、积分、希腊字母、上下标、帽/横线、矩阵记号和递推式都用 `math`。散文标签、文件名、代码片段和图注用普通 `text`。
 
-Do not use `text` for formulas merely because the source formula is short.
-Examples such as `A_i^{tree}`, `\delta_i`, `R^{(m)}`, and
-`\sum_{\ell=1}^{G}` still belong in `math` when they function as equations or
-mathematical annotations.
+不要因为源图公式短就用 `text`。`A_i^{tree}`、`\delta_i`、`R^{(m)}`、`\sum_{\ell=1}^{G}` 这类，只要作为方程或数学标注出现，仍属于 `math`。
 
-Do not rasterize formulas to avoid placement difficulty. If a formula is dense
-or small, keep it editable and control its layout with a measured source slot,
-explicit width/height, anchor, baseline, and font size.
+不要为回避排位难度而把公式栅格化。公式密或小，就保持可编辑并用测量好的源槽位、显式宽高、锚点、基线和字号控制布局。
 
-For mixed prose/formula labels, split the visual line into adjacent elements
-that share a baseline. Do not leave TeX syntax, Unicode subscript/superscript,
-or compact Greek-variable notation inside `type: "text"`.
+散文/公式混排的标签，把视觉行拆成共享基线的相邻元素。不要把 TeX 语法、Unicode 上下标或紧凑的希腊变量记号留在 `type: "text"` 里。
 
 ```json
 [
@@ -144,27 +123,24 @@ or compact Greek-variable notation inside `type: "text"`.
 ]
 ```
 
-If a symbol-like text is intentionally not a formula, add
-`formula_policy: "not-formula"` and a short `formula_decision_reason`.
+符号样文字确实不是公式时，加 `formula_policy: "not-formula"` 和简短的 `formula_decision_reason`。
 
-Native PPTX export uses PowerPoint text and Office Math layout, which can differ
-from SVG. On tight layouts, verify the exported PPTX visually and adjust the
-manifest if equations or labels shift, wrap, overflow, or collide.
+原生 PPTX 导出使用 PowerPoint 文字和 Office Math 排版，可能与 SVG 不同。紧凑布局要对导出的 PPTX 做视检，公式或标签偏移、换行、溢出、碰撞就调整 manifest。
 
-## Shapes
+## 形状
 
-Use:
+使用：
 
-- `rect` for panels, cards, table cells, and background blocks
-- `line` or `polyline` for straight connectors
-- `path` for curved connectors
-- `marker` for arrowheads
-- `circle` and `ellipse` for nodes
-- `polygon` for simple geometric icons
+- `rect`：面板、卡片、表格单元、背景块
+- `line` / `polyline`：直连接线
+- `path`：曲线连接线
+- `marker`：箭头头部
+- `circle` / `ellipse`：节点
+- `polygon`：简单几何图标
 
-## Style
+## 样式
 
-Define reusable classes inside `<style>`:
+在 `<style>` 里定义可复用类：
 
 ```xml
 <style>
@@ -174,26 +150,23 @@ Define reusable classes inside `<style>`:
 </style>
 ```
 
-## Assets
+## 素材
 
-Use relative paths in `editable.svg`:
+`editable.svg` 用相对路径：
 
 ```xml
 <image href="assets/example.png" x="100" y="120" width="240" height="160" preserveAspectRatio="xMidYMid meet"/>
 ```
 
-Use base64 data URIs in `editable_embedded.svg`.
+`editable_embedded.svg` 用 base64 data URI。
 
-For a background plate, prefer the top-level `background_plan` reference rather
-than adding a duplicate image element. For coordinate-sensitive foreground
-assets, keep normal aspect-ratio preservation and verify placement against the
-source overlay.
+背景底板优先用顶层 `background_plan` 引用，不要加重复的 image 元素。坐标敏感的前景素材保持正常的宽高比保留，并对照源图叠加验证位置。
 
-## Accessibility and Maintainability
+## 可访问性与可维护性
 
-Where practical:
+条件允许时：
 
-- add `<title>` to major groups
-- use semantic IDs
-- keep source order close to reading order
-- keep complex paths readable or documented
+- 主要分组加 `<title>`
+- 使用语义 ID
+- 源顺序贴近阅读顺序
+- 复杂路径保持可读或加说明

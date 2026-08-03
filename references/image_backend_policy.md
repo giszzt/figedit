@@ -1,128 +1,117 @@
-# Image Backend Policy
+# 图像后端策略（Image Backend Policy）
 
-Use this file only after the Background Gate has selected `ai-clean-plate` or a user explicitly asks for AI-assisted image editing.
+仅在背景门选定 `ai-clean-plate` 之后、或用户明确要求 AI 辅助图像编辑时使用本文件。
 
-FigEdit decides the reconstruction plan. The image backend only executes the approved preserve/remove/reconstruct brief.
+FigEdit 决定重建方案。图像后端只执行已批准的"保留/移除/重建"简报。
 
-## API Key Configuration
+## API Key 配置
 
-Scriptable backends read their keys from environment variables, and the
-skill loads a dotenv file into them automatically: copy `env.example` at the
-skill root to `.env`, fill in whatever keys you have, done. Real environment
-variables take precedence over the file; `.env` is gitignored and must never
-be committed or shared. `scripts/api_keys.py` is the loader; run it directly
-to see which keys the file provides.
+可脚本后端从环境变量读 key，skill 会自动把 dotenv 文件载入环境：把 skill 根目录的 `env.example` 复制为 `.env`，填上你有的 key 即可。真实环境变量优先于文件；`.env` 已被 gitignore，绝不提交或分享。`scripts/api_keys.py` 是加载器，直接运行它可以查看文件提供了哪些 key。
 
-Practical note: Labnana GPT-Image-2 returns lossless PNG, which keys cleaner
-than JPEG-returning backends (fewer compression artifacts on chroma edges) —
-one more reason it leads the scriptable order.
+实用提示：Labnana GPT-Image-2 返回无损 PNG，键控比返回 JPEG 的后端更干净（chroma 边缘压缩伪影更少）——这也是它在可脚本顺序里排第一的原因之一。
 
-## Backend Selection
+## 后端选择
 
-Use the first reference-capable image editing path that is available and succeeds. **Before touching any scriptable backend, inventory your own tools**: if the agent environment exposes a built-in image generation/editing capability that accepts a reference image (Codex Image Gen, a bundled image tool, an image MCP), that is route 1 and must be tried first. `generate_clean_plate.py --precheck` only reports scriptable fallbacks — a positive precheck is not permission to skip this step.
+用第一个可用且成功的、支持参考图的图像编辑路径。**碰任何可脚本后端之前，先盘点自己的工具**：agent 环境若有接受参考图的内置图像生成/编辑能力（Codex Image Gen、自带图像工具、图像 MCP），那就是路线 1，必须先试。`generate_clean_plate.py --precheck` 只报告可脚本后备——precheck 为正不是跳过这一步的许可。
 
-1. **Built-in agent image tool (e.g. Codex `image_gen`)**. Use it first whenever the agent has any built-in image generation/editing tool, even when its parameter schema shows no reference-image or output-path options. Built-in tools receive the reference through the multimodal conversation context, not through parameters. Follow this invocation protocol:
+1. **内置 agent 图像工具（如 Codex `image_gen`）**。只要 agent 有任何内置图像生成/编辑工具就先用它，即使其参数表没有参考图或输出路径选项。内置工具通过多模态对话上下文接收参考，不通过参数。调用协议：
 
-   1. **Display the source image into the conversation first** (`view_image`
-      in Codex, or the environment's equivalent way of showing an image to
-      the model). This makes the source the visible edit target.
-   2. **Then call the image tool.** The prompt must state explicitly that
-      the image just displayed is the sole edit target, and phrase the
-      preserve/remove/reconstruct brief relative to that image ("edit this
-      image: remove …, keep … unchanged"), not as a fresh scene description.
-   3. **Never substitute step 1 with a file path written inside the
-      prompt.** A local path in prompt text does not transmit pixels; the
-      tool only sees what is visible in the conversation.
-   4. **Locate the output afterward.** Codex `image_gen` saves under
-      `~/.codex/generated_images/<session>/`; take the newest file and copy
-      it into the task workspace. A missing output-path parameter is normal,
-      not a defect.
+   1. **先把源图显示进对话**（Codex 用 `view_image`，其他环境用等价方式把图展示给模型）。这使源图成为可见的编辑目标。
+   2. **然后调用图像工具。** 提示词必须明确声明刚显示的图是唯一编辑目标，"保留/移除/重建"简报要相对这张图来表述（"编辑这张图：移除……，保持……不变"），不能写成全新场景描述。
+   3. **绝不用提示词里写文件路径代替第 1 步。** 提示词文本里的本地路径不传输像素；工具只看得见对话中可见的内容。
+   4. **事后定位输出。** Codex `image_gen` 保存在 `~/.codex/generated_images/<session>/`；取最新文件复制进任务工作区。没有输出路径参数是常态，不是缺陷。
 
-   Judge eligibility by **outcome, not parameter surface**: if the source
-   can be displayed before the call and the produced bitmap can be located
-   after it, the tool is eligible. "The built-in tool has no controllable
-   reference/save parameters" is never a valid reason to fall back to
-   scriptable backends — that exact rationalization has produced wrong
-   fallbacks before; the reference goes in via the displayed image, not via
-   a parameter. Fall back only after an actual invocation attempt fails
-   (tool absent, call errors, or every candidate fails review), and record
-   the failure before moving down the list.
-2. **Labnana GPT-Image-2**. Outside Codex, or when Codex Image Gen is unavailable or fails, prefer Labnana with `provider=openai` and `model=gpt-image-2`. This is the preferred scriptable fallback because it supports reference-image generation/editing and arbitrary aspect ratios; do not force a standard aspect ratio when the source is non-standard.
-3. **Labnana Gemini / Nano Banana**. If Labnana GPT-Image-2 is unavailable or fails, use Labnana with the Gemini/Nano Banana image model. Preserve the source aspect as closely as the provider allows.
-4. **Official provider APIs**. If Labnana is unavailable, use direct OpenAI or Gemini image APIs only when the current environment has the required key, SDK/API capability, and reference-image editing support.
+   资格按**结果**判断，不按参数表判断：只要源图能在调用前显示、产物位图能在调用后定位，工具就有资格。"内置工具没有可控的参考/保存参数"从来不是下沉到可脚本后端的正当理由——这个具体的合理化说辞以前就造成过错误下沉；参考图走显示的图片进去，不走参数。只有实际调用尝试失败后才下沉（工具不存在、调用报错、或所有候选未通过复查），下沉前记录失败。
+2. **Labnana GPT-Image-2**。Codex 之外，或 Codex Image Gen 不可用/失败时，优先 Labnana `provider=openai` + `model=gpt-image-2`。它支持参考图生成/编辑，是首选的可脚本后备。
+3. **Labnana Gemini / Nano Banana**。Labnana GPT-Image-2 不可用或失败时使用。尽后端允许保持源图宽高比。
+4. **官方 API**。Labnana 不可用时，仅当当前环境具备所需 key、SDK/API 能力和参考图编辑支持时，直接用 OpenAI 或 Gemini 图像 API。
 
-If no route is available, stop and report the blocker. Ask the user to configure an image backend/API key or approve a non-clean-plate route. Do not silently switch to local paint, blur, clone, fill, or inpaint.
+没有任何可用路线时，停下报告阻塞。请用户配置图像后端/API key，或批准非清版底路线。不要静默切换到本地涂抹、模糊、克隆、填充或 inpaint。
 
-Do not ask the user to confirm model, size, aspect ratio, or reference image when a configured default can complete the task. Ask only when no backend is configured, the user explicitly requests control, or the choice materially changes cost, rights, latency, or quality.
+已配置的默认值能完成任务时，不要就模型、尺寸、宽高比或参考图找用户确认。只在没有后端配置、用户明确要求控制、或选择实质影响成本/版权/延迟/质量时才问。
 
-Do not choose Nano Banana before Codex Image Gen or Labnana GPT-Image-2 unless the user explicitly requests it or the higher-priority route failed and the failure was recorded.
+除非用户明确要求或更高优先路线已失败且失败已记录，不要在 Codex Image Gen 或 Labnana GPT-Image-2 之前选 Nano Banana。
 
-## Capability Contract
+## 能力契约
 
-A clean plate is an edit of the source image, not a fresh illustration. A backend is eligible only if it can:
+清版底是对源图的编辑，不是一张新插画。后端只有具备以下能力才有资格：
 
-- accept the original image as a reference or edit input
-- preserve the source aspect ratio closely enough for later overlay alignment
-- return a full-canvas bitmap suitable as the bottom visual layer
-- follow a preserve/remove/reconstruct brief
+- 接受原图作为参考或编辑输入
+- 保持源图宽高比，误差足以支撑后续叠层对齐
+- 返回可作视觉底层的整幅位图
+- 遵循"保留/移除/重建"简报
 
-Text-only image generation is not eligible for `ai-clean-plate` because it cannot preserve the specific source composition.
+纯文字生图对 `ai-clean-plate` 没有资格，因为它无法保持源图的特定构图。
 
-## Prompt and References
+## 固定画幅后端（Fixed-Aspect Backends）
 
-Before invocation, read `ai_clean_plate_prompting.md` and create a dynamic prompt from the actual source. The prompt should include:
+部分后端忽略请求的宽高比，恒定返回固定画幅（实测有 2048×2048），且为填满画幅**重新取景**（换构图）而非拉伸；显式传非 `auto` 的宽高比参数会直接返回 HTTP 400。重新取景对清版底是致命的——重构图后源坐标全部失效；拉伸尚可用逆变换还原，重新取景不行。
 
-- the source image as the primary reference
-- preserve list
-- remove list
-- reconstruction instructions
-- protected background inscriptions, if any
-- same-as-source aspect ratio and full-bleed output requirement
-- candidate rejection criteria
+遇到这类后端，把几何补偿放在提示词之外：
 
-Optional references may include masks, removal overlays, or tight crops of objects that must retain identity. Do not provide unrelated style references unless the user asked for redesign.
+1. 把源区域**非等比缩放**成后端的原生画幅，作为参考图；
+2. 提示词写明「参考图是拉伸过的，照抄这个拉伸几何，不要纠正比例，不要加黑边」；
+3. 拿到结果后**压回**源区域的原始宽高。
 
-## Optional Adapter Script
+不要试图用宽高比参数解决（只有 `auto` 可用；`generate_clean_plate.py --aspect-ratio` 必须留 `auto`），也不要接受一张重新取景的底板。压回后用 `check_plate_registration.py` 量化配准（对源区域和底板取结构 mask 暴力搜 scale/offset 的最大 IoU），通过标志是 scale ≈ 1.00、offset ≈ 0；明显偏离即判重新取景，拒收重生。
 
-`scripts/generate_clean_plate.py` is an optional scriptable backend adapter. It is not the figure route selector and cannot invoke Codex Image Gen. It is used after the agent has selected `ai-clean-plate`, written the prompt brief, and determined that an interactive Codex Image Gen route is not being used.
+首次接入一个新后端时，先用一张明确非方形的源区域实测一次返回画幅与构图，再决定是否需要本补偿。不要采信文档。
 
-Use it only after:
+## 提示词与参考图
 
-- the model has selected `ai-clean-plate`
-- the generation brief has been written to a prompt file
-- the environment has an eligible scriptable backend configured
+调用前读 `ai_clean_plate_prompting.md`，基于实际源图写动态提示词。内容包括：
 
-The script checks backends in this order when `--backend auto` is used:
+- 源图作为首要参考
+- 保留清单
+- 移除清单
+- 重建指令
+- 受保护的背景铭刻（如有）
+- 与源图相同的宽高比和满幅输出要求
+- 候选拒收标准
 
-1. `labnana-gpt-image-2` with `LABNANA_API_KEY`
-2. `labnana-nano-banana` with `LABNANA_API_KEY`
-3. `openai-official` with `OPENAI_API_KEY` and local SDK/API support
-4. `gemini-official` with `GEMINI_API_KEY` or `GOOGLE_API_KEY`
-5. `configured-command` with `FIGEDIT_CLEAN_PLATE_CONFIG` or `--config`
+可选的附加参考：蒙版、移除区域叠加图、必须保持身份的对象的紧凑裁剪。除非用户要求重新设计，不要提供无关的风格参考。
 
-Run `python scripts/generate_clean_plate.py --precheck` to see which scriptable routes are configured. A new installation with no backend should report `unavailable`; the agent should then use Codex Image Gen if present, or ask the user to configure a key/backend. The script may submit the request, save the returned bitmap, and write provenance. It must not create the clean plate through local blur, clone, fill, or OpenCV/PIL repair.
+## 可选适配器脚本
 
-## Provenance
+`scripts/generate_clean_plate.py` 是可选的可脚本后端适配器。它不是路线选择器，也无法调用 Codex Image Gen。使用前提：
 
-For the accepted plate, record:
+- 模型已选定 `ai-clean-plate`
+- 生成简报已写入提示词文件
+- 环境已配置合格的可脚本后端
 
-- backend or tool used
-- submitted prompt or prompt file
-- source references actually supplied
-- requested and recorded aspect ratio or output size
-- output image path
-- acceptance decision and candidate-review notes
+`--backend auto` 时按此顺序检查：
 
-The accepted output path must match the background plate asset used in the manifest.
+1. `labnana-gpt-image-2`（`LABNANA_API_KEY`）
+2. `labnana-nano-banana`（`LABNANA_API_KEY`）
+3. `openai-official`（`OPENAI_API_KEY` + 本地 SDK/API 支持）
+4. `gemini-official`（`GEMINI_API_KEY` 或 `GOOGLE_API_KEY`）
+5. `configured-command`（`FIGEDIT_CLEAN_PLATE_CONFIG` 或 `--config`）
 
-## Failure Handling
+运行 `python scripts/generate_clean_plate.py --precheck` 查看已配置的可脚本路线。全新安装无后端时应报 `unavailable`；此时 agent 应使用 Codex Image Gen（如有），或请用户配置 key/后端。脚本可以提交请求、保存返回位图、写来源记录。它绝不能用本地模糊、克隆、填充或 OpenCV/PIL 修补来制造清版底。
 
-Treat these as blockers unless the user explicitly approves a different route:
+## 来源记录
 
-- no reference-capable backend is available
-- every generated candidate fails review
-- aspect ratio drift prevents overlay alignment
-- the backend returns a redesigned image rather than a clean plate
-- the candidate contains residual foreground text, hallucinated text, or missing major objects
+对验收的底板，记录：
 
-Do not relabel a failed AI clean-plate route as conventional. Do not use the untouched source as the clean plate when it still contains the foreground that was supposed to be removed.
+- 使用的后端或工具
+- 提交的提示词或提示词文件
+- 实际提供的源参考
+- 请求与实际的宽高比或输出尺寸
+- 输出图路径
+- 验收决定与候选复查笔记（含配准检查结果）
+
+验收输出的路径必须与 manifest 中的背景底板素材一致。
+
+## 失败处理
+
+区分瞬时故障与参数故障。**任何失败先在同一后端原地重试 1 次**——实测存在瞬时 400 和 SSL EOF，一次重试即过。重试后仍 4xx 的属参数问题，继续重试无意义，先排查请求（常见原因：传了后端不接受的宽高比或尺寸取值，如非 `auto` 的 aspect-ratio）。5xx（502/504）属瞬时或后端过载，可再重试 1 次；同一后端连续 3 次失败视为不可用，此时才允许下沉到后备列表的下一个后端，并记录失败原因。不要因单次超时下沉，也不要对参数错误无限重试。
+
+除非用户明确批准其他路线，以下情况视为阻塞：
+
+- 没有支持参考图的后端可用
+- 所有生成候选均未通过复查
+- 宽高比漂移导致叠层无法对齐（含配准检查不通过的重新取景）
+- 后端返回的是重新设计的图而非清版底
+- 候选残留前景文字、幻觉文字或缺失主要对象
+
+不要把失败的 AI 清版底路线改口为常规路线。不要把仍带着待移除前景的未处理源图当清版底用。

@@ -1,129 +1,108 @@
-# Element Decision Matrix
+# 元素决策矩阵（Element Decision Matrix）
 
-## Decision Types
+## 决策类型
 
-Use one of these decisions for every significant element:
+每个重要元素使用以下决策之一：
 
-- `retype`: recreate text as editable SVG text
-- `redraw`: recreate with SVG primitives
-- `crop`: extract as raster asset from the source image
-- `embed`: place a previously extracted asset
-- `simplify`: replace with a simpler editable equivalent only when fidelity is not important
-- `semantic-redraw`: redraw to preserve meaning rather than exact appearance
-- `omit`: exclude only if nonessential and documented
-- `restore`: clean contamination while preserving source identity
-- `flatten`: keep an inseparable object in the background plate
-- `regenerate-chroma`: reproduce the element on a solid chroma background via a
-  reference-capable image model, key it out to a clean transparent asset
-  (`chroma_regeneration.md`)
-- `generate-replacement`: create an audited approximate asset or patch
+- `retype`：重建为可编辑 SVG 文字
+- `redraw`：用 SVG 图元重建
+- `crop`：从源图提取为位图素材
+- `embed`：放置此前已提取的素材
+- `simplify`：仅当保真不重要时替换为更简单的可编辑等价物
+- `semantic-redraw`：保含义重画，不保精确外观
+- `omit`：仅当非必需且有记录时排除
+- `restore`：清理污染同时保持源图身份
+- `flatten`：把不可分离对象留在背景底板里
+- `regenerate-chroma`：由支持参考图的图像模型在纯色 chroma 底上复现元素，键控为干净透明素材（`chroma_regeneration.md`）
+- `generate-replacement`：创建经审核的近似素材或补丁
 
-## Primary Rule
+## 首要规则
 
-For visual objects, preserve source fidelity by default.
+视觉对象默认保源图保真。
 
-- Structural layout elements are usually redrawn.
-- Text is usually retyped after any formula-like spans have been split into
-  `math` elements.
-- Pictorial, source-specific, or custom visual objects are usually cropped.
-- Redraw only generic primitives and simple structural symbols.
-- On conventional routes, when uncertain between source-specific crop and generic
-  redraw, crop.
-- How an object becomes a raster asset depends on the route, and there is no
-  salient-object matting on either. **AI route** (`ai-clean-plate`,
-  full-extract/selective): the object is regenerated on a chroma sheet and
-  keyed apart (`regenerate-chroma`, `chroma_regeneration.md`) — never cropped
-  from the original, never matted. Anything can be AI-regenerated — photos,
-  people, illustrations, icons, badges, logos, screenshots, charts, maps,
-  composite objects — with no content-category approval gate. **Conventional
-  route**: coordinate-crop a rectangle from the source (`crop_assets.py`);
-  assets on flat/white/separable backgrounds need no alpha. Never invent a
-  generic redraw or accept a dirty crop instead. When exact source pixels must
-  not drift (a chart read for its values, a compliance logo), keep the object
-  flattened in the clean plate or coordinate-crop it as an opaque rectangle;
-  do not chase pixel-exactness with a fragile cutout.
-- On AI clean-plate routes, crop only if the asset is identity-critical and clean
-  enough to layer back. If uncertain and the object is inseparable or low-edit,
-  leave it flattened in the clean plate.
+- 结构性布局元素通常重画。
+- 文字在公式样片段拆成 `math` 元素之后通常重打。
+- 图形性、源图专有或定制视觉对象通常裁剪。
+- 只重画通用图元和简单结构符号。
+- 常规路线上，在"源图专有裁剪"与"通用重画"之间拿不准时，裁剪（前提是通过 SKILL.md 的裁剪窗检查；窗口不干净的先收窗，收不动走 `regenerate-chroma` 或留在原位）。
+- 对象如何成为位图素材取决于路线，两条路线都没有显著性抠图。**AI 路线**（`ai-clean-plate` + full-extract/selective）：对象在 chroma sheet 上再生并键控分离（`regenerate-chroma`，`chroma_regeneration.md`）——绝不从原图裁剪，绝不抠图。万物皆可 AI 再生——照片、人物、插画、图标、徽章、logo、截图、图表、地图、复合对象——没有内容类别审批门。**常规路线**：从源图坐标裁剪矩形（`crop_assets.py`）；平底/白底/可分离底的素材不需要 alpha。绝不发明通用重画或接受脏裁剪。源像素绝不能漂移时（按数值读取的图表、合规 logo），压平留在清版底或坐标裁剪为不透明矩形；不要用脆弱抠图追求像素级精确。
+- AI 清版底路线上，只有素材身份关键且干净到能叠回时才裁剪。拿不准且对象不可分离或低编辑价值时，压平留在清版底。
 
-## Matrix
+## 矩阵
 
-| Element type | Default decision | Use vector redraw when | Use raster crop when |
+| 元素类型 | 默认决策 | 何时矢量重画 | 何时位图裁剪 |
 |---|---|---|---|
-| Title, label, annotation | retype + split math spans | Text is readable and functions as a label | Decorative lettering is integral and must visually match |
-| Formula, equation, inline math span | retype-math | The region contains variables, scripts, fractions, operators, Greek symbols, equations, or recurrence notation | Only if the user explicitly waives formula editability for that specific item |
-| Panel, card, frame | redraw | Almost always | Rarely |
-| Background block | redraw or background-plate | Flat color, simple single-zone gradient, or measured regular geometry | Complex texture, paper grain, continuous scene, irregular/multi-zone color field, illustrated background, or image background must be preserved or repaired |
-| Divider, grid, table rule | redraw | Almost always | Rarely |
-| Arrow, connector, flow line | redraw | Almost always | Only if arrow is a distinctive hand-drawn illustration and fidelity matters |
-| Plain geometric marker | redraw | Circle, square, dot, plus, minus, check, cross, simple triangle | Rarely |
-| Generic simple icon | redraw or simplify | Shape is generic, made of few primitives, and visual fidelity is not important | If the original style, silhouette, or consistency matters |
-| Source-specific pictorial icon | crop | Only if user explicitly requests editable redraw | Almost always |
-| Custom illustration | crop | Only if semantic redraw is requested | Almost always |
-| Brand logo or model logo | crop | Only if user explicitly requests vectorization and it is feasible | Almost always |
-| Chart | redraw or crop | Chart is central and data/visual encoding is readable | Chart is small, decorative, complex, or part of a screenshot |
-| Table | redraw + retype | Text is readable and editing matters | Dense screenshot table with low edit requirement |
-| Map, satellite image, orthophoto | crop | Only if highly simplified symbolic map | Almost always |
-| UI screenshot | crop or rebuild | UI itself needs to be edited | UI is illustrative evidence or example content |
-| Photo, product image, person | crop | Rarely | Almost always |
-| Dense thumbnail grid | crop | Rarely | Almost always |
-| Hand-drawn character/object | crop or semantic-redraw | Editable reinterpretation requested | Original style fidelity matters |
-| Texture, grain, watercolor, glow, scene lighting | crop, flatten, or ai-clean-plate | Recreated as a nonessential simple style | Texture/lighting/scene fidelity matters or foreground marks hide it |
-| Object crossed by labels or leaders | restore or flatten | Overlay is small and object geometry can be preserved | Direct crop bakes in annotations or alpha extraction damages the object |
-| Missing pixels in continuous background | ai-clean-plate | Background can be faithfully rebuilt with simple SVG/crops | Crop + simple SVG cannot reveal or reproduce hidden pixels in a continuous field |
+| 标题、标签、注释 | retype + 拆分数学片段 | 文字可读且作为标签使用 | 装饰字体是整体一部分且必须视觉一致 |
+| 公式、方程、行内数学片段 | retype-math | 区域含变量、上下标、分式、运算符、希腊字母、方程或递推记号 | 仅当用户对该项明确豁免公式可编辑性 |
+| 面板、卡片、边框 | redraw | 几乎总是 | 很少 |
+| 背景块 | redraw 或 background-plate | 纯色、简单单区渐变或测量规则几何 | 复杂纹理、纸纹、连续场景、不规则/多区色场、插画背景或必须保留/修复的影像背景 |
+| 分隔线、网格、表格线 | redraw | 几乎总是 | 很少 |
+| 箭头、连接线、流程线 | redraw | 几乎总是 | 仅当箭头是有辨识度的手绘插画且保真重要 |
+| 朴素几何标记 | redraw | 圆、方、点、加减号、对勾、叉、简单三角 | 很少 |
+| 通用简单图标 | redraw 或 simplify | 形状通用、由少量图元构成、视觉保真不重要 | 原始风格、轮廓或一致性重要时 |
+| 源图专有图形图标 | crop | 仅当用户明确要求可编辑重画 | 几乎总是 |
+| 定制插画 | crop | 仅当要求语义重画 | 几乎总是 |
+| 品牌 logo 或模型 logo | crop | 仅当用户明确要求矢量化且可行 | 几乎总是 |
+| 图表 | redraw 或 crop | 图表是核心且数据/视觉编码可读 | 图表小、装饰性、复杂或属于截图一部分 |
+| 表格 | redraw + retype | 文字可读且编辑重要 | 低编辑需求的密集截图表格 |
+| 地图、卫星影像、正射影像 | crop | 仅高度简化的符号地图 | 几乎总是 |
+| UI 截图 | crop 或重建 | UI 本身需要被编辑 | UI 是说明性证据或示例内容 |
+| 照片、产品图、人物 | crop | 很少 | 几乎总是 |
+| 密集缩略图网格 | crop | 很少 | 几乎总是 |
+| 手绘角色/物体 | crop 或 semantic-redraw | 要求可编辑重诠释 | 原始风格保真重要 |
+| 纹理、颗粒、水彩、辉光、场景光 | crop、flatten 或 ai-clean-plate | 作为非必需简单风格重建 | 纹理/光照/场景保真重要或前景标记遮住它 |
+| 被标签或引线穿过的对象 | restore 或 flatten | 叠加物小且对象几何可保 | 直接裁剪会烘入标注，或 alpha 提取会损伤对象 |
+| 连续背景中的缺失像素 | ai-clean-plate | 背景能用简单 SVG/裁剪忠实重建 | 裁剪+简单 SVG 无法揭示或复现连续场中的被遮像素 |
 
-## Icon-Specific Rules
+## 图标专项规则
 
-Treat a small object as an asset, not a redraw candidate, if it has any of these qualities:
+小对象具备以下任一特质时按素材处理，不作重画候选：
 
-- source-specific pictorial identity
-- custom silhouette
-- shaded or textured details
-- brand/model/institutional identity
-- embedded raster fragments
-- similarity to a stock icon, paper icon, screenshot, map fragment, or illustration
-- repeated use across the source figure where consistency matters
+- 源图专有的图形身份
+- 定制轮廓
+- 有阴影或纹理细节
+- 品牌/模型/机构身份
+- 内嵌位图碎片
+- 与库存图标、论文图标、截图、地图碎片或插画相似
+- 在源图中重复出现且一致性重要
 
-Examples that should usually be cropped:
+通常应裁剪的例子：
 
-- cloud/search icon used as a data source symbol
-- e-commerce platform/database icon
-- drone, camera, folder, document stack, folder-with-card, city model, terrain model
-- clothing item, person, avatar, face, phone mockup, route-map screenshot
-- model logos, application icons, benchmark icons
-- hand-drawn characters and custom props
+- 作为数据源符号的云/搜索图标
+- 电商平台/数据库图标
+- 无人机、相机、文件夹、文档堆、带卡片的文件夹、城市模型、地形模型
+- 服装、人物、头像、面孔、手机样机、路线图截图
+- 模型 logo、应用图标、基准测试图标
+- 手绘角色和定制道具
 
-Examples that may usually be redrawn:
+通常可重画的例子：
 
-- plain arrows
-- boxes and containers
-- simple dashed rectangles
-- table grid lines
-- plus signs and check marks
-- simple bullets and node circles
-- plain bar placeholders when exact chart values are not important
+- 朴素箭头
+- 方框和容器
+- 简单虚线矩形
+- 表格网格线
+- 加号和对勾
+- 简单圆点和节点圆
 
-## Composite Split Rule
+## 复合拆分规则
 
-For composite regions, split by function:
+复合区域按功能拆：
 
-- panel/card/background: redraw
-- label/caption prose: retype
-- inline formula span inside a label/caption: retype-math
-- pictorial icon/image: crop
-- connector/arrow: redraw
+- 面板/卡片/背景：重画
+- 标签/图注散文：重打
+- 标签/图注里的行内公式片段：retype-math
+- 图形图标/图像：裁剪
+- 连接线/箭头：重画
 
-Do not crop an entire tile merely to preserve an icon if the tile background and label should remain editable.
+区块背景和标签应保持可编辑时，不要为保一个图标裁整个区块。
 
-## Priority Rules
+## 优先级规则
 
-1. If the user explicitly needs an element editable, prefer `retype`, `redraw`, or `semantic-redraw`.
-2. If the element is a source-specific visual object, prefer `crop` even when it looks simple.
-3. If the element is a structural affordance, prefer `redraw`.
-4. If exact text is uncertain, mark it with `notes: "verify text"` in the manifest.
-5. If a crop may be inaccurate, include extra padding and document it.
-6. If redrawing would create a different-looking substitute, crop instead.
-7. If cropping preserves unwanted annotations, do not call it a clean asset;
-   restore, regenerate via chroma, flatten, or route the background through the
-   clean-plate gate.
-8. Never label generated content as `source-preserve`.
+1. 用户明确要求某元素可编辑，优先 `retype`、`redraw` 或 `semantic-redraw`。
+2. 元素是源图专有视觉对象，即使看着简单也优先 `crop`。
+3. 元素是结构性功能件，优先 `redraw`。
+4. 文字不确定，manifest 里加 `notes: "verify text"`。
+5. 裁剪可能不准，加 padding 并记录。
+6. 重画会造出长相不同的替代物，改裁剪。
+7. 裁剪会保留不需要的标注（裁剪窗不干净），不要称它为干净素材；收窗、restore、chroma 再生、flatten，或把背景送清版底门。
+8. 生成内容绝不标 `source-preserve`。

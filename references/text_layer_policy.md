@@ -1,101 +1,84 @@
-# Text Layer Policy
+# 文字层策略（Text Layer Policy）
 
-## Purpose
+## 目的
 
-Classify text-like content by visual role and editability value. Do not erase
-all characters from a complex clean plate, and do not preserve all formulas,
-code, or background-looking words. Decide what to remove, preserve, or rebuild
-from how the content functions in the source.
+按视觉角色和编辑价值给类文字内容分类。不要从复杂清版底上抹掉所有字符，也不要保留所有公式、代码或背景感的文字。移除、保留还是重建，由内容在源图中的功能决定。
 
-## Text Classes
+## 文字类别
 
-### Editable Foreground
+### 可编辑前景
 
-Remove from the background plate and rebuild as editable text, math, or shapes:
+从背景底板移除、重建为可编辑文字/math/形状：
 
-- titles and subtitles
-- node labels, callouts, captions, and legends
-- leader-line labels and marker labels
-- axis labels or table text intended to remain readable and editable
-- formulas that the user will likely edit as content
-- code snippets, UI labels, or equation blocks that are primary explanatory
-  content rather than visual texture
+- 标题和副标题
+- 节点标签、标注、图注和图例
+- 引线标签和标记标签
+- 需要保持可读可编辑的轴标签或表格文字
+- 用户可能作为内容编辑的公式
+- 作为主要解释内容（而非视觉纹理）的代码片段、UI 标签或公式块
 
-### Integrated Background Inscriptions
+### 融入式背景铭刻
 
-Preserve inside the plate when they are part of the scene, texture, or visual
-semantics:
+属于场景、纹理或视觉语义的一部分时保留在底板内：
 
-- faint formulas or equations written into a chalkboard, glass, wall, sky,
-  hologram, or technical backdrop
-- code windows, terminal-like snippets, and dense microtext used as a visual
-  object
-- schematic glyphs, diagram fragments, graph ticks, and mathematical scrawl
-  that create domain identity
-- low-contrast or partially occluded writing that is not a primary label
-- marks whose exact editability is less important than preserving visual density
+- 写在黑板、玻璃、墙面、天空、全息或技术背景上的淡色公式
+- 作为视觉对象存在的代码窗口、终端样片段和密集微缩文字
+- 营造领域身份的示意字形、图表碎片、图轴刻度和数学涂写
+- 不是主要标签的低对比或被部分遮挡的文字
+- 精确可编辑性不如保留视觉密度重要的标记
 
-These inscriptions may remain rasterized. They do not need to become editable
-unless the user explicitly asks or the figure's meaning depends on editing them.
+这些铭刻可以保持栅格化。除非用户明确要求、或图形的含义依赖编辑它们，否则不需要变成可编辑。
 
-### Background-Looking But Editable
+### 看似背景但应可编辑
 
-Some text is visually embedded but still should be rebuilt:
+有些文字视觉上嵌入很深，仍应重建：
 
-- a large readable formula block that communicates the figure's main method
-- code shown as the central data or algorithm rather than atmosphere
-- labels printed inside a diagram object when they define the object
-- table values, chart labels, or map names that support interpretation
-- any inscription the user is likely to update independently
+- 传达图形核心方法的大型可读公式块
+- 作为核心数据或算法（而非氛围）展示的代码
+- 印在图形对象内部、定义该对象的标签
+- 支撑解读的表格数值、图表标签或地图名称
+- 用户可能独立更新的任何铭刻
 
-For these cases, remove it from the plate only if the area can be repaired
-cleanly, then rebuild it as editable text or math. If removal would damage the
-visual object, keep a rasterized copy and add an editable overlay only when
-necessary.
+这些情况只有在区域能被干净修复时才从底板移除，然后重建为可编辑文字或 math。移除会损伤视觉对象时，保留栅格副本，必要时才加可编辑叠层。
 
-### Suppressed Artifacts
+### 应抑制的伪影
 
-Remove or avoid generating:
+移除或避免生成：
 
-- pseudo-text invented by the model
-- garbled foreground labels where the source label will be rebuilt
-- duplicated labels, watermark-like hallucinations, and random letter clusters
-- source OCR noise outside visible text regions
+- 模型发明的伪文字
+- 源标签将被重建时的乱码前景标签
+- 重复标签、水印样幻觉和随机字母簇
+- 可见文字区域之外的源 OCR 噪声
 
-## Decision Cues
+## 判断线索
 
-Classify each text-like region with these cues:
+用这些线索给每个类文字区域分类：
 
-- **Reading role**: primary explanation, label, legend, or data value implies
-  editable foreground.
-- **Visual integration**: low contrast, partial occlusion, perspective,
-  lighting, blur, glow, or being painted onto an object implies plate
-  preservation.
-- **Edit value**: likely user edits imply rebuild; atmospheric density implies
-  preserve.
-- **Exactness**: exact formula/code/data matters implies rebuild or
-  source-preserved crop; approximate technical texture may stay rasterized.
-- **Layer relation**: text connected to leaders, markers, nodes, axes, or a
-  legend is usually foreground even when the background is complex.
-- **Repair risk**: if removing embedded text would damage an important object,
-  preserve it and document the tradeoff.
+- **阅读角色**：主要解释、标签、图例或数据值，倾向可编辑前景。
+- **视觉融合**：低对比、部分遮挡、透视、光照、模糊、辉光或画在对象上，倾向留在底板。
+- **编辑价值**：用户可能编辑的重建；氛围性密度的保留。
+- **精确性**：公式/代码/数据的精确性重要就重建或源图裁剪保留；近似的技术纹理可以栅格化。
+- **层次关系**：与引线、标记、节点、轴或图例相连的文字通常是前景，哪怕背景很复杂。
+- **修复风险**：移除嵌入文字会损伤重要对象时，保留并记录取舍。
 
-If unsure, choose the option that loses less source meaning: preserve visual
-density for atmospheric marks; rebuild editable content for primary readable
-information.
+拿不准时，选损失源图含义更少的那边：氛围性标记保视觉密度，主要可读信息保可编辑重建。
 
-## Prompt Requirements For AI Clean Plates
+## PPTX 字符集约束
 
-Every AI clean plate prompt for text-dense sources must include source-specific
-decisions, not a fixed rule:
+交付目标包含 PPTX 时，优先使用 ASCII 直引号 `'` 和 `"`。不要为还原源图字形使用 U+2018 / U+2019 / U+201C / U+201D——PowerPoint 对当前字体缺字的字符执行字体回退，回退字体的字宽与主字体不一致，会在这些字符前后留下明显空档（实例："Sam's" 被渲染成 "Sam ´ s"）。其他易触发回退的字符同理：各类破折号、特殊空格、装饰性符号。
 
-- foreground text to remove and rebuild
-- integrated background inscriptions to preserve
-- artifact text to suppress
-- rejection criteria for both missing preserved inscriptions and invented
-  pseudo-text
+这类缺陷只在 PPTX 渲染中暴露，SVG 预览完全正常、查不出来。因此密集文本图必须实际导出 PPTX 并渲染核对，不能只看 SVG 预览。
 
-Use language like:
+## AI 清版底的提示词要求
+
+文字密集源图的每个清版底提示词都必须包含源图专属的判断，不是固定规则：
+
+- 要移除并重建的前景文字
+- 要保留的融入式背景铭刻
+- 要抑制的伪影文字
+- 双向拒收标准：既拒"该保留的铭刻丢了"，也拒"发明了伪文字"
+
+措辞示例：
 
 ```text
 PRESERVE BACKGROUND INSCRIPTIONS:
@@ -115,9 +98,9 @@ DO NOT:
 - Do not invent new readable words or random pseudo-text.
 ```
 
-## Manifest Fields
+## Manifest 字段
 
-Record the decision in `background_plan.text_layer_policy`:
+决策记入 `background_plan.text_layer_policy`：
 
 ```json
 {
@@ -128,6 +111,4 @@ Record the decision in `background_plan.text_layer_policy`:
 }
 ```
 
-The same policy should be reflected in `generation_brief.preserve`,
-`generation_brief.remove`, `generation_brief.constraints`, and
-`generation_brief.reject_if`.
+同一策略应体现在 `generation_brief.preserve`、`generation_brief.remove`、`generation_brief.constraints` 和 `generation_brief.reject_if` 中。

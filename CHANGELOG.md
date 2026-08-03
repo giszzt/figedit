@@ -1,5 +1,41 @@
 # 更新日志 / Changelog
 
+## 0.3.0 — 2026-08-03
+
+这一版的主题是堵住实战中反复出现的静默缺陷和冗余计费调用，同时全面中文化。SKILL.md 和全部 references 改写为中文（标识符、字段名、脚本名保持英文）。
+
+### 新增：裁剪窗检查（Crop Window Check）
+
+- 常规路线的坐标裁剪新增一道肉眼判定子门：裁剪矩形窗口里除元素自身还有没有别的东西（下方的承载卡片/描边框，或不规整外接矩形圈进的邻居）。三档判定 clean / clean-on-fill / contaminated 写入资产的 `crop_window` 字段；contaminated 先试收窗，收不动走再生。判定靠看图完成，不跑前置脚本。
+- `quality_audit.py` 新增 `crop_window_consistency` 门做事后像素核验兜底：边框环颜色聚类抓承载层污染，ink 触边抓切边/邻居入侵，与声明矛盾时报 review 附证据；contaminated 仍裁剪直接 failed。
+- `contaminated_asset_recovery.md` 的触发条件由主观自评改为客观判定结果。
+
+### 修复：键色安全判据统一到色相
+
+- 根因：`probe_palette` 用欧氏距离（≥90）判安全，`chroma_key` 却按色相余弦（>0.90）删除像素——深绿距纯绿键 131 被判安全，键控时照样被毁，且报告零告警。
+- `probe_palette.py` 新增 `--boxes` 逐元素色相撞色检查与最少张数的分 sheet 方案；走再生路线必须在首次生成前跑。键色默认配对：暖色配绿键，绿/紫配洋红键。
+- `chroma_key.py` 报告新增逐连通域 `component_hue_drift`（键控前后主色对比，按原图内容找连通域，元素被整体删除也能报出），色相漂移 >25°、脱色或删除都进 warnings。修正了脚本内"probe_palette 保证色相分离"的虚假前提注释。
+- despill 算法本身不动：上游分区挡住撞色，下游报告兜底，链条闭合。
+
+### 修复：单张 sheet 硬约束与固定画幅补偿
+
+- 再生 sheet 拆分只能发生在已生成一张全量 sheet 并观察到失败之后；数量、尺寸、面板分组等先验估计一律不是拆分理由。色相分区和缩微复现失败是两个明确的合法出路。
+- `image_backend_policy.md` 新增 Fixed-Aspect Backends 一节：恒定画幅后端会重新取景（非拉伸），补偿方法是参考图非等比拉伸 + 提示词照抄拉伸几何 + 结果压回。新增 `check_plate_registration.py` 量化配准（scale/offset/IoU 暴力搜索），通过标志 scale ≈ 1.00 / offset ≈ 0。
+- 后端失败处理按实测修正：任何失败先原地重试 1 次（存在瞬时 400/SSL EOF），重试后仍 4xx 才归为参数错误，连续 3 次失败才下沉后备。
+- 前景深度决策检查点要求呈现具体计费调用数预算；交付说明含「预算/实际」对照。
+
+### 修复：质检门失效
+
+- editability 门新增第三态 `unavailable`：OCR 证据缺失时不再判 ok。`measurement_workspace` 字段写入文档并由 `prepare_measurements.py` 自动生成；`compose_svg_package.py` 字段缺失时回退搜索 `work/`、`../work/`，找不到显式告警。
+- `slice_grid.py` 新增 `--cells` 模式：多部件图标（终端+刷新箭头、锤头+底座）被连通域切碎时，按已知格子框区域裁剪加 alpha 收边重切。
+
+### 移除：OpenCV 依赖
+
+- 删除 `detect_primitives_cv.py`（通用检测器，实测召回个位数）、`infer_assets.py`（实验性，无引用）、`generate_diagnostics.py`（仅消费检测器输出）。
+- `slice_grid.py` 的连通域分析移植到 `scipy.ndimage`（精确等价物），cv2 依赖整体清除。
+- `opencv_detector_noise` 门改名 `raw_detector_import` 并泛化为任何检测器；报告移除 OpenCV 状态行。
+- SVG 绘制顺序文档修正为与代码一致（connectors 在 sections/icons 之前），并建议元素显式写 `layer` 字段。
+
 ## 0.2.0 — 2026-07-09
 
 这一版的主题是背景感知重建。0.1.0 能处理的图有一个共同前提：背景要么是纯色，要么可以从原图干净地裁下来。文字压在照片上、图标嵌在插画里、标注散布在渐变场景中的图，此前只能整图裁切放弃编辑性。0.2.0 把这类图纳入了重建范围。
