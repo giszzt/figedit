@@ -420,7 +420,9 @@ def _text_math_layout_gate(manifest: dict[str, Any]) -> dict[str, Any]:
 
     review = manifest.get("pptx_visual_review") or (manifest.get("quality_gates") or {}).get("pptx_visual_review")
     review_ok = isinstance(review, dict) and str(review.get("status", "")).lower() in {"ok", "verified", "passed"}
-    route_tier = str((manifest.get("route_decision") or {}).get("validation_tier", "")).lower()
+    route_tier = str(
+        ((manifest.get("reconstruction_plan") or manifest.get("route_decision")) or {}).get("validation_tier", "")
+    ).lower()
 
     if review_ok:
         return _status(
@@ -480,6 +482,33 @@ def _background_plate_gate(manifest: dict[str, Any]) -> dict[str, Any]:
 
 
 def _background_route_consistency_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    plan = manifest.get("reconstruction_plan")
+    if isinstance(plan, dict):
+        if plan.get("open_questions"):
+            return _status(
+                "failed",
+                message="reconstruction plan has open user questions; stop before reconstruction",
+                open_questions=plan.get("open_questions"),
+            )
+        regions = [region for region in plan.get("background_regions", []) if isinstance(region, dict)]
+        plans = _background_plans(manifest)
+        planned = {bg_plan.get("scope_id") for bg_plan in plans}
+        failures = []
+        for region in regions:
+            region_id = region.get("id")
+            if region.get("strategy") == "ai-clean-plate" and region_id not in planned:
+                failures.append({"scope_id": region_id, "reason": "AI region has no accepted background plan"})
+            if region.get("foreground_mode") == "pending-user-choice":
+                failures.append({"scope_id": region_id, "reason": "foreground editability is still pending"})
+        for asset in manifest.get("assets", []):
+            if not isinstance(asset, dict):
+                continue
+            if str(asset.get("decision", "")).lower() == "crop" and str(asset.get("crop_window", "")).lower() == "contaminated":
+                failures.append({"asset_id": asset.get("id"), "reason": "contaminated asset was still cropped"})
+        if failures:
+            return _status("failed", message="execution contradicts the reconstruction plan", samples=failures[:30])
+        return _status("ok", background_region_count=len(regions), ai_region_count=len(plans))
+
     route = manifest.get("route_decision") or {}
     if isinstance(route, dict) and route.get("schema_version") == 2:
         if route.get("route_status") != "ready":

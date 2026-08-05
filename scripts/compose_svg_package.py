@@ -161,6 +161,28 @@ def _copy_generation_artifacts(manifest: dict, manifest_path: Path, out_dir: Pat
 
 
 def _require_ready_route(manifest: dict) -> None:
+    plan = manifest.get("reconstruction_plan")
+    if isinstance(plan, dict):
+        open_questions = plan.get("open_questions") or []
+        if open_questions:
+            raise RuntimeError(
+                "The reconstruction plan has open user questions. Resolve them before measurement, "
+                f"cropping, generation, or composition: {json.dumps(open_questions, ensure_ascii=False)}"
+            )
+        pending = [
+            region.get("id")
+            for region in plan.get("background_regions", [])
+            if isinstance(region, dict) and region.get("foreground_mode") == "pending-user-choice"
+        ]
+        if pending:
+            raise RuntimeError(f"Background regions still await a foreground choice: {', '.join(map(str, pending))}")
+        canvas = manifest.get("canvas") or {}
+        width = float(canvas.get("width") or 0)
+        height = float(canvas.get("height") or 0)
+        if width <= 0 or height <= 0 or not _validate_route_decision(manifest, width, height):
+            raise RuntimeError("The reconstruction plan failed validation; composition is blocked.")
+        return
+
     route = manifest.get("route_decision")
     if not isinstance(route, dict) or route.get("schema_version") != 2:
         return

@@ -1,5 +1,7 @@
 # SVG 编写约定（SVG Authoring Conventions）
 
+**何时读我**：每个任务写 manifest 元素前必读。本文件是 SVG 画布、分层、字体和 marker 约定的权威。
+
 ## 画布
 
 除非要求缩放，SVG 坐标系使用源图尺寸。

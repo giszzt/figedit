@@ -1,6 +1,6 @@
 # 图形分类与重建模式（Figure Taxonomy and Reconstruction Modes）
 
-本文件只定义分类词汇和模式映射。总体路线、编辑深度和验证档位由 `global_routing.md` 的整图总判决定；不要按本文件的类别逐轮重看源图。
+本文件只定义分类词汇和模式映射。总体路线、编辑深度和验证档位由 `routing.md` 的首图勘察决定；不要按本文件的类别逐轮重看源图。
 
 ## 分类维度
 
@@ -124,14 +124,14 @@
 
 - 一张或多张与各自 source region 对齐的 AI 清版底
 - 可编辑文字、公式、连接线和结构几何
-- 按各 `background_scopes[].foreground_mode` 提取的前景素材：chroma 再生的透明对象（full-extract/selective）或没有（flatten）
+- 按各 `background_regions[].foreground_mode` 提取的前景素材：chroma 再生的透明对象（full-extract/selective）或没有（flatten）
 - 验收底板和再生素材的来源记录与候选复查
 
-模式 E 是组合模式，不再要求整图只能标成 `E-ai`。源图局部显示强 AI 信号时，在整图总判中直接建立区域 scope，不要等 SVG 或裁剪失败后再选。
+模式 E 是组合模式，不再要求整图只能标成 `E-ai`。源图局部显示强 AI 信号时，在首图勘察中直接建立区域 scope，不要等 SVG 或裁剪失败后再选。
 
 ## 模式选择规则
 
-在一次整图总判中批量完成模式映射，不要先逐元素处理再回来选模式：
+在一次首图勘察中批量完成模式映射，不要先逐元素处理再回来选模式：
 
 - 图形以结构为主、源图专有图形素材少，用模式 A。
 - 图形把可编辑结构和任何源图专有视觉素材结合时，默认模式 B。

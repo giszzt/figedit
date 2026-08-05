@@ -1,6 +1,6 @@
 # 图像后端策略（Image Backend Policy）
 
-在任一 `background_scopes[].strategy` 选定 `ai-clean-plate`、任一素材选定 `regenerate-chroma`，或用户明确要求 AI 辅助图像编辑时使用本文件。
+在任一 `background_regions[].strategy` 选定 `ai-clean-plate`、任一素材选定 `regenerate-chroma`，或用户明确要求 AI 辅助图像编辑时使用本文件。
 
 FigEdit 决定区域和素材路线。图像后端只执行已批准的清版或 chroma 简报，不参与路由。
 

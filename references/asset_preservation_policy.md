@@ -1,6 +1,6 @@
 # 素材保留策略（Asset Preservation Policy）
 
-本文件只负责视觉对象的保留价值与重画资格。总体路线由 `global_routing.md` 决定，具体裁剪语义由 `asset_extraction.md` 决定，AI 背景/前景深度由 `background_reconstruction.md` 决定。
+本文件只负责视觉对象的保留价值与重画资格。总体路线由 `routing.md` 决定，具体裁剪语义由 `asset_extraction.md` 决定，AI 背景/前景深度由 `background_reconstruction.md` 决定。
 
 ## 目的
 
@@ -49,7 +49,7 @@
 
 ## 默认决策规则
 
-在整图总判中对全部非文字视觉对象批量使用这条规则：
+在首图勘察中对全部非文字视觉对象批量使用这条规则：
 
 1. 结构性的，重画。
 2. 图形性、源图专有或视觉有辨识度的，先标记为保真素材。

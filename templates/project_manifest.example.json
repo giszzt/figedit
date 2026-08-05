@@ -14,24 +14,13 @@
     "reconstruction_intent": "editable-layout",
     "notes": "Reconstruct panels and text; crop dense maps, screenshots, logos, and source-specific visuals."
   },
-  "route_decision": {
-    "schema_version": 2,
-    "source": "fresh-global-read",
-    "route_status": "ready",
-    "editability_depth": "text+structure",
-    "base_strategy": "svg-rebuild",
-    "background_scopes": [],
-    "asset_groups": [
-      {
-        "strategy": "crop",
-        "ids": ["asset-map-example"],
-        "separability": "clean",
-        "reason": "The map is identity-specific, independently useful, and its source window is clean."
-      }
-    ],
-    "unresolved_decisions": [],
+  "reconstruction_plan": {
+    "edit_scope": "text+structure",
+    "background_regions": [],
     "validation_tier": "svg-primary",
-    "exception_ids": []
+    "open_questions": [],
+    "closeup_ids": [],
+    "inventory": "figure-task/work/inventory.json"
   },
   "panels": [
     {

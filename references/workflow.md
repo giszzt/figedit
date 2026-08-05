@@ -1,21 +1,25 @@
 # 重建工作流（Reconstruction Workflow）
 
-本文件展开 `SKILL.md` 的执行顺序，不重新定义全局路由、元素、背景或质量判据。整图路由以 `global_routing.md` 为准，字段以 `manifest_spec.md` 为准，交付放行以 `quality_checklist.md` 为准。
+本文件展开 `SKILL.md` 的执行顺序，不重新定义全局路由、元素、背景或质量判据。整图路由以 `routing.md` 为准，字段以 `manifest_spec.md` 为准，交付放行以 `quality_checklist.md` 为准。
 
-## 1. 整图总判
+## 1. 首图勘察
 
 先读取用户要求并查看一次源图整图，再运行任何测量脚本。形成：
 
-- 编辑深度、默认 SVG 策略与局部/全图背景 scopes。
-- 结构、文字、公式、素材和背景批量清单。
-- 干净裁剪组、明显污染再生组、连续场与真正未决区域。
+- 编辑深度、默认 SVG 策略与局部/全图背景区域。
+- 全部对象的粗框与路线直觉，一个回合写完整张对象清单。
+- 干净裁剪、明显污染再生、连续场压平与真正未决项的区分。
 - 初始验证档位。
 
-将结论写入 Route Decision v2。若连续场 `foreground_mode` 未决，设置 `route_status: needs-user-input`，呈现区域/对象清单与生成预算后停止。只有 `route_status: ready` 才进入测量。
+粗框是一眼精度，精确坐标和污染判定在下一步交给 `snap_boxes.py`，不要在这里逐对象量像素。
 
-## 2. 一次性测量
+将结论写入 `reconstruction_plan` 与 `work/inventory.json`。若连续场 `foreground_mode` 未决，写入 `open_questions`，呈现区域/对象清单与生成预算后停止。只有 `open_questions` 为空才进入测量。
+
+## 2. 一次性测量与吸附
 
 运行 `scripts/prepare_measurements.py`，保留 `draft_manifest.json` 的 `diagnostics.measurement_workspace`。OCR、风格 token、overlay 和 measurement report 都只是证据。
+
+再运行 `scripts/snap_boxes.py`（带 `--exclude-text` 指向 OCR 结果）把对象清单的粗框吸附成紧裁剪窗，并得到 `clean / clean-on-fill / contaminated / snap-failed` 判定。看一次 `snap_sheet.png` 总览；只有 contaminated、snap-failed、带 warning 的项和 `closeup_ids` 才用 `inspect_regions.py` 局部放大。contaminated 的对象改路由，不改判据。
 
 只读会改变 manifest 的部分：低置信文字、公式和断行、坐标冲突、整图未决项。不要逐框复看高置信普通标签，也不要把草稿对象或 OCR 备选整批导入最终 manifest。
 
@@ -39,7 +43,7 @@
 
 ### 默认 SVG 区域
 
-重建结构与文字。只裁 Route Decision 中已经判为窗口可分离的素材；污染组直接批量 chroma 再生。生成一次 contact sheet，统一检查，没有新异常就不逐项回看源图。
+重建结构与文字。只裁重建计划中已经判为窗口可分离的素材；污染组直接批量 chroma 再生。生成一次 contact sheet，统一检查，没有新异常就不逐项回看源图。
 
 ### AI 清版底区域
 
@@ -72,7 +76,7 @@ SVG 冻结后运行 PPTX 阶段和静态回流审计：
 python scripts/compose_svg_package.py manifest.json --out figure-task/out --stage pptx
 ```
 
-是否做原生 PowerPoint 渲染由 `route_decision.validation_tier`、实际 `math` 数和 `pptx_text_fit.py` 结果共同决定，不由“图看起来很密”单独决定。
+是否做原生 PowerPoint 渲染由 `reconstruction_plan.validation_tier`、实际 `math` 数和 `pptx_text_fit.py` 结果共同决定，不由“图看起来很密”单独决定。
 
 ## 8. 验证与修复
 

@@ -13,6 +13,9 @@ from pathlib import Path
 from typing import Any
 
 
+_MANIFEST_DIR: str | None = None
+
+
 def error(msg: str) -> None:
     print(f"ERROR: {msg}", file=sys.stderr)
 
@@ -259,12 +262,138 @@ def _validate_background_plan_v2(
     return ok
 
 
+def _validate_reconstruction_plan(manifest: dict[str, Any], width: float, height: float) -> bool:
+    """Validate the reconstruction_plan block (the current planning schema)."""
+
+    plan = manifest["reconstruction_plan"]
+    if not isinstance(plan, dict):
+        error("reconstruction_plan must be an object.")
+        return False
+    ok = True
+    if manifest.get("route_decision") is not None:
+        error("manifest has both reconstruction_plan and legacy route_decision; keep only reconstruction_plan.")
+        ok = False
+
+    if plan.get("edit_scope") not in {"text-only", "text+structure", "selective-assets", "full-extract"}:
+        error("reconstruction_plan.edit_scope must be text-only, text+structure, selective-assets or full-extract.")
+        ok = False
+    if plan.get("validation_tier") not in {"svg-primary", "pptx-triggered"}:
+        error("reconstruction_plan.validation_tier must be svg-primary or pptx-triggered.")
+        ok = False
+
+    open_questions = plan.get("open_questions", [])
+    if not isinstance(open_questions, list):
+        error("reconstruction_plan.open_questions must be an array.")
+        ok = False
+        open_questions = []
+    for index, item in enumerate(open_questions):
+        if not isinstance(item, dict) or not _nonempty(item.get("id")) or not _nonempty(item.get("question")):
+            error(f"reconstruction_plan.open_questions[{index}] must include a non-empty id and question.")
+            ok = False
+
+    closeups = plan.get("closeup_ids", [])
+    if not isinstance(closeups, list) or not all(_nonempty(item) for item in closeups):
+        error("reconstruction_plan.closeup_ids must be an array of non-empty strings when present.")
+        ok = False
+
+    regions = plan.get("background_regions", [])
+    if not isinstance(regions, list):
+        error("reconstruction_plan.background_regions must be an array when present.")
+        ok = False
+        regions = []
+    region_ids: set[str] = set()
+    has_pending = False
+    for index, region in enumerate(regions):
+        label = f"reconstruction_plan.background_regions[{index}]"
+        if not isinstance(region, dict):
+            error(f"{label} must be an object.")
+            ok = False
+            continue
+        region_id = region.get("id")
+        if not _nonempty(region_id) or region_id in region_ids:
+            error(f"{label}.id must be a unique non-empty string.")
+            ok = False
+        else:
+            region_ids.add(region_id)
+        if region.get("strategy") not in {"ai-clean-plate", "source-preserve-region"}:
+            error(f"{label}.strategy must be ai-clean-plate or source-preserve-region.")
+            ok = False
+        if not _region_ok(region.get("source_region"), width, height, f"{label}.source_region"):
+            ok = False
+        if not _nonempty(region.get("reason")):
+            error(f"{label}.reason is required.")
+            ok = False
+        mode = region.get("foreground_mode")
+        if region.get("strategy") == "ai-clean-plate":
+            if mode not in {"flatten", "selective", "full-extract", "pending-user-choice"}:
+                error(f"{label}.foreground_mode is required for ai-clean-plate regions.")
+                ok = False
+            if mode == "pending-user-choice":
+                has_pending = True
+
+    if open_questions:
+        if manifest.get("assets") or manifest.get("background_plans"):
+            error("reconstruction_plan.open_questions is not empty; assets and background_plans must not exist yet.")
+            ok = False
+    elif has_pending:
+        error("pending-user-choice regions require a matching entry in open_questions.")
+        ok = False
+
+    # The plan schema has no estimated/measured flag: rough survey coordinates
+    # are tightened in place during measurement, and a background plan only
+    # exists once that has happened. Satisfy the shared checker accordingly.
+    shim_route = {
+        "background_scopes": [
+            {**region, "region_accuracy": "measured"} for region in regions if isinstance(region, dict)
+        ],
+        "route_status": "ready" if not open_questions else "needs-user-input",
+    }
+    if not _validate_background_plan_v2(manifest, width, height, shim_route):
+        ok = False
+
+    inventory_ref = plan.get("inventory")
+    if inventory_ref is not None and not _nonempty(inventory_ref):
+        error("reconstruction_plan.inventory must be a non-empty path when present.")
+        ok = False
+    inventory_path = None
+    if _nonempty(inventory_ref):
+        base = Path(_MANIFEST_DIR) if _MANIFEST_DIR else Path.cwd()
+        candidate = (base / str(inventory_ref)).resolve()
+        if candidate.exists():
+            inventory_path = candidate
+    if inventory_path is not None:
+        try:
+            data = json.loads(inventory_path.read_text(encoding="utf-8"))
+            objects = data.get("objects", data) if isinstance(data, dict) else data
+            routes = {
+                str(obj.get("id")): str(obj.get("route"))
+                for obj in objects
+                if isinstance(obj, dict) and _nonempty(obj.get("id"))
+            }
+        except Exception as exc:  # noqa: BLE001
+            error(f"reconstruction_plan.inventory could not be read: {exc}")
+            return False
+        for asset in manifest.get("assets", []):
+            if not isinstance(asset, dict):
+                continue
+            asset_id = str(asset.get("id"))
+            route = routes.get(asset_id)
+            if route in {"crop", "regenerate-chroma"} and str(asset.get("decision", "")).lower() != route:
+                error(f"Asset {asset_id} decision contradicts the inventory route ({route}).")
+                ok = False
+    return ok
+
+
 def _validate_route_decision(manifest: dict[str, Any], width: float, height: float) -> bool:
-    """Validate route v2 and retain explicit compatibility for old manifests."""
+    """Dispatch plan validation: reconstruction_plan first, legacy route_decision otherwise."""
+
+    if "reconstruction_plan" in manifest:
+        return _validate_reconstruction_plan(manifest, width, height)
 
     route = manifest.get("route_decision")
     if route is None:
         return True
+    print("note: route_decision is deprecated; new manifests should write reconstruction_plan.", file=sys.stderr)
     if not isinstance(route, dict):
         error("route_decision must be an object when present.")
         return False
@@ -549,6 +678,8 @@ def main() -> None:
     args = parser.parse_args()
 
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    global _MANIFEST_DIR
+    _MANIFEST_DIR = str(args.manifest.resolve().parent)
     ok = True
 
     for key in ["project", "source_image", "canvas", "classification", "assets", "elements"]:
@@ -645,7 +776,7 @@ def main() -> None:
         ok = False
 
     route = manifest.get("route_decision")
-    if not isinstance(route, dict) or route.get("schema_version") != 2:
+    if "reconstruction_plan" not in manifest and (not isinstance(route, dict) or route.get("schema_version") != 2):
         if not _validate_legacy_background_plan(manifest, width, height):
             ok = False
 

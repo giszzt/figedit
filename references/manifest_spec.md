@@ -1,5 +1,7 @@
 # Manifest 规范（Manifest Specification）
 
+**何时读我**：每个任务写 manifest 前必读。本文件是全部 manifest 字段的唯一权威。
+
 manifest 记录重建方案，支撑可复现的更新。
 
 ## 必需部分
@@ -8,52 +10,42 @@ manifest 记录重建方案，支撑可复现的更新。
 - `source_image`：原图路径
 - `canvas`：源图尺寸与背景色
 - `classification`：图形类型与所选模式
-- `route_decision`：新任务的组合路由锁；旧 manifest 可缺失
+- `reconstruction_plan`：新任务的重建计划；旧 manifest 写 `route_decision`，继续兼容读取
 - `panels`：主要布局区域
 - `assets`：裁剪或生成的位图素材
 - `elements`：可编辑 SVG 元素与素材放置
 
 没有 AI 清版区域时不需要 `background_plans`。局部或全图区域选定 `ai-clean-plate` 后，每个区域添加一条计划。
 
-## Route Decision
+## Reconstruction Plan
 
-新任务在测量、裁剪和生成之前记录 Route Decision v2：
+新任务在测量、裁剪和生成之前记录重建计划：
 
 ```json
 {
-  "route_decision": {
-    "schema_version": 2,
-    "source": "fresh-global-read",
-    "route_status": "ready",
-    "editability_depth": "text+structure",
-    "base_strategy": "svg-rebuild",
-    "background_scopes": [],
-    "asset_groups": [],
-    "unresolved_decisions": [],
+  "reconstruction_plan": {
+    "edit_scope": "text+structure",
+    "background_regions": [],
     "validation_tier": "svg-primary",
-    "exception_ids": ["icon-overlap-03"]
+    "open_questions": [],
+    "closeup_ids": ["icon-overlap-03"],
+    "inventory": "figure-task/work/inventory.json"
   }
 }
 ```
 
 允许值：
 
-- `schema_version`：新结构固定为 `2`
-- `source`：`fresh-global-read`、`user-directive`
-- `route_status`：`ready`、`needs-user-input`
-- `editability_depth`：`text-only`、`text+structure`、`selective-assets`、`full-extract`
-- `base_strategy`：`svg-rebuild`
-- `background_scopes`：局部/全图连续场与明确栅格保留区域；每个 scope 的粗略坐标先标 `region_accuracy: estimated-from-global-read`，生成前收紧为 `measured`
-- `asset_groups`：初始批量素材策略
-- `unresolved_decisions`：尚待用户选择的事项
+- `edit_scope`：`text-only`、`text+structure`、`selective-assets`、`full-extract`
+- `background_regions`：只登记 AI 清版区与用户明确同意的整区栅格保留区；每项写 `id`、`source_region`、`strategy`（`ai-clean-plate` 或 `source-preserve-region`）、`reason`，AI 区另写 `foreground_mode`（`flatten`、`selective`、`full-extract`、`pending-user-choice`）。确定性 SVG 区不登记
 - `validation_tier`：`svg-primary`、`pptx-triggered`
-- `exception_ids`：字符串数组
+- `open_questions`：待用户决定的事项，每项含 `id` 与 `question`；非空即阻塞，此时不得存在 `assets` 或 `background_plans`
+- `closeup_ids`：需要 1:1 局部确认的区域，字符串数组
+- `inventory`：对象清单路径，validator 用它交叉检查 `assets[].decision`
 
-`background_scopes` 记录路由时已判定的区域策略；最终生成来源与验收写入 `background_plans[]`。每个 `asset_groups[]` 条目除 `strategy / ids / reason` 外还写 `separability`：`not-applicable`、`clean`、`clean-on-fill`、`contaminated` 或 `embedded-in-continuous-field`。污染组必须加 `observed_overlap`，列出边框、文字、箭头、邻居等整图可见压盖。最终 `assets[].decision` 必须与 `asset_groups` 一致；crop 组只允许 `clean / clean-on-fill`，并与最终 `crop_window` 一致。完整算法见 `global_routing.md`。
+区域最终生成来源与验收写入 `background_plans[]`，用 `scope_id` 关联 `background_regions[].id`。素材路由不进计划顶层：每个 `assets[].decision` 直接对照对象清单的 `route`，crop 资产的 `crop_window` 由 `snap_boxes.py` 判定后回写。完整协议见 `routing.md`。
 
-AI scope 可含 `foreground_inventory[]`，只列处理方式随用户深度变化的源图专有非结构对象。每项为 `id / kind: source-specific-visual / resolved_strategy`；未决时为 `pending-user-choice`，确认后改为 `flatten` 或 `regenerate-chroma`，并在 `asset_groups` 中使用同一策略。通用箭头、路线、圆点、文字和公式不放入该清单。
-
-旧 manifest 的 `source: global-read`、`reconstruction_route` 与单个 `background_plan` 继续兼容读取，但新任务不得只写旧式二选一路由。
+旧 manifest 的 `route_decision`（含 `schema_version: 2` 的 `background_regions` / `asset_groups` 结构）继续兼容校验，新任务不再写它；同一 manifest 不得同时含两者。
 
 ## 坐标系
 
@@ -77,7 +69,7 @@ AI scope 可含 `foreground_inventory[]`，只列处理方式随用户深度变�
 }
 ```
 
-`reconstruction_mode` 只作人类可读分类，不再决定背景路线。实际执行以 Route Decision v2 与 `background_plans[]` 为准。
+`reconstruction_mode` 只作人类可读分类，不再决定背景路线。实际执行以重建计划与 `background_plans[]` 为准。
 
 ### Diagnostics（推荐）
 
@@ -315,7 +307,7 @@ manifest 应让不当重画一目了然。每个被重画（而非裁剪）的�
 
 最低要求：
 
-- `scope_id` 唯一，并引用 `route_decision.background_scopes[].id`
+- `scope_id` 唯一，并引用 `reconstruction_plan.background_regions[].id`
 - `strategy` 恰为 `ai-clean-plate`
 - `source_region` 与路由 scope 一致；全画布只是 `x=0,y=0,w=canvas.width,h=canvas.height` 的普通特例
 - `foreground_mode` 为 `full-extract`、`selective` 或 `flatten`，不得为 `pending-user-choice`

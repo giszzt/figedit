@@ -98,9 +98,12 @@ def _edge_check(
 
 def crop_assets(manifest_path: Path, out_dir: Path) -> Path:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    plan = manifest.get("reconstruction_plan")
+    if isinstance(plan, dict) and plan.get("open_questions"):
+        raise RuntimeError("The reconstruction plan has open user questions; do not crop assets before resolving them.")
     route = manifest.get("route_decision") or {}
     if isinstance(route, dict) and route.get("schema_version") == 2 and route.get("route_status") != "ready":
-        raise RuntimeError("Route Decision v2 is not ready; do not crop assets before resolving user choices.")
+        raise RuntimeError("The legacy route decision is not ready; do not crop assets before resolving user choices.")
     contaminated = [
         str(asset.get("id"))
         for asset in manifest.get("assets", [])

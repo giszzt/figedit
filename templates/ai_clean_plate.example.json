@@ -14,34 +14,37 @@
     "reconstruction_intent": "clean-plate-plus-editable-overlay",
     "notes": "The background is a continuous visual field; crop + SVG cannot faithfully recover pixels hidden by foreground labels."
   },
-  "route_decision": {
-    "schema_version": 2,
-    "source": "fresh-global-read",
-    "route_status": "ready",
-    "editability_depth": "text+structure",
-    "base_strategy": "svg-rebuild",
-    "background_scopes": [
+  "reconstruction_plan": {
+    "edit_scope": "text+structure",
+    "background_regions": [
       {
         "id": "scope-full-field",
+        "source_region": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080
+        },
         "strategy": "ai-clean-plate",
-        "field_type": "continuous-field",
-        "source_region": {"x": 0, "y": 0, "w": 1920, "h": 1080},
-        "region_accuracy": "measured",
         "foreground_mode": "full-extract",
-        "foreground_mode_source": "user-choice",
         "reason": "Foreground labels and callouts obscure a continuous image field whose hidden pixels cannot be recovered by SVG."
       }
     ],
-    "asset_groups": [],
-    "unresolved_decisions": [],
     "validation_tier": "svg-primary",
-    "exception_ids": []
+    "open_questions": [],
+    "closeup_ids": [],
+    "inventory": "figure-task/work/inventory.json"
   },
   "background_plans": [
     {
       "scope_id": "scope-full-field",
       "strategy": "ai-clean-plate",
-      "source_region": {"x": 0, "y": 0, "w": 1920, "h": 1080},
+      "source_region": {
+        "x": 0,
+        "y": 0,
+        "w": 1920,
+        "h": 1080
+      },
       "foreground_mode": "full-extract",
       "foreground_mode_source": "user-choice",
       "route_reason": "Editable labels and callouts overlap a continuous full-canvas field.",

@@ -1,5 +1,41 @@
 # 更新日志 / Changelog
 
+## 0.6.0 — 2026-08-05
+
+这一版的主题是把体力活从模型手上拿走。0.5.0 的提速改造上线后实测无效（两次任务活跃时间约 170 分钟，与改造前持平），根因不是规则写得不够细，而是规则在对抗结构性需求：模型需要像素坐标却没有自动量测手段，只能逐个图标裁图、放大、量边界；299 元素的 manifest 没有批量修改通道，只能现场写 patch 脚本。本版用工具替换这两处禁令。
+
+### 新增：粗框吸附（snap_boxes.py）
+
+- 模型在勘察阶段只给一眼精度的粗框（允许 10–20px 偏差），`snap_boxes.py` 批量吸附出紧裁剪窗、量四边净空、检测窗内异物与余量均匀度，机械输出 `clean / clean-on-fill / contaminated / snap-failed` 判定和一张着色总览拼图。
+- 背景色取自候选窗外的环带而非工作窗边界，避免卡片交界处混色污染墨水掩膜；`--exclude-text` 接 OCR 结果，防止相邻标题被吸进对象；抗锯齿碎片按尺寸上限桥接回主体；紧框边缘触到邻居的行列自动回缩。
+- 明确废除“裁剪窗判定不得有前置分析脚本”的旧教条。语义（对象是什么、要不要独立存在、污染后改走哪条路）仍归模型，像素归脚本。`quality_audit.py` 的事后裁剪窗核验保留为兜底，判据未变。
+- 交错面板图任务重放：26 个对象 24 个判定与人工结论一致，污染零漏报；random 任务 15 个中 12 个一致，误判全部偏保守。
+
+### 新增：manifest 批量修改通道（manifest_edit.py）
+
+- `--set` 按 id 批量赋值与数值增减，`--select` 按字段选择器批量改，`--apply-snap` / `--apply-fit` 把吸附结果和文字拟合结果直接回写，`--ops` 走文件做大批量操作，`--dry-run` 预览。
+- 每次运行自动备份并在写入后重跑 `validate_manifest.py`，校验失败自动回滚。目标 id 不存在即报错，不静默跳过。
+- 修复阶段不再需要现场写 `patch1.py … patch4.py`：一轮修复一条命令。
+
+### 变更：重建计划取代 Route Decision v2
+
+- manifest 顶层 `route_decision` 更名 `reconstruction_plan`，字段从十余个收敛到六个：`edit_scope`、`background_regions`、`validation_tier`、`open_questions`、`closeup_ids`、`inventory`。
+- 废除 `schema_version`、`route_status`、`base_strategy`、`asset_groups`、`separability`、`observed_overlap`、`foreground_inventory`、`region_accuracy`、`unresolved_decisions`。素材路由的载体改为 `work/inventory.json` 对象清单（id、粗框、kind、route、理由、是否需用户决定），validator 交叉检查 `assets[].decision` 与清单 `route` 一致。
+- 阻塞状态由 `open_questions` 非空表达，不再单设状态字段；非空时 manifest 不得含 assets 或 background_plans，裁剪器与 compose 硬停止。
+- 旧 `route_decision`（含 v2 结构）继续兼容校验并打印弃用提示；同一 manifest 不得同时含两者。两个 example 模板和 JSON schema 已迁移。
+
+### 变更：术语与信息架构
+
+- 主流程定名“勘察 → 吸附 → 组装 → 验收”。“整图总判 / Global Reconstruction Read”改称“首图勘察”，`global_routing.md` 重写为 `routing.md`。
+- SKILL.md 从 224 行压到 116 行，新增**重绘门槛**并置于正文而非选读文件：只有“三五笔基础图元能画得像”的图形才允许 `redraw`，有定制轮廓、渐变、阴影、多色细节或品牌身份的一律按素材处理。此前该判据只存在于按需加载的 `element_decision_matrix.md`，导致不加载 reference 的 Agent 把图标全部划为重绘。
+- `routing.md` 给出对象级四问决策树（画得像吗 → 窗口干净吗 → 需要独立存在吗 → 在清版区吗），替代抽象的三轴模型。
+- 用户提问合并为勘察结束时一次问完：前景深度、生成预算和 PowerPoint 附着预授权同批提出，避免验收阶段才请求授权造成长时间阻塞。
+
+### 回归
+
+- 交错面板图任务全量重跑：19 个 quality gate 状态与基线逐项一致，`preview.png` 与基线逐像素相同。
+- 单元测试 16 个通过（新增 9 个覆盖重建计划校验、阻塞语义、清单一致性）。
+
 ## 0.5.0 — 2026-08-04
 
 本版把全局二选一路由升级为 Route Decision v2 的区域/素材组合路由，修复复杂图中“明知有污染仍全量裁剪”和“局部连续背景未确认编辑深度就整区栅格化”的决策错误。

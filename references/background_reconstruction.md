@@ -2,7 +2,7 @@
 
 当整幅图或局部区域含连续背景场、独立栅格证据区，或背景路线未决时使用本参考。
 
-本文件是背景区域可恢复性和前景深度的唯一权威。它在 `global_routing.md` 的一次整图总判中被评估，不是处理完所有元素后才另开一轮看图。背景可以是全画布，也可以是一个面板、地图框、照片框或局部插画区。
+本文件是背景区域可恢复性和前景深度的唯一权威。它在 `routing.md` 的一次首图勘察中被评估，不是处理完所有元素后才另开一轮看图。背景可以是全画布，也可以是一个面板、地图框、照片框或局部插画区。
 
 ## 第一性原理
 
@@ -20,10 +20,10 @@
 
 本门回答的是用户未选路线时的默认问题。用户用自己的话提出的路线要求在两个方向上都优先于本门：
 
-- **用户对本门会判确定性或栅格保留的区域要求 AI 路线**（"走清版路线"、"把背景重新生成"、"别裁了，生成一张干净的"）。照办。为该区域加入 `background_scopes` 与 `background_plans[]`，记录 `route_decision.source: "user-directive"`。指令改变路线，不降低质量线。
+- **用户对本门会判确定性或栅格保留的区域要求 AI 路线**（"走清版路线"、"把背景重新生成"、"别裁了，生成一张干净的"）。照办。为该区域加入 `background_regions` 与 `background_plans[]`，在区域的 `reason` 里注明这是用户指定的重建方法。指令改变路线，不降低质量线。
 - **用户对本门会判 `ai-clean-plate` 的区域坚持整体栅格保留**。说明区域内部将不可编辑以及旧标注会保留，得到明确同意后改为 `source-preserve-region`，记录用户原话。不得自行把它称为常规路线。
 
-指令必须来自本次任务中用户自己的话。不要从图形体裁推断指令，也不要在用户没发话时用本节跳过门判定。由整图门决定时使用 `route_decision.source: "fresh-global-read"`，把具体背景依据写在 scope 的 `reason`；只有用户明确指定重建方法时才用 `user-directive`。
+指令必须来自本次任务中用户自己的话。不要从图形体裁推断指令，也不要在用户没发话时用本节跳过门判定。由勘察自行决定时把具体背景依据写在区域的 `reason` 里；用户明确指定重建方法时在 `reason` 中注明来源是用户指令。
 
 ## 常规路线
 
@@ -63,7 +63,7 @@
 
 每个区域产出一张与 `source_region` 同尺寸、可放回原坐标的干净视觉底层。全画布清版只是区域恰好覆盖整个 canvas 的特例。
 
-Global Read 阶段的区域坐标允许是整图估计值，写 `region_accuracy: estimated-from-global-read`；用户检查点解决、路由 ready 后再量测并改成 `measured`，然后才生成区域底板。
+勘察阶段的区域坐标允许是整图估计值；用户检查点解决、`open_questions` 清空后再量测收紧，然后才生成区域底板。
 
 ## 前景深度决策（Foreground Depth Decision）
 
@@ -77,7 +77,7 @@ Global Read 阶段的区域坐标允许是整图估计值，写 `region_accuracy
 
 流程：
 
-1. 先建 `foreground_inventory`（处理方式随深度变化的源图专有非结构对象），让选择建立在具体清单而非抽象概念上；通用 SVG 结构不列入。
+1. 先从对象清单里挑出处理方式随深度变化的源图专有非结构对象，让选择建立在具体清单而非抽象概念上；通用 SVG 结构、文字、公式和简单标记不列入。
 2. 扫描用户请求找显式深度措辞。找到：记录并继续。没找到：**停下来问**，先于任何生成调用。
 3. 呈现选项时说明每种模式换来什么、代价是什么，对着具体清单讲，**预算写成具体数字**。可用的框架（名称和详略按用户调整）：
 
@@ -86,7 +86,7 @@ Global Read 阶段的区域坐标允许是整图估计值，写 `region_accuracy
    - **仅文字可编辑（flatten）** —— 对象烘在清版底里；文字、公式和标注可编辑。1 次底板调用；最快最省。
 
    附上你的推荐和理由，并说明这个选择会锁定底板：之后换模式意味着重生底板。
-4. 用户确认前保持 `route_status: needs-user-input` 与 `foreground_mode: pending-user-choice`。确认后将选择写入对应 `background_scopes[]`，并在 `background_plans[]` 中记录 `scope_id`、`foreground_mode` 与来源。底板移除清单和再生清单必须与所记模式一致。
+4. 用户确认前保持 `open_questions` 非空与 `foreground_mode: pending-user-choice`。确认后将选择写入对应 `background_regions[]` 并清空 `open_questions`，在 `background_plans[]` 中记录 `scope_id`、`foreground_mode` 与来源。底板移除清单和再生清单必须与所记模式一致。
 
 `auto-default`（flatten）只在无人可应答的批量运行中合法。交互会话里存在 `pending-user-choice` 时必须停下，不得继续 OCR、裁剪、生成或 compose。
 

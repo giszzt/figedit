@@ -106,15 +106,15 @@
 
 ## 背景路线完整性
 
-- [ ] 新任务使用 Route Decision v2；一次整图判断后分别写出 SVG 基底、连续背景区域和素材组，不用全图 `regular-hybrid / ai-clean-plate` 二选一。
-- [ ] 每个背景 scope 在 Global Read 有粗略 `source_region + region_accuracy: estimated-from-global-read`，生成/合成前已量测收紧为 `measured`。
-- [ ] 简单确定性背景走 SVG；局部或全图连续场只为对应区域建立 `background_scopes[]` 与 `background_plans[]`。
+- [ ] 新任务写 `reconstruction_plan` 与对象清单；一次勘察后分别写出 SVG 基底、连续背景区域和各对象路线，不用全图二选一标签。
+- [ ] 每个背景区域在首图勘察时有粗略 `source_region`，生成/合成前已量测收紧。
+- [ ] 简单确定性背景走 SVG；局部或全图连续场只为对应区域建立 `background_regions[]` 与 `background_plans[]`。
 - [ ] 连续场上需要可编辑前景、且源图未提供干净底时用了 AI 清版；完整区域栅格保留只有用户明确要求时才成立。
 - [ ] AI 清版没有仅因图形密集、图标多或海报感而使用；是否连续依赖相邻像素与遮挡恢复才是判据。
 - [ ] 每个 AI 清版区域都有已验收的区域底板、生成来源、候选复查和坐标对齐。
 - [ ] 底板通过配准检查（`check_plate_registration.py`，scale ≈ 1.00 / offset ≈ 0），或不通过时已重生。
-- [ ] 每个 AI scope 的 `foreground_mode` 和来源已记录；用户未说明编辑深度时保持 `pending-user-choice`、`route_status: needs-user-input`，用户确认前没有 OCR、裁剪、生成或合成。
-- [ ] `foreground_inventory` 只含随深度变化的源图专有非结构对象；ready 后每项已解析为 `flatten` 或 `regenerate-chroma`，并与 `asset_groups` 一致。
+- [ ] 每个 AI 区域的 `foreground_mode` 和来源已记录；用户未说明编辑深度时保持 `pending-user-choice` 与非空 `open_questions`，用户确认前没有 OCR、裁剪、生成或合成。
+- [ ] 检查点呈现的对象清单只含随深度变化的源图专有非结构对象；确认后每项在对象清单中已解析为 `flatten` 或 `regenerate-chroma`，并与 `assets[].decision` 一致。
 - [ ] 检查点呈现了具体的计费生成次数预算；交付说明含「预算 N 次 / 实际 M 次」对照，超出各次写明原因。
 - [ ] 底板移除清单与所记模式一致。
 - [ ] 验收底板不是旧前景仍可见的未处理源图。
@@ -136,7 +136,7 @@
 
 ## SVG / PPTX 验证分档
 
-- [ ] 无 `math` 且静态文字回流审计全绿时，`route_decision.validation_tier` 为 `svg-primary`，最终 SVG 总览已验收，不额外打开 PowerPoint。
+- [ ] 无 `math` 且静态文字回流审计全绿时，`reconstruction_plan.validation_tier` 为 `svg-primary`，最终 SVG 总览已验收，不额外打开 PowerPoint。
 - [ ] 含 `math` 或静态审计报告换行、溢出、缺字、碰撞、整体错位风险时，档位为 `pptx-triggered`，做过一次原生渲染。
 - [ ] 原生渲染只检查结构性问题：公式越槽、换行变化、内容截断、碰撞和整体错位。
 - [ ] 档 1 发现结构缺陷后批量修复，最多再原生渲染一次；没有为字体观感无限循环。
