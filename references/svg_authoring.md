@@ -25,7 +25,7 @@
 
 实操建议：manifest 元素显式写 `layer` 字段指定分组，不要依赖按类型推断的默认分组——类型推断的落组结果和你预想的绘制次序不一定一致。
 
-当 `background_plan.plate_asset_id` 或 `plate_file` 存在时，生成器在 background 组放置整幅 `<image id="background-plate">`，带 `preserveAspectRatio="none"`。底板尺寸必须已经与画布一致；该属性防的是意外信箱化，不是几何修复。
+每个 `background_plans[]` 条目通过 `plate_asset_id` 或 `plate_file` 在 background 组放置一张区域底板，位置取该计划的 `source_region`，并带 `preserveAspectRatio="none"`。底板像素尺寸和放置坐标必须与区域一致；该属性防的是意外信箱化，不是几何修复。旧 `background_plan` 仍按全画布底板兼容。
 
 ## PPTX 分组
 
@@ -68,6 +68,8 @@
 --font-serif: "Georgia", "Times New Roman", "Noto Serif CJK SC", serif;
 --font-hand: "Comic Sans MS", "Comic Neue", "Arial Rounded MT Bold", "Microsoft YaHei", sans-serif;
 ```
+
+生成器保留 CSS 变量定义，但写入每个 `<text>` 的 `font-family` 时会把 `var(--font-*)` 展开，并把本机已安装的首选字体放在栈首。PPTX 导出器不得把 `var(--font-sans)` 之类的 CSS 变量名原样写成 DrawingML typeface。
 
 除非明确要求，不要把普通文字转成轮廓路径。
 
@@ -125,7 +127,7 @@
 
 符号样文字确实不是公式时，加 `formula_policy: "not-formula"` 和简短的 `formula_decision_reason`。
 
-原生 PPTX 导出使用 PowerPoint 文字和 Office Math 排版，可能与 SVG 不同。紧凑布局要对导出的 PPTX 做视检，公式或标签偏移、换行、溢出、碰撞就调整 manifest。
+原生 PPTX 导出使用 PowerPoint 文字和 Office Math 排版。含 `math` 或静态文字回流审计报告换行、溢出、缺字、碰撞风险时才做原生 PPTX 视检；无公式且静态审计全绿时以 SVG 为视觉验收源。
 
 ## 形状
 
@@ -137,6 +139,18 @@
 - `marker`：箭头头部
 - `circle` / `ellipse`：节点
 - `polygon`：简单几何图标
+
+### 箭头与连接线
+
+优先在 manifest 用 `marker_start` / `marker_end`，不要为常规箭头手画 polygon。支持：
+
+```json
+"marker_end": {"style": "open-chevron", "size": 8},
+"marker_start": {"style": "circle", "size": 6},
+"connector_clearance": 4
+```
+
+样式有 `solid-triangle`、`open-chevron`、`circle`、`diamond`。旧 `arrow_start` / `arrow_end` 兼容为实心三角。直线的 `connector_clearance` 沿两端回缩；端点必须仍指向正确对象且不压进节点。`marker_mid` 仅在需要路径中间语义标记时使用。
 
 ## 样式
 
@@ -160,7 +174,7 @@
 
 `editable_embedded.svg` 用 base64 data URI。
 
-背景底板优先用顶层 `background_plan` 引用，不要加重复的 image 元素。坐标敏感的前景素材保持正常的宽高比保留，并对照源图叠加验证位置。
+背景底板优先用顶层 `background_plans[]` 引用，不要加重复的 image 元素。坐标敏感的前景素材保持正常的宽高比保留，并对照源图叠加验证位置。
 
 ## 可访问性与可维护性
 

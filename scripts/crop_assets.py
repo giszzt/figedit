@@ -98,6 +98,17 @@ def _edge_check(
 
 def crop_assets(manifest_path: Path, out_dir: Path) -> Path:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    route = manifest.get("route_decision") or {}
+    if isinstance(route, dict) and route.get("schema_version") == 2 and route.get("route_status") != "ready":
+        raise RuntimeError("Route Decision v2 is not ready; do not crop assets before resolving user choices.")
+    contaminated = [
+        str(asset.get("id"))
+        for asset in manifest.get("assets", [])
+        if str(asset.get("decision", "")).lower() == "crop"
+        and str(asset.get("crop_window", "")).lower() == "contaminated"
+    ]
+    if contaminated:
+        raise RuntimeError(f"Contaminated assets cannot be cropped: {', '.join(contaminated)}")
     source_path = (manifest_path.parent / manifest["source_image"]).resolve()
     if not source_path.exists():
         source_path = Path(manifest["source_image"]).resolve()

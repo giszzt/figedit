@@ -1,5 +1,7 @@
 # 质量清单（Quality Checklist）
 
+本文件是交付放行条件的唯一权威。检查覆盖率与图片调用数分开：每个元素必须被覆盖，但一张整图、带 ID 总览或 contact sheet 可以同时覆盖整批；只有异常项需要独立 1:1 图。
+
 ## 验收维度
 
 沿九个维度评估重建：
@@ -48,17 +50,17 @@
 - [ ] 渲染后的公式组保留 `data-latex` 可追溯。
 - [ ] `quality_report.md` 显示公式泄漏和 PPTX math 导出门。
 - [ ] `editable.pptx.math_report.json` 中列为失败的公式都已修复，除非用户对该项明确豁免公式可编辑性。
-- [ ] 公式密集图形做过原生 PPTX 导出后的视觉排位检查，不只检查 Office Math 转换成功。
+- [ ] 含 `math` 的图形做过一次原生 PPTX 排位检查，不只检查 Office Math 转换成功。
 
 ## 文字与公式排位保真度
 
 - [ ] 小文字和公式占据与源图相同的视觉槽位。
 - [ ] 密集标签、公式、代码片段和节点说明不与方框、箭头或相邻文字重叠。
 - [ ] 散文/公式混排行共享一致基线。
-- [ ] PPTX 里文本框不溢出、不意外换行、不相对 SVG 预览偏移。
-- [ ] Office Math 对象在 PowerPoint 回流后仍在预期包围盒内。
+- [ ] 静态文字回流审计没有未处理的溢出、意外换行、缺字或相邻碰撞风险。
+- [ ] 触发 PPTX 验证时，Office Math 对象仍在预期包围盒内，文本框没有结构性偏移。
 - [ ] 公式可编辑性保住了；没有为回避排位工作把公式换成位图裁剪。
-- [ ] 高密度图形交付前打开或渲染过最终 PPTX。
+- [ ] 只有含 `math` 或静态审计报告结构风险时才原生渲染 PPTX；未触发的任务以 SVG 为视觉验收源。
 
 ## 连接线正确性
 
@@ -80,21 +82,21 @@
 
 ## 裁剪精度（裁剪窗）
 
-- [ ] 每个坐标裁剪资产都有 `crop_window` 判定（clean / clean-on-fill / contaminated），判定来自看图，不是默认值。
+- [ ] 每个坐标裁剪资产都有 `crop_window` 判定（clean / clean-on-fill / contaminated），判定来自整图或异常局部证据，不是默认值。
 - [ ] 没有 `crop_window: contaminated` 的资产仍用 `decision: "crop"`（`crop_window_consistency` 门会判 failed）。
 - [ ] `clean-on-fill` 的资产：manifest 用采样到的同一实色重画了承载面，且窗口不压卡片边框/圆角。
 - [ ] 素材裁剪没有可见切边。
 - [ ] 素材裁剪不含无关的相邻元素（不规整形状的外接矩形没有圈进邻居）。
 - [ ] 描边、阴影和纹理有足够的 padding。
 - [ ] 素材没有被拉伸或变形。
-- [ ] Contact sheet 已过目。
+- [ ] 一张带 ID 的 contact sheet 已覆盖全部裁剪资产；只有可疑 tile 被单独放大。
 - [ ] AI 清版底的叠层没有使用大块脏源图裁剪、旧标签、标注残留或矩形补丁接缝。
 
 ## 再生素材（regenerate-chroma）
 
 - [ ] 生成前跑过 `probe_palette.py --boxes`，sheet 按色相分区，没有元素与所在 sheet 的键色撞色。
 - [ ] 每个再生素材有 `generation_provenance`（后端、提示词文件、参考、sheet）和 `asset_fidelity`（`approximate-ok` 或复查后的 `source-close`）；没有素材标 `source-preserve`。
-- [ ] 每个元素与源图对应物并排比对过：轮廓、朝向、颜色、细节一致；无发明或丢失零件；无烘入的标签或伪文字。
+- [ ] 带 ID 的 sheet/contact sheet 已覆盖每个元素与源图对应物：轮廓、朝向、颜色、细节一致；无发明或丢失零件；无烘入标签或伪文字。异常 tile 已单独放大。
 - [ ] `chroma_key.py` 报告无未处理的 warnings（彩边、键色内容、空 sheet），`component_hue_drift` 已核对且无未处理的漂移/脱色/删除项，元素内封闭孔洞是透明的、无染色。
 - [ ] 任何内容类别都可再生；没有审批门。源像素绝不能漂移的对象（按数值读取的图表、合规 logo）压平留在底板或坐标裁剪为不透明矩形，没有用脆弱抠图硬追。
 - [ ] 再生范围与 `foreground_mode` 一致（full-extract 是全清单、selective 恰为点名子集、flatten 为零），与清版底移除清单互为镜像，重复元素只再生一次、按共享 `asset_id` 放置。
@@ -104,19 +106,21 @@
 
 ## 背景路线完整性
 
-- [ ] 常规图形没有 `background_plan`，除非 `route_decision.source` 是 `user-directive`。
-- [ ] 干净裁剪加简单确定性 SVG 无法忠实重建连续背景场时用了 AI 清版底。
-- [ ] AI 清版底没有仅因图形密集、图标多或海报感而使用；用户明确要求并记录为 `route_decision.source: "user-directive"` 的路线通过本检查。
-- [ ] 常规路线的理由不是"agent 可以手工重画风景/纹理/光照/多区插画背景"；用户指定的常规路线记录了声明的保真代价。
-- [ ] AI 清版底有已验收的整幅底板、生成来源、候选复查和画布对齐。
+- [ ] 新任务使用 Route Decision v2；一次整图判断后分别写出 SVG 基底、连续背景区域和素材组，不用全图 `regular-hybrid / ai-clean-plate` 二选一。
+- [ ] 每个背景 scope 在 Global Read 有粗略 `source_region + region_accuracy: estimated-from-global-read`，生成/合成前已量测收紧为 `measured`。
+- [ ] 简单确定性背景走 SVG；局部或全图连续场只为对应区域建立 `background_scopes[]` 与 `background_plans[]`。
+- [ ] 连续场上需要可编辑前景、且源图未提供干净底时用了 AI 清版；完整区域栅格保留只有用户明确要求时才成立。
+- [ ] AI 清版没有仅因图形密集、图标多或海报感而使用；是否连续依赖相邻像素与遮挡恢复才是判据。
+- [ ] 每个 AI 清版区域都有已验收的区域底板、生成来源、候选复查和坐标对齐。
 - [ ] 底板通过配准检查（`check_plate_registration.py`，scale ≈ 1.00 / offset ≈ 0），或不通过时已重生。
-- [ ] `background_plan.foreground_mode` 和 `foreground_mode_source` 已记录；来源是 `user-choice` 或 `explicit-request`（引用用户措辞），`auto-default` 只出现在无人值守运行。用户在场时凭图形特征选模式属于违门。
+- [ ] 每个 AI scope 的 `foreground_mode` 和来源已记录；用户未说明编辑深度时保持 `pending-user-choice`、`route_status: needs-user-input`，用户确认前没有 OCR、裁剪、生成或合成。
+- [ ] `foreground_inventory` 只含随深度变化的源图专有非结构对象；ready 后每项已解析为 `flatten` 或 `regenerate-chroma`，并与 `asset_groups` 一致。
 - [ ] 检查点呈现了具体的计费生成次数预算；交付说明含「预算 N 次 / 实际 M 次」对照，超出各次写明原因。
 - [ ] 底板移除清单与所记模式一致。
 - [ ] 验收底板不是旧前景仍可见的未处理源图。
 - [ ] 验收底板不是伪装成图像生成的本地模糊/克隆/填充/inpaint 结果。
 - [ ] AI 清版底之后的前景叠层以可编辑文字、公式和简单标记为主。
-- [ ] 有辨识度的素材只在身份重要、独立移动有用且裁剪干净时才裁回。
+- [ ] 有辨识度的素材先判身份、再判可分离性；只在独立移动有用且窗口干净时裁回，污染压盖的走再生或压平。
 - [ ] 类文字背景铭刻按源图分析决定保留或移除，不是一刀切"移除所有文字"。
 
 ## 工程可维护性
@@ -128,7 +132,16 @@
 - [ ] 原生 `editable.pptx` 已生成，需要 PowerPoint 可编辑性时 `quality_report.md` 显示 `pptx_export: ok`。
 - [ ] 原生 `editable.pptx` 的公式导出与一般 PPTX 导出分开检查。
 - [ ] 原生 `editable.pptx` 不是一个巨大分组；普通文字、形状、连接线和裁剪素材可直接选中，只有语义原子组保持成组。
-- [ ] 渲染工具可用时生成了预览图。
+- [ ] 仅在验证档位为 `pptx-triggered` 时生成原生 PPTX 预览；`svg-primary` 不因渲染工具可用就打开 PowerPoint。
+
+## SVG / PPTX 验证分档
+
+- [ ] 无 `math` 且静态文字回流审计全绿时，`route_decision.validation_tier` 为 `svg-primary`，最终 SVG 总览已验收，不额外打开 PowerPoint。
+- [ ] 含 `math` 或静态审计报告换行、溢出、缺字、碰撞、整体错位风险时，档位为 `pptx-triggered`，做过一次原生渲染。
+- [ ] 原生渲染只检查结构性问题：公式越槽、换行变化、内容截断、碰撞和整体错位。
+- [ ] 档 1 发现结构缺陷后批量修复，最多再原生渲染一次；没有为字体观感无限循环。
+
+以下不算缺陷，也不触发重做：字形光栅化和抗锯齿差异、笔画粗细、逗号/引号/括号亚像素位移、基线约 ±1 px、字距约 ±0.5 px、整体色彩管理差异。
 
 ## 高优先级失败条件
 
@@ -147,7 +160,7 @@
 - 公式样内容留在 `type: "text"` 里并出现在 `formula_text_leakage` 下
 - PPTX 公式只以矢量图形可见，且用户未明确豁免
 - PPTX 公式可编辑但明显错位、过大、基线偏移或与相邻内容碰撞
-- 密集文字/公式图形未做 PPTX 视检就交付
+- 含 `math` 或静态审计报告结构风险的图形未做 PPTX 视检就交付
 - PPTX 输出要求用户手动解组整幅图或主要图层才能选中普通元素
 - SVG 无法在常见工具中打开
 - 任何检测器的原始候选、OCR 备选垃圾、草稿 manifest 线条或假箭头出现在最终 SVG

@@ -1,5 +1,28 @@
 # 更新日志 / Changelog
 
+## 0.5.0 — 2026-08-04
+
+本版把全局二选一路由升级为 Route Decision v2 的区域/素材组合路由，修复复杂图中“明知有污染仍全量裁剪”和“局部连续背景未确认编辑深度就整区栅格化”的决策错误。
+
+- 整图总判改为确定性 SVG 基底、局部/全图背景 scope 与素材组的组合决策；复杂度和体裁不再直接决定路线。
+- 新增负向污染扫描：先看轮廓遮挡、外接矩形异物、边框/阴影/纹理相交和对象缺口，再允许 `clean / clean-on-fill`；污染对象直接再生、压平或阻塞，不先逐项裁图试错。
+- `asset_groups` 新增 `separability` 与污染证据 `observed_overlap`；每个非背景位图素材必须被分组，crop 组与最终 `crop_window` 必须一致。
+- 局部或全图连续场用 `background_scopes[]` 表达；需要编辑前景时走区域 `ai-clean-plate`，整区 `source-preserve-region` 只有用户明确接受时才合法。
+- 用户未表达连续场前景深度时写入 `pending-user-choice / needs-user-input`；裁剪器和所有 compose 阶段会硬停止，避免在确认前继续处理。
+- 新增区域 `background_plans[]` schema、校验、质量审计、底板放置、掩膜 scope 选择和诊断产物命名；旧单一 `background_plan` 继续只读兼容。
+- 更新示例、请求模板、README 与路由测试，覆盖污染素材、待确认连续场和局部清版计划。
+
+## 0.4.0 — 2026-08-04
+
+本版重构执行编排，目标是在不降低信息完整性、素材保真、公式可编辑性和背景质量的前提下，减少模型重复看图与无条件 PowerPoint 验证。
+
+- 新增 Global Reconstruction Read：先用一次整图判断锁定编辑深度、常规/AI 路线、元素策略、异常项和验证档位；局部图只补未决证据。
+- 裁剪与再生改为批量覆盖、异常驱动复核；新增 `inspect_regions.py`，每页最多汇总 6 个异常区域，不再默认逐资产反复裁剪和看边界。
+- SVG 成为主验收对象；PPTX 原生渲染仅由公式或静态结构风险触发。`render_pptx.py` 检测到用户正在使用 PowerPoint 时默认跳过，附着模式也只关闭脚本自己的只读 Presentation。
+- `compose_svg_package.py` 支持 `svg`、`pptx`、`package` 三阶段，省略 `--stage` 时保持旧的全量行为；新增 `timings.json` 记录真实耗时和重型验证次数。
+- 增加字体变量解析、箭头 marker 词汇、连接线净空、文字拟合与静态回流审计、裁剪告警候选收窗，以及新的路由和 manifest 兼容字段。
+- `SKILL.md` frontmatter description 采用“能力与产物 + 支持特性 + 当用户……时使用”的通用表达；正文不重复设置“适用/不适用”，也不引入额外的“规则强度”栏目。
+
 ## 0.3.0 — 2026-08-03
 
 这一版的主题是堵住实战中反复出现的静默缺陷和冗余计费调用，同时全面中文化。SKILL.md 和全部 references 改写为中文（标识符、字段名、脚本名保持英文）。

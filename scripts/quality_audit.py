@@ -71,8 +71,17 @@ def render_preview(svg_path: Path, preview_path: Path, width: int, height: int) 
 
 
 def _is_ai_clean_plate(manifest: dict[str, Any]) -> bool:
-    plan = manifest.get("background_plan") or {}
-    return plan.get("strategy") == "ai-clean-plate"
+    return bool(_background_plans(manifest))
+
+
+def _background_plans(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+    plans = manifest.get("background_plans")
+    if isinstance(plans, list):
+        return [plan for plan in plans if isinstance(plan, dict) and plan.get("strategy") == "ai-clean-plate"]
+    legacy = manifest.get("background_plan")
+    if isinstance(legacy, dict) and legacy.get("strategy") == "ai-clean-plate":
+        return [legacy]
+    return []
 
 
 def _canvas_area(manifest: dict[str, Any]) -> float:
@@ -80,8 +89,8 @@ def _canvas_area(manifest: dict[str, Any]) -> float:
     return max(1.0, _num(canvas.get("width"), 1.0) * _num(canvas.get("height"), 1.0))
 
 
-def _is_source_crop(asset: dict[str, Any], plate_id: str | None) -> bool:
-    if asset.get("id") == plate_id or asset.get("kind") == "background-plate":
+def _is_source_crop(asset: dict[str, Any], plate_ids: set[str]) -> bool:
+    if asset.get("id") in plate_ids or asset.get("kind") == "background-plate":
         return False
     source_mode = str(asset.get("source_mode", "")).lower()
     decision = str(asset.get("decision", "")).lower()
@@ -94,17 +103,38 @@ def _ai_patchwork_gate(manifest: dict[str, Any]) -> dict[str, Any]:
     if not _is_ai_clean_plate(manifest):
         return _status("ok", reason="no AI clean plate")
 
-    plan = manifest.get("background_plan") or {}
-    plate_id = plan.get("plate_asset_id")
-    area = _canvas_area(manifest)
-    crops = [asset for asset in manifest.get("assets", []) if _is_source_crop(asset, plate_id)]
+    plans = _background_plans(manifest)
+    plate_ids = {str(plan.get("plate_asset_id")) for plan in plans if plan.get("plate_asset_id")}
+    canvas = manifest.get("canvas", {})
+    regions = []
+    for plan in plans:
+        region = plan.get("source_region")
+        if not isinstance(region, dict):
+            region = {"x": 0, "y": 0, "w": canvas.get("width"), "h": canvas.get("height")}
+        regions.append(region)
+    area = sum(max(1.0, _num(region.get("w")) * _num(region.get("h"))) for region in regions) or _canvas_area(manifest)
+    crops = []
+    crop_overlap_area: dict[str, float] = {}
+    for asset in manifest.get("assets", []):
+        if not _is_source_crop(asset, plate_ids):
+            continue
+        ax1, ay1 = _num(asset.get("x")), _num(asset.get("y"))
+        ax2, ay2 = ax1 + _num(asset.get("w")), ay1 + _num(asset.get("h"))
+        overlap = 0.0
+        for region in regions:
+            rx1, ry1 = _num(region.get("x")), _num(region.get("y"))
+            rx2, ry2 = rx1 + _num(region.get("w")), ry1 + _num(region.get("h"))
+            overlap += max(0.0, min(ax2, rx2) - max(ax1, rx1)) * max(0.0, min(ay2, ry2) - max(ay1, ry1))
+        if overlap > 0:
+            crops.append(asset)
+            crop_overlap_area[str(asset.get("id"))] = overlap
     crop_summaries = []
     large = []
     total_area = 0.0
     residue = []
 
     for asset in crops:
-        asset_area = max(0.0, _num(asset.get("w")) * _num(asset.get("h")))
+        asset_area = crop_overlap_area.get(str(asset.get("id")), 0.0)
         ratio = asset_area / area
         total_area += asset_area
         if ratio >= 0.04:
@@ -282,6 +312,19 @@ def _crop_window_gate(manifest: dict[str, Any], out_dir: Path) -> dict[str, Any]
             window = arr[max(0, y) : min(height, y + h), max(0, x) : min(width, x + w)]
             ink = np.sqrt(((window.astype(float) - mode_rgb.astype(float)) ** 2).sum(axis=2)) > 40.0
             edge_touch = bool(ink[0, :].any() or ink[-1, :].any() or ink[:, 0].any() or ink[:, -1].any())
+            ys, xs = np.where(ink)
+            candidate = None
+            if len(xs):
+                # Advisory only: retain a two-pixel backing margin around ink.
+                # Ignore tiny reductions that would only create review noise.
+                tx1 = max(0, int(xs.min()) - 2)
+                ty1 = max(0, int(ys.min()) - 2)
+                tx2 = min(window.shape[1], int(xs.max()) + 3)
+                ty2 = min(window.shape[0], int(ys.max()) + 3)
+                new_w, new_h = tx2 - tx1, ty2 - ty1
+                old_area, new_area = w * h, new_w * new_h
+                if new_w > 0 and new_h > 0 and (w - new_w >= 4 or h - new_h >= 4) and new_area <= old_area * 0.92:
+                    candidate = {"x": x + tx1, "y": y + ty1, "w": new_w, "h": new_h}
         except Exception:
             continue
 
@@ -291,6 +334,8 @@ def _crop_window_gate(manifest: dict[str, Any], out_dir: Path) -> dict[str, Any]
             "ring_dominant": "#{:02x}{:02x}{:02x}".format(*[int(v) for v in mode_rgb]),
             "ring_dominant_share": round(dominant_share, 3),
             "ink_touches_edge": edge_touch,
+            "candidate_tighter_window": candidate,
+            "candidate_note": "advisory only; confirm against the whole source before changing the crop",
         }
         if dominant_share < 0.90:
             evidence["reason"] = "window border ring straddles more than one backing color; likely mid-layer or neighbor contamination"
@@ -354,30 +399,16 @@ def _ocr_fallback_gate(manifest: dict[str, Any]) -> dict[str, Any]:
 
 
 def _text_math_layout_gate(manifest: dict[str, Any]) -> dict[str, Any]:
-    """Review trigger for dense editable text/math layouts.
+    """Trigger native review only for PowerPoint-specific structural risk.
 
-    This is intentionally a review gate rather than a pixel-diff substitute.
-    It catches the common false-green case where formulas are editable and the
-    SVG renders, but dense text/math placement has not been constrained or
-    visually reviewed after PPTX export.
+    Visual density by itself is not a reason to render PowerPoint. Static
+    text-fit analysis runs in the PPTX stage; this gate carries only the
+    manifest's explicit validation tier and the hard Office Math trigger.
     """
 
     elements = manifest.get("elements", [])
     text_elements = [el for el in elements if el.get("type") == "text"]
     math_elements = [el for el in elements if el.get("type") in {"math", "formula"}]
-    classification = manifest.get("classification") or {}
-    figure_type = str(classification.get("figure_type", "")).lower()
-    complexity = str(classification.get("complexity", "")).lower()
-
-    dense = (
-        len(math_elements) >= 20
-        or len(text_elements) >= 80
-        or "formula" in figure_type
-        or ("high" in complexity and len(math_elements) >= 8)
-    )
-    if not dense:
-        return _status("ok", reason="not a dense text/math layout")
-
     unconstrained_math = [
         el.get("id")
         for el in math_elements
@@ -386,46 +417,33 @@ def _text_math_layout_gate(manifest: dict[str, Any]) -> dict[str, Any]:
         or not el.get("h")
         or not (el.get("layout_lock") or el.get("baseline_y") or el.get("dominant_baseline"))
     ]
-    unconstrained_text = [
-        el.get("id")
-        for el in text_elements
-        if (not el.get("source_region") or not (el.get("w") or el.get("max_width"))) and _num(el.get("font_size"), 16) <= 14
-    ]
 
     review = manifest.get("pptx_visual_review") or (manifest.get("quality_gates") or {}).get("pptx_visual_review")
     review_ok = isinstance(review, dict) and str(review.get("status", "")).lower() in {"ok", "verified", "passed"}
+    route_tier = str((manifest.get("route_decision") or {}).get("validation_tier", "")).lower()
 
-    if not review_ok:
+    if review_ok:
+        return _status(
+            "ok",
+            text_count=len(text_elements),
+            math_count=len(math_elements),
+            pptx_visual_review="ok",
+        )
+    if math_elements or route_tier == "pptx-triggered":
         return _status(
             "review",
-            message="dense editable text/math layout requires PPTX visual review",
+            message="PowerPoint-specific structural risk requires one native review",
             text_count=len(text_elements),
             math_count=len(math_elements),
             unconstrained_math_count=len(unconstrained_math),
-            unconstrained_text_count=len(unconstrained_text),
-            samples=(unconstrained_math + unconstrained_text)[:30],
-        )
-    if len(unconstrained_math) > max(3, len(math_elements) * 0.25):
-        return _status(
-            "review",
-            message="many math elements lack source-slot layout constraints",
-            math_count=len(math_elements),
-            unconstrained_math_count=len(unconstrained_math),
+            route_validation_tier=route_tier or None,
             samples=unconstrained_math[:30],
-        )
-    if len(unconstrained_text) > 20:
-        return _status(
-            "review",
-            message="many small text elements lack source-region or width constraints",
-            text_count=len(text_elements),
-            unconstrained_text_count=len(unconstrained_text),
-            samples=unconstrained_text[:30],
         )
     return _status(
         "ok",
+        reason="no Office Math or explicit pptx-triggered route; static text-fit report decides whether to escalate",
         text_count=len(text_elements),
         math_count=len(math_elements),
-        pptx_visual_review="ok",
     )
 
 
@@ -433,30 +451,91 @@ def _background_plate_gate(manifest: dict[str, Any]) -> dict[str, Any]:
     if not _is_ai_clean_plate(manifest):
         return _status("ok", reason="conventional route")
 
-    plan = manifest.get("background_plan") or {}
-    plate_id = plan.get("plate_asset_id")
-    plate = next((asset for asset in manifest.get("assets", []) if asset.get("id") == plate_id), None)
-    provenance = plan.get("generation_provenance") or {}
-    review = plan.get("candidate_review") or {}
-
-    if not isinstance(plate, dict):
-        return _status("failed", message="AI clean plate asset is missing")
-    if plate.get("kind") != "background-plate":
-        return _status("failed", message="AI clean plate asset should use kind=background-plate")
-    if not provenance.get("output"):
-        return _status("failed", message="AI clean plate lacks generation provenance output")
-    if review.get("accepted") is not True:
-        return _status("failed", message="AI clean plate candidate was not accepted")
-
-    canvas = manifest.get("canvas", {})
-    w_ok = abs(_num(plate.get("w")) - _num(canvas.get("width"))) <= max(1.0, _num(canvas.get("width")) * 0.01)
-    h_ok = abs(_num(plate.get("h")) - _num(canvas.get("height"))) <= max(1.0, _num(canvas.get("height")) * 0.01)
-    if not w_ok or not h_ok:
-        return _status("failed", message="AI clean plate is not canvas-aligned")
-    return _status("ok")
+    assets = {asset.get("id"): asset for asset in manifest.get("assets", []) if isinstance(asset, dict)}
+    failures = []
+    for plan in _background_plans(manifest):
+        scope_id = plan.get("scope_id") or "legacy-full-canvas"
+        plate = assets.get(plan.get("plate_asset_id"))
+        provenance = plan.get("generation_provenance") or {}
+        review = plan.get("candidate_review") or {}
+        if not isinstance(plate, dict):
+            failures.append({"scope_id": scope_id, "reason": "plate asset is missing"})
+            continue
+        if plate.get("kind") != "background-plate":
+            failures.append({"scope_id": scope_id, "reason": "plate asset should use kind=background-plate"})
+        if not provenance.get("output"):
+            failures.append({"scope_id": scope_id, "reason": "generation provenance output is missing"})
+        if review.get("accepted") is not True:
+            failures.append({"scope_id": scope_id, "reason": "candidate was not accepted"})
+        target = plan.get("source_region")
+        if not isinstance(target, dict):
+            canvas = manifest.get("canvas", {})
+            target = {"x": 0, "y": 0, "w": canvas.get("width"), "h": canvas.get("height")}
+        aligned = all(abs(_num(plate.get(key)) - _num(target.get(key))) <= 1.0 for key in ("x", "y", "w", "h"))
+        if not aligned:
+            failures.append({"scope_id": scope_id, "reason": "plate placement does not align to its source region"})
+    if failures:
+        return _status("failed", message="one or more AI clean-plate regions are invalid", samples=failures[:20])
+    return _status("ok", region_count=len(_background_plans(manifest)))
 
 
 def _background_route_consistency_gate(manifest: dict[str, Any]) -> dict[str, Any]:
+    route = manifest.get("route_decision") or {}
+    if isinstance(route, dict) and route.get("schema_version") == 2:
+        if route.get("route_status") != "ready":
+            return _status(
+                "failed",
+                message="route has unresolved user decisions; stop before reconstruction",
+                route_status=route.get("route_status"),
+                unresolved_decisions=route.get("unresolved_decisions") or [],
+            )
+        scopes = [scope for scope in route.get("background_scopes", []) if isinstance(scope, dict)]
+        plans = _background_plans(manifest)
+        planned = {plan.get("scope_id") for plan in plans}
+        failures = []
+        for scope in scopes:
+            scope_id = scope.get("id")
+            if scope.get("region_accuracy") != "measured":
+                failures.append({"scope_id": scope_id, "reason": "background scope coordinates are still estimated"})
+            if scope.get("strategy") == "ai-clean-plate" and scope_id not in planned:
+                failures.append({"scope_id": scope_id, "reason": "AI scope has no accepted background plan"})
+            if (
+                scope.get("strategy") == "source-preserve-region"
+                and scope.get("field_type") == "continuous-field"
+                and not scope.get("user_directive")
+            ):
+                failures.append({"scope_id": scope_id, "reason": "continuous-field raster preserve lacks explicit user directive"})
+            if scope.get("foreground_mode") == "pending-user-choice":
+                failures.append({"scope_id": scope_id, "reason": "foreground editability is still pending"})
+
+        assets = {asset.get("id"): asset for asset in manifest.get("assets", []) if isinstance(asset, dict)}
+        for group in route.get("asset_groups", []):
+            if not isinstance(group, dict):
+                continue
+            strategy = group.get("strategy")
+            separability = group.get("separability")
+            if strategy == "crop" and separability not in {"clean", "clean-on-fill"}:
+                failures.append({"group": group.get("ids"), "reason": "crop group lacks a clean separability verdict"})
+            if strategy == "regenerate-chroma" and separability != "contaminated":
+                failures.append({"group": group.get("ids"), "reason": "regeneration group lacks a contaminated verdict"})
+            for asset_id in group.get("ids", []):
+                asset = assets.get(asset_id)
+                if not isinstance(asset, dict):
+                    continue
+                decision = str(asset.get("decision", "")).lower()
+                if strategy == "crop" and (decision != "crop" or asset.get("crop_window") not in {"clean", "clean-on-fill"}):
+                    failures.append({"asset_id": asset_id, "reason": "crop route lacks a clean crop window"})
+                elif strategy == "crop" and asset.get("crop_window") != separability:
+                    failures.append({"asset_id": asset_id, "reason": "crop window contradicts route separability"})
+                elif strategy == "regenerate-chroma" and decision != "regenerate-chroma":
+                    failures.append({"asset_id": asset_id, "reason": "regenerate-chroma route was not executed"})
+        for asset in assets.values():
+            if str(asset.get("decision", "")).lower() == "crop" and str(asset.get("crop_window", "")).lower() == "contaminated":
+                failures.append({"asset_id": asset.get("id"), "reason": "contaminated asset was still cropped"})
+        if failures:
+            return _status("failed", message="route v2 execution contradicts the global decision", samples=failures[:30])
+        return _status("ok", background_scope_count=len(scopes), ai_scope_count=len(plans))
+
     classification = manifest.get("classification") or {}
     style = str(classification.get("style_type", "")).lower()
     intent = str(classification.get("reconstruction_intent", "")).lower()
@@ -524,7 +603,7 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
     formula_leaks = editability.get("formula_text_leak_samples", [])
     low_conf = [el for el in elements if el.get("review_status") in {"low-confidence", "needs-check"}]
     crop_issues = [a for a in assets if a.get("crop_status") not in {None, "verified", "ok"} or (a.get("edge_check") or {}).get("status") not in {None, "ok"}]
-    background_plan = manifest.get("background_plan") or {}
+    background_plans = _background_plans(manifest)
 
     lines = [
         "# Reconstruction Quality Report",
@@ -535,7 +614,7 @@ def write_quality_report(out_dir: Path, gates: dict[str, Any]) -> None:
         f"- Source image: {manifest.get('source_image')}",
         f"- Canvas: {manifest.get('canvas', {}).get('width')} x {manifest.get('canvas', {}).get('height')}",
         f"- OCR status: {ocr.get('status', 'missing')} ({len(ocr.get('items', []))} text candidates)",
-        f"- Background strategy: {background_plan.get('strategy', 'conventional')}",
+        f"- Background strategy: {'regional-ai-clean-plate' if background_plans else 'conventional'} ({len(background_plans)} AI region(s))",
         f"- Assets: {len(assets)}",
         f"- Elements: {len(elements)}",
         f"- SVG text elements: {len([e for e in elements if e.get('type') == 'text'])}",

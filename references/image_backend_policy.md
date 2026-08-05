@@ -1,8 +1,8 @@
 # 图像后端策略（Image Backend Policy）
 
-仅在背景门选定 `ai-clean-plate` 之后、或用户明确要求 AI 辅助图像编辑时使用本文件。
+在任一 `background_scopes[].strategy` 选定 `ai-clean-plate`、任一素材选定 `regenerate-chroma`，或用户明确要求 AI 辅助图像编辑时使用本文件。
 
-FigEdit 决定重建方案。图像后端只执行已批准的"保留/移除/重建"简报。
+FigEdit 决定区域和素材路线。图像后端只执行已批准的清版或 chroma 简报，不参与路由。
 
 ## API Key 配置
 
@@ -75,7 +75,7 @@ FigEdit 决定重建方案。图像后端只执行已批准的"保留/移除/重
 
 `scripts/generate_clean_plate.py` 是可选的可脚本后端适配器。它不是路线选择器，也无法调用 Codex Image Gen。使用前提：
 
-- 模型已选定 `ai-clean-plate`
+- 路由已选定区域 `ai-clean-plate` 或素材 `regenerate-chroma`
 - 生成简报已写入提示词文件
 - 环境已配置合格的可脚本后端
 

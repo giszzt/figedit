@@ -1,12 +1,14 @@
 # 素材提取规则（Asset Extraction Rules）
 
+本文件是 crop 语义、异常触发和裁剪修复的唯一权威。总体路线先由 `global_routing.md` 的整图总判锁定；不要先裁出全部小图再反推资产路线。
+
 ## 目的
 
 素材提取保留位图图形中的源图专有视觉内容。用于应当看起来和源图一样、而不是被新发明的 SVG 替代物取代的图形对象。
 
-## 应提取为素材的内容
+## 应按素材身份处理的内容
 
-内容属于以下类型时提取为素材：
+内容属于以下类型时先锁定素材身份，再按可分离性决定 crop、regenerate-chroma、flatten 或区域保留：
 
 - 照片性内容
 - 截图
@@ -21,9 +23,9 @@
 
 ## 透明提取
 
-独立透明 PNG 由 chroma 再生产出（`chroma_regeneration.md`）：对象复现在纯色 chroma sheet 上再键控分离。这是 `ai-clean-plate` 路线的方法，复合对象、缠结对象、普通图形对象一视同仁。没有显著性抠图这一步——sheet 底色是已知纯色，键控是精确的，rembg/U2-Net 的猜测只会增加失败模式。
+独立透明 PNG 由 chroma 再生产出（`chroma_regeneration.md`）：对象复现在纯色 chroma sheet 上再键控分离。它既用于清版区域的 `full-extract/selective`，也用于普通 SVG 区域中明显污染、但需要独立存在的专有对象。没有显著性抠图这一步。
 
-常规路线上，需要成为位图素材的对象坐标裁剪为矩形（`crop_assets.py`）；平底、白底或可分离底上的素材完全不需要 alpha。不要手搓 GrabCut、色差、阈值或 rembg 抠图脚本从自然背景里抠对象。
+只有裁剪窗为 `clean` 或合法 `clean-on-fill` 时，才用 `crop_assets.py` 从源图坐标裁剪矩形。明显污染对象不得先裁一轮再决定路线；整图能判定时直接写 `regenerate-chroma` 或 `flatten`。不要手搓 GrabCut、色差、阈值或 rembg 抠图脚本。
 
 ## 裁剪范围
 
@@ -33,7 +35,7 @@
 
 - 圆角底块/背景：重画
 - 标签：重打
-- 图标/缩略图/截图：裁剪
+- 图标/缩略图/截图：窗口干净才裁剪；污染时再生或压平
 - 箭头/连接线：重画
 
 ## 裁剪规则
@@ -53,7 +55,7 @@
 
 ## 精度要求
 
-每个裁剪核实：
+每个裁剪都必须被覆盖核实，但证据默认来自一次整图判断和一次带 ID 的 contact sheet，不要求逐资产单独出图。覆盖检查：
 
 - 对象整体可见
 - 没有重要边缘被切掉
@@ -61,19 +63,19 @@
 - 放回目标尺寸无可见变形
 - 应保持可编辑的文字没有被不必要地烘进裁剪
 
-助手脚本不做完美的对象分割，只裁 manifest 提供的矩形 `source_region`。`edge_check` 是告警系统：报告裁剪矩形的上下左右边上是否仍有强视觉信号。它不证明框在语义上精确，也不能可靠检测裁剪内的无关邻居对象——那是编写 manifest 时裁剪窗检查（肉眼）和 `quality_audit.py` 的 `crop_window_consistency` 门（事后像素核验）的职责。
+助手脚本不做完美对象分割，只裁 manifest 提供的矩形 `source_region`。`edge_check` 报告四边是否仍有强视觉信号；它不证明语义精确，也不能可靠检测窗口内的无关邻居。整图总判负责初始语义，contact sheet 负责批量覆盖，`crop_window_consistency` 负责事后像素兜底。
 
-高价值素材用三遍裁剪法：
+只有高价值且异常的素材使用三遍裁剪法：压盖、贴边、半透明/阴影边、低对比、整图看不清、contact sheet 可疑或质量报告告警。显然干净的常规资产一次裁剪即可。
 
-1. 高倍放大源图，定粗略 `source_region`。
+1. 对异常区域做 1:1 放大，定粗略 `source_region`。
 2. 跑合成，检查 `contact_sheet.png`、`diagnostics/placement_overlay.png` 和 `edge_check.needs_padding_sides`。
 3. 调整各 `source_region` 的边和 `pad`，重跑直到对象完整、相邻标签/箭头/图标被排除。
 
-不要仅因自动边缘检查是绿的就接受 `crop_status: verified`。最终权威是与源图和源图叠框的目视比对。
+不要仅因自动边缘检查是绿的就接受 `crop_status: verified`。最终权威是整图/带框总览和 contact sheet 的视觉覆盖；三者出现矛盾时才单独放大。
 
 ## Contact Sheet
 
-裁剪后生成 contact sheet，内容包括：
+裁剪后生成一张 contact sheet，作为整批裁剪的默认视觉证据。内容包括：
 
 - 素材 ID
 - 文件名
@@ -89,6 +91,8 @@
 - 意外重复的裁剪
 - 带过多周边背景的裁剪
 - 该提取却没提取的视觉素材
+
+Contact sheet 全绿且没有报告告警时，不再逐项打开源图或单图。发现异常时汇总全部异常，一次修改窗口、一次重裁；不要在每个资产之间穿插 compose。
 
 ## 背景处理
 

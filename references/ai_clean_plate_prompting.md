@@ -10,7 +10,7 @@
 
 ## 生成简报
 
-以下字段记入 `background_plan.generation_brief`。
+以下字段记入对应的 `background_plans[].generation_brief`。局部连续场只描述该 `scope_id` 与 `source_region`，不要把其他确定性 SVG 区域一起重绘。
 
 ### Task（任务）
 

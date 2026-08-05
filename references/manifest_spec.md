@@ -8,11 +8,52 @@ manifest 记录重建方案，支撑可复现的更新。
 - `source_image`：原图路径
 - `canvas`：源图尺寸与背景色
 - `classification`：图形类型与所选模式
+- `route_decision`：新任务的组合路由锁；旧 manifest 可缺失
 - `panels`：主要布局区域
 - `assets`：裁剪或生成的位图素材
 - `elements`：可编辑 SVG 元素与素材放置
 
-常规 FigEdit manifest 不需要 `background_plan`。只有背景门选定 `ai-clean-plate`、或用户明确要求 AI 路线时才添加。
+没有 AI 清版区域时不需要 `background_plans`。局部或全图区域选定 `ai-clean-plate` 后，每个区域添加一条计划。
+
+## Route Decision
+
+新任务在测量、裁剪和生成之前记录 Route Decision v2：
+
+```json
+{
+  "route_decision": {
+    "schema_version": 2,
+    "source": "fresh-global-read",
+    "route_status": "ready",
+    "editability_depth": "text+structure",
+    "base_strategy": "svg-rebuild",
+    "background_scopes": [],
+    "asset_groups": [],
+    "unresolved_decisions": [],
+    "validation_tier": "svg-primary",
+    "exception_ids": ["icon-overlap-03"]
+  }
+}
+```
+
+允许值：
+
+- `schema_version`：新结构固定为 `2`
+- `source`：`fresh-global-read`、`user-directive`
+- `route_status`：`ready`、`needs-user-input`
+- `editability_depth`：`text-only`、`text+structure`、`selective-assets`、`full-extract`
+- `base_strategy`：`svg-rebuild`
+- `background_scopes`：局部/全图连续场与明确栅格保留区域；每个 scope 的粗略坐标先标 `region_accuracy: estimated-from-global-read`，生成前收紧为 `measured`
+- `asset_groups`：初始批量素材策略
+- `unresolved_decisions`：尚待用户选择的事项
+- `validation_tier`：`svg-primary`、`pptx-triggered`
+- `exception_ids`：字符串数组
+
+`background_scopes` 记录路由时已判定的区域策略；最终生成来源与验收写入 `background_plans[]`。每个 `asset_groups[]` 条目除 `strategy / ids / reason` 外还写 `separability`：`not-applicable`、`clean`、`clean-on-fill`、`contaminated` 或 `embedded-in-continuous-field`。污染组必须加 `observed_overlap`，列出边框、文字、箭头、邻居等整图可见压盖。最终 `assets[].decision` 必须与 `asset_groups` 一致；crop 组只允许 `clean / clean-on-fill`，并与最终 `crop_window` 一致。完整算法见 `global_routing.md`。
+
+AI scope 可含 `foreground_inventory[]`，只列处理方式随用户深度变化的源图专有非结构对象。每项为 `id / kind: source-specific-visual / resolved_strategy`；未决时为 `pending-user-choice`，确认后改为 `flatten` 或 `regenerate-chroma`，并在 `asset_groups` 中使用同一策略。通用箭头、路线、圆点、文字和公式不放入该清单。
+
+旧 manifest 的 `source: global-read`、`reconstruction_route` 与单个 `background_plan` 继续兼容读取，但新任务不得只写旧式二选一路由。
 
 ## 坐标系
 
@@ -36,7 +77,7 @@ manifest 记录重建方案，支撑可复现的更新。
 }
 ```
 
-`reconstruction_mode: "E-ai"` 仅在 `background_plan.strategy` 为 `ai-clean-plate` 时使用。
+`reconstruction_mode` 只作人类可读分类，不再决定背景路线。实际执行以 Route Decision v2 与 `background_plans[]` 为准。
 
 ### Diagnostics（推荐）
 
@@ -157,6 +198,31 @@ manifest 记录重建方案，支撑可复现的更新。
 
 其他类型可在合成脚本支持时手写 SVG。
 
+## 连接线与 marker
+
+旧字段 `arrow_start` / `arrow_end` 继续支持，等价于实心三角。新字段允许明确样式和尺寸：
+
+```json
+{
+  "type": "line",
+  "id": "flow-a-b",
+  "x1": 120,
+  "y1": 90,
+  "x2": 320,
+  "y2": 90,
+  "marker_end": {"style": "open-chevron", "size": 8},
+  "marker_start": null,
+  "connector_clearance": 4
+}
+```
+
+- `marker_start` / `marker_end.style`：`solid-triangle`、`open-chevron`、`circle`、`diamond`
+- `size`：正数，单位为 SVG 用户空间像素；缺省为 7
+- `connector_clearance`：正数或 0；直线连接线沿两端方向各回缩该距离，避免线头压入节点
+- `marker_mid`：可选，用于 `line` / `polyline`；`{"style":"solid-triangle","size":7,"at":0.5}` 表示路径中点标记
+
+新字段是可选表达能力，不是每条连接线必须满足的 gate。手画 polygon 箭头允许保留，但质量报告会提示优先使用 marker。
+
 ## 素材保真字段
 
 每个裁剪的视觉素材尽量附带保真元数据：
@@ -175,14 +241,14 @@ manifest 记录重建方案，支撑可复现的更新。
 
 - `asset_fidelity`：`source-preserve`、`source-close`、`approximate-ok`、`semantic-only`
 - `decision_reason`：对 `crop`、`redraw`、`flatten`、`regenerate-chroma` 或 `generate-replacement` 的简要说明
-- `crop_window`：`clean`、`clean-on-fill`、`contaminated` —— Crop Window Check（SKILL.md 位图素材门）的肉眼判定结果。`clean-on-fill` 时附带承载面实色并确保 manifest 用同色重画承载面；`contaminated` 的资产不允许 `decision: "crop"`（`quality_audit.py` 的 `crop_window_consistency` 门会判 failed）。
+- `crop_window`：`clean`、`clean-on-fill`、`contaminated` —— Crop Window Check 的视觉判定结果。一次整图和 contact sheet 可以覆盖整批，异常项才独立放大。`clean-on-fill` 时附带承载面实色并确保 manifest 用同色重画承载面；`contaminated` 的资产不允许 `decision: "crop"`（`quality_audit.py` 的 `crop_window_consistency` 门会判 failed）。
 - `background_handling`：`tight-crop`、`transparent`、`preserve-background`、`remove-background`、`mask`、`full-canvas`、`uncertain`
 - `crop_status`：`pending`、`verified`、`needs-padding`、`wrong-region`、`background-issue`、`dirty-residue`
 - `text_policy`：`extract-editable`、`preserve-raster`、`allow-embedded-text`、`review`
 
 chroma 再生产出的素材用 `source_mode: "external"`、`decision: "regenerate-chroma"` 和 `generation_provenance` 对象；完整条目形态和工作流见 `chroma_regeneration.md`。
 
-常规路线素材是从源图坐标裁剪的矩形（`scripts/crop_assets.py` 读取各素材的 `source_region`），带 `decision: "crop"`。
+确认为 `clean / clean-on-fill` 的素材才从源图坐标裁剪矩形（`scripts/crop_assets.py` 读取各素材的 `source_region`），带 `decision: "crop"`；污染素材改走再生、压平或用户明确接受的区域栅格保留。
 
 ## 决策审计
 
@@ -211,66 +277,54 @@ manifest 应让不当重画一目了然。每个被重画（而非裁剪）的�
 
 不要把这些字段当仪式添加。它们用于消除歧义。
 
-## Background Plan
+## Background Plans
 
-`background_plan` 只为 `ai-clean-plate` 存在。
-
-常规路线：
+`background_plans` 是数组；每个 `ai-clean-plate` scope 对应一条执行与验收记录。没有 AI 清版区域时省略。旧的单个 `background_plan` 只用于兼容。
 
 ```json
 {
-  "classification": {
-    "reconstruction_mode": "C+B"
-  }
-}
-```
-
-不含 `background_plan`。
-
-AI 清版底路线：
-
-```json
-{
-  "background_plan": {
-    "strategy": "ai-clean-plate",
-    "route_decision": {
-      "reason": "Foreground labels sit on a continuous illustrated field; crop + SVG cannot reconstruct the hidden pixels.",
-      "crop_svg_recoverable": false
-    },
-    "plate_asset_id": "asset-clean-plate",
-    "generation_provenance": {
-      "role": "primary-clean-plate",
-      "backend": "Codex Image Gen",
-      "fallback_policy": "Codex Image Gen -> Labnana GPT-Image-2 -> Labnana Gemini/Nano Banana -> official provider API -> configured command",
-      "prompt_file": "work/clean-plate-prompt.txt",
-      "references": ["work/assets/source.png"],
-      "output": "work/generated/clean-plate.png"
-    },
-    "candidate_review": {
-      "accepted": true,
-      "checks": {
-        "foreground_text_removed": true,
-        "major_visual_identity_preserved": true,
-        "aspect_ratio_and_alignment_usable": true
+  "background_plans": [
+    {
+      "scope_id": "panel-c-map",
+      "strategy": "ai-clean-plate",
+      "source_region": {"x": 1200, "y": 55, "w": 478, "h": 600},
+      "foreground_mode": "flatten",
+      "foreground_mode_source": "user-choice",
+      "route_reason": "Editable labels and routes overlap continuous map pixels.",
+      "plate_asset_id": "asset-clean-plate-panel-c",
+      "generation_provenance": {
+        "role": "regional-clean-plate",
+        "backend": "Codex Image Gen",
+        "prompt_file": "work/panel-c/clean-plate-prompt.txt",
+        "references": ["work/panel-c/source.png"],
+        "output": "work/panel-c/clean-plate.png"
       },
-      "notes": "Brief visual review of the accepted candidate."
-    },
-    "review_status": "verified"
-  }
+      "candidate_review": {
+        "accepted": true,
+        "checks": {
+          "foreground_removed": true,
+          "visual_identity_preserved": true,
+          "region_registration_usable": true
+        }
+      },
+      "review_status": "verified"
+    }
+  ]
 }
 ```
 
 最低要求：
 
+- `scope_id` 唯一，并引用 `route_decision.background_scopes[].id`
 - `strategy` 恰为 `ai-clean-plate`
-- `route_decision.reason` 说明为何裁剪+SVG 无法忠实重建背景，或引用用户的路线要求
-- `route_decision.source` 为 `background-gate` 或 `user-directive`（用户自己的话选的路线）
-- `foreground_mode` 为 `full-extract`、`selective` 或 `flatten`，`foreground_mode_source` 为 `user-choice`、`explicit-request`（在 `route_decision` 引用用户措辞）或 `auto-default`（仅限无人值守运行）——见 `background_reconstruction.md` 的前景深度决策
-- `plate_asset_id` 指向整幅画布的 `background-plate` 素材
+- `source_region` 与路由 scope 一致；全画布只是 `x=0,y=0,w=canvas.width,h=canvas.height` 的普通特例
+- `foreground_mode` 为 `full-extract`、`selective` 或 `flatten`，不得为 `pending-user-choice`
+- `foreground_mode_source` 为 `user-choice`、`explicit-request` 或仅限无人值守的 `auto-default`
+- `plate_asset_id` 指向与区域同尺寸、放置坐标一致的 `background-plate` 素材
 - `generation_provenance` 记录实际生成路径与输出
 - `candidate_review.accepted` 为 true
 
-详细的 `text_layer_policy`、`foreground_asset_policy`、`generation_brief` 对象是可选的。有用就存，不强制每个清版底 manifest 都带。
+详细的 `text_layer_policy`、`foreground_asset_policy`、`generation_brief` 对象是可选的。有用就存，不当作例行仪式。
 
 ## AI 清版底的前景素材
 

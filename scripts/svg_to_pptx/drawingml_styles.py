@@ -248,6 +248,8 @@ def _classify_marker(marker_elem: ET.Element) -> tuple[str, str, str] | None:
             closed = bool(re.search(r'[Zz]\s*$', d.strip()))
             if n == 3 and closed:
                 return ('triangle', w_bucket, len_bucket)
+            if n == 3 and not closed:
+                return ('arrow', w_bucket, len_bucket)
             if n == 4 and closed:
                 return ('diamond', w_bucket, len_bucket)
             continue
@@ -256,6 +258,8 @@ def _classify_marker(marker_elem: ET.Element) -> tuple[str, str, str] | None:
             pts_attr = child.get('points', '')
             pts = _MARKER_POLY_POINT_RE.findall(pts_attr)
             n = len(pts)
+            if n == 3 and tag == 'polyline':
+                return ('arrow', w_bucket, len_bucket)
             if n == 3:
                 return ('triangle', w_bucket, len_bucket)
             if n == 4:
