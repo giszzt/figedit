@@ -12,6 +12,8 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+import region_metrics as rm
+
 
 def _load_boxes(path: Path) -> list[dict[str, Any]]:
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -29,32 +31,7 @@ def _load_boxes(path: Path) -> list[dict[str, Any]]:
 
 
 def _measure(crop: Image.Image) -> dict[str, Any]:
-    arr = np.asarray(crop.convert("RGB"), dtype=np.int16)
-    if arr.size == 0:
-        return {"tight_bbox": None, "dominant_color": None, "non_background_ratio": 0.0}
-    border = np.concatenate([arr[0], arr[-1], arr[:, 0], arr[:, -1]], axis=0)
-    quantized = (border // 16) * 16
-    colors, counts = np.unique(quantized, axis=0, return_counts=True)
-    mode_idx = int(np.argmax(counts))
-    bucket = colors[mode_idx]
-    selected = (quantized == bucket).all(axis=1)
-    dominant = border[selected].mean(axis=0)
-    distance = np.sqrt(((arr.astype(float) - dominant.astype(float)) ** 2).sum(axis=2))
-    ink = distance > 40.0
-    ys, xs = np.where(ink)
-    tight = None if len(xs) == 0 else [int(xs.min()), int(ys.min()), int(xs.max() + 1), int(ys.max() + 1)]
-    return {
-        "tight_bbox": tight,
-        "dominant_color": "#{:02x}{:02x}{:02x}".format(*[int(value) for value in dominant]),
-        "border_dominant_share": round(float(counts[mode_idx]) / float(len(quantized)), 4),
-        "non_background_ratio": round(float(ink.mean()), 4),
-        "edge_ink_occupancy": {
-            "top": round(float(ink[0].mean()), 4),
-            "bottom": round(float(ink[-1].mean()), 4),
-            "left": round(float(ink[:, 0].mean()), 4),
-            "right": round(float(ink[:, -1].mean()), 4),
-        },
-    }
+    return rm.measure(np.asarray(crop.convert("RGB"), dtype=np.int16))
 
 
 def _sheet_page(items: list[dict[str, Any]], page_path: Path) -> None:
