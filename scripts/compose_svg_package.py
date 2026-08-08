@@ -301,6 +301,30 @@ def _svg_stage(manifest_path: Path, out_dir: Path) -> tuple[dict, dict[str, floa
         except Exception as exc:
             gates["visual_qa"] = {"status": "unavailable", "message": repr(exc)}
         durations["visual_compare"] = time.perf_counter() - started
+
+        # Same difference, addressed to elements instead of tiles: the tile grid
+        # says a region is wrong, this says which id is wrong and how, which is
+        # what the next edit needs.
+        started = time.perf_counter()
+        try:
+            from fix_worklist import build as build_worklist, draw_sheet as draw_fix_sheet  # type: ignore
+
+            worklist = build_worklist(Path(ascii_source), preview_path, out_dir / "manifest.json")
+            diag = out_dir / "diagnostics"
+            diag.mkdir(parents=True, exist_ok=True)
+            (diag / "fix_list.json").write_text(json.dumps(worklist, ensure_ascii=False, indent=2), encoding="utf-8")
+            draw_fix_sheet(worklist, diag / "fix_sheet.png")
+            gates["fix_worklist"] = {
+                "status": "ok",
+                "note": "report-only",
+                "flagged": worklist["flagged"],
+                "checked": worklist["checked"],
+                "top": [{k: it[k] for k in ("id", "mean_delta_e", "hint")} for it in worklist["items"][:8]],
+                "path": str(diag / "fix_list.json"),
+            }
+        except Exception as exc:
+            gates["fix_worklist"] = {"status": "unavailable", "message": repr(exc)}
+        durations["fix_worklist"] = time.perf_counter() - started
     started = time.perf_counter()
     editability = audit_editability(out_dir / "manifest.json", out_dir / "ocr_results.json" if (out_dir / "ocr_results.json").exists() else None)
     write_editability_report(out_dir, editability)
