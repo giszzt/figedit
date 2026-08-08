@@ -428,7 +428,7 @@ def precheck(args: argparse.Namespace) -> int:
                 "Scriptable backends are configured, but they are FALLBACKS: "
                 "first check whether your own agent environment has a built-in "
                 "reference-capable image tool (e.g. Codex Image Gen) and use it "
-                "before any scriptable route, per references/image_backend_policy.md."
+                "before any scriptable route, per references/image_generation.md."
                 if scriptable_ok
                 else "No scriptable backend is configured. Use your agent's built-in image tool (e.g. Codex Image Gen) if present; otherwise copy env.example to .env at the skill root and fill in LABNANA_API_KEY or a provider key."
             ),

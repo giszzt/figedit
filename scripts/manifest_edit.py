@@ -19,6 +19,13 @@ Operations (combinable; applied in the order given below):
   --apply-fit fit_report.json     write font_size / x / baseline_y from
                                   fit_text.py output into matching text elements
   --ops ops.json                  file with [{"ids": [...], "set": {"field": value}}, ...]
+  --adopt draft_elements.json     append drafts from draft_elements.py into
+       [--ids a,b,c]              elements, keeping their provenance marker.
+       [--min-confidence 0.8]     Adopting means owning: compose --stage svg and
+                                  look at the result before doing anything else.
+  --patch patch.json              wholesale replace/insert elements by id, for
+                                  large rearrangements; file is a JSON array of
+                                  full element objects
   --dry-run                       print planned changes, write nothing
 
 Targets are looked up by id across elements, assets, panels and
@@ -196,6 +203,58 @@ def apply_ops_file(index: dict[str, dict[str, Any]], ops_path: Path, changes: li
                 changes.append(f"{item_id}.{path}: {old!r} -> {value!r}")
 
 
+def apply_adopt(
+    manifest: dict[str, Any],
+    index: dict[str, dict[str, Any]],
+    draft_path: Path,
+    ids: set[str] | None,
+    min_confidence: float | None,
+    changes: list[str],
+) -> None:
+    payload = json.loads(draft_path.read_text(encoding="utf-8"))
+    drafts = payload.get("elements", payload if isinstance(payload, list) else [])
+    elements = manifest.setdefault("elements", [])
+    adopted = 0
+    for draft in drafts:
+        draft_id = str(draft.get("id", ""))
+        if ids is not None and draft_id not in ids:
+            continue
+        if min_confidence is not None and float(draft.get("confidence", 0.0)) < min_confidence:
+            continue
+        if draft_id in index:
+            raise KeyError(f"draft id '{draft_id}' already exists in the manifest")
+        entry = dict(draft)
+        entry.setdefault("provenance", "draft")
+        elements.append(entry)
+        index[draft_id] = entry
+        adopted += 1
+    if adopted == 0:
+        raise KeyError(f"--adopt selected nothing from {draft_path.name}")
+    changes.append(f"(adopted {adopted} drafts from {draft_path.name}; compose --stage svg and look at it)")
+
+
+def apply_patch(manifest: dict[str, Any], index: dict[str, dict[str, Any]], patch_path: Path, changes: list[str]) -> None:
+    entries = json.loads(patch_path.read_text(encoding="utf-8"))
+    if not isinstance(entries, list):
+        raise ValueError("--patch file must be a JSON array of element objects")
+    elements = manifest.setdefault("elements", [])
+    replaced = inserted = 0
+    for entry in entries:
+        if not isinstance(entry, dict) or not entry.get("id"):
+            raise ValueError("every --patch entry needs an id")
+        entry_id = str(entry["id"])
+        existing = index.get(entry_id)
+        if existing is None:
+            elements.append(entry)
+            index[entry_id] = entry
+            inserted += 1
+        else:
+            existing.clear()
+            existing.update(entry)
+            replaced += 1
+    changes.append(f"(patched {replaced} elements, inserted {inserted} from {patch_path.name})")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("manifest", type=Path)
@@ -205,6 +264,10 @@ def main() -> int:
     parser.add_argument("--only", default="clean,clean-on-fill")
     parser.add_argument("--apply-fit", dest="fit", type=Path)
     parser.add_argument("--ops", type=Path)
+    parser.add_argument("--adopt", type=Path)
+    parser.add_argument("--ids", default=None, help="comma-separated draft ids to adopt")
+    parser.add_argument("--min-confidence", type=float, default=None)
+    parser.add_argument("--patch", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-validate", action="store_true", help="skip re-validation (tests only)")
     args = parser.parse_args()
@@ -230,6 +293,11 @@ def main() -> int:
             apply_fit(index, args.fit.resolve(), changes)
         if args.ops:
             apply_ops_file(index, args.ops.resolve(), changes)
+        if args.adopt:
+            ids = {part.strip() for part in args.ids.split(",") if part.strip()} if args.ids else None
+            apply_adopt(working, index, args.adopt.resolve(), ids, args.min_confidence, changes)
+        if args.patch:
+            apply_patch(working, index, args.patch.resolve(), changes)
     except (KeyError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

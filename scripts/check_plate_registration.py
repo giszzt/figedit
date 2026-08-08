@@ -12,7 +12,7 @@ IoU between the two masks.
 A registered plate scores best near scale 1.00 / offset 0. A clearly non-unit
 scale or offset means the backend re-framed the scene: reject the plate and
 regenerate with the stretch-compensation workflow in
-references/image_backend_policy.md (Fixed-Aspect Backends).
+references/image_generation.md (Fixed-Aspect Backends).
 
 Usage:
   python scripts/check_plate_registration.py --source source.png --region 120,80,900,600 \

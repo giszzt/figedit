@@ -75,7 +75,7 @@
 
 除非明确要求，不要把普通文字转成轮廓路径。
 
-交付目标包含 PPTX 时的字符集约束见 `text_layer_policy.md`（弯引号等易触发 PowerPoint 字体回退的字符会留下可见空档）。
+交付目标包含 PPTX 时的字符集约束见 `background_reconstruction.md` 的文字层策略一节（弯引号等易触发 PowerPoint 字体回退的字符会留下可见空档）。
 
 ## 公式
 

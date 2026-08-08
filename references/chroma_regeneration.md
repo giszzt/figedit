@@ -21,7 +21,7 @@
 
 没有污染、窗口为 `clean/clean-on-fill` 的素材仍从源图坐标裁剪。背景路线是 SVG 或清版，不决定 chroma 资格；可分离性与编辑价值才决定。
 
-路由权归 `element_decision_matrix.md` 和 `contaminated_asset_recovery.md`。本文件只定义再生路线选定后如何执行。
+路由权归 `element_decision_matrix.md` 和 `asset_extraction.md` 的污染素材恢复一节。本文件只定义再生路线选定后如何执行。
 
 ## 诚实规则
 
@@ -60,7 +60,7 @@
 
    候选键色的默认配对：**暖色元素配绿键（#00ff00），绿色或紫色元素配洋红键（#ff00ff）**——暖色物体在洋红底上边缘会烘进粉色 spill，反之亦然。
 
-2. **写简报并生成**：每张 sheet 写一个提示词文件（见下文框架），按 `references/image_backend_policy.md` 调用支持参考图的后端。源图必须作为参考/编辑目标附上；纯文字提示词无法复现源图专有元素。
+2. **写简报并生成**：每张 sheet 写一个提示词文件（见下文框架），按 `references/image_generation.md` 调用支持参考图的后端。源图必须作为参考/编辑目标附上；纯文字提示词无法复现源图专有元素。
 
 3. **键控**：`python scripts/chroma_key.py --input sheet_raw.png --out sheet.png --color "<probe 结果>" --scale 2`。注意：报告的 `edge_fringe_fraction` 和多数 `warnings` **只验边缘，不验元素内部**——报告干净不等于视觉干净。除 warnings 外必须核对 **`component_hue_drift`**（逐连通域的键控前后主色对比，同色系元素被脱色/删除的唯一自动检测器），并逐资产比较"源区域饱和主色 vs 抠出素材饱和主色"，主色跳色一律拒收、按第 1 步分区方案换键色重生。
 

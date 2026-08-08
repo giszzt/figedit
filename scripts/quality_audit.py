@@ -185,26 +185,48 @@ def _raw_detector_import_gate(manifest: dict[str, Any]) -> dict[str, Any]:
     """Flag raw detector/measurement candidates that leaked into the final SVG.
 
     Detector-agnostic: any tool's raw output imported wholesale into `elements`
-    without model review is the failure, whatever produced the numbers."""
+    without model review is the failure, whatever produced the numbers.
+
+    `provenance` is checked first. draft_elements.py stamps every draft it
+    writes and adoption keeps the stamp, so a delivered manifest still
+    carrying draft provenance is one whose drafts were never looked at.
+    Clear the marker (or set review_status) once the composed SVG has been
+    checked."""
 
     structural_types = {"rect", "line", "path", "polyline", "polygon", "circle", "ellipse"}
     raw_decisions = {"auto", "raw", "raw-detection", "detector-import", "opencv-import", "cv-import"}
+    draft_provenance = {"draft", "draft-geometry", "draft-ocr"}
+    reviewed = {"verified", "ok", "accepted"}
     raw = []
     unreviewed_detector = []
+    unreviewed_drafts = []
 
     for element in manifest.get("elements", []):
+        provenance = str(element.get("provenance", "")).lower()
+        review = str(element.get("review_status", "")).lower()
+        if provenance in draft_provenance and review not in reviewed:
+            unreviewed_drafts.append(element.get("id"))
         if element.get("type") not in structural_types:
             continue
         detector = " ".join(str(element.get(k, "")) for k in ["detector", "source", "evidence"]).lower()
         decision = str(element.get("decision", "")).lower()
-        review = str(element.get("review_status", "")).lower()
         if decision in raw_decisions:
             raw.append(element.get("id"))
-        if any(token in detector for token in ["opencv", "cv", "hough", "detected_primitives"]) and review not in {"verified", "ok", "accepted"}:
+        if any(token in detector for token in ["opencv", "cv", "hough", "detected_primitives"]) and review not in reviewed:
             unreviewed_detector.append(element.get("id"))
 
     if raw:
         return _status("failed", message="raw detector primitives were imported into final elements", samples=raw[:30])
+    if unreviewed_drafts:
+        return _status(
+            "review",
+            message=(
+                "elements still carry draft provenance; confirm the composed SVG was checked, "
+                "then clear provenance or set review_status"
+            ),
+            count=len(unreviewed_drafts),
+            samples=unreviewed_drafts[:30],
+        )
     if len(unreviewed_detector) > 20:
         return _status(
             "review",
