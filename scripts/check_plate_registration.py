@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
@@ -155,7 +156,25 @@ def main() -> None:
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(text, encoding="utf-8")
-    print(text)
+
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    status = report.get("status")
+    verdict = {"registered": "通过，可以用这块底板",
+               "recomposed": "不通过，底板被重新取景了，按下面的补偿办法重生成",
+               "unusable-mask": "掩膜几乎是空的，换 --mask-color 或调大 --tol"}.get(status, status)
+    print(f"配准   {status}    {verdict}")
+    best = report.get("best")
+    if best:
+        print(f"缩放 {best['scale']}   偏移 x{best['offset_x_frac']} y{best['offset_y_frac']}   "
+              f"（合格线 缩放≈1.00 偏移≈0）")
+    print(f"掩膜占比   源 {report['source_mask_fraction']}   底板 {report['plate_mask_fraction']}")
+    if report.get("message"):
+        print(f"\n{report['message']}")
+    if args.out:
+        print(f"\n报告 {args.out}")
 
 
 if __name__ == "__main__":

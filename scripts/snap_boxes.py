@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -358,6 +359,37 @@ def _render_sheet(image: Image.Image, results: list[dict[str, Any]], sheet_path:
     sheet.save(sheet_path)
 
 
+def _print_digest(results: list[dict[str, Any]], counts: dict[str, int], out: Path, sheet: Path | None) -> None:
+    """Print what the verdicts mean for the manifest, so no one has to re-read the JSON."""
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    total = len(results)
+    tally = "  ".join(f"{k} {v}" for k, v in sorted(counts.items()))
+    print(f"对象 {total}    {tally}")
+
+    needs_review = [r for r in results if r.get("verdict") not in {"clean", "skipped"}]
+    if not needs_review:
+        print("全部可直接裁剪，无需复看")
+    else:
+        print(f"\n以下 {len(needs_review)} 项不能直接裁，逐条处理：")
+        for r in needs_review:
+            notes = list(r.get("reasons") or []) + list(r.get("warnings") or [])
+            detail = "; ".join(str(n) for n in notes[:3]) or "见报告"
+            print(f"  {str(r.get('id', '?')):26s} {str(r.get('verdict', '?')):14s} {detail}")
+
+    warned = [r for r in results if r.get("verdict") == "clean" and r.get("warnings")]
+    if warned:
+        print(f"\n判定 clean 但带告警 {len(warned)} 项，值得扫一眼：")
+        for r in warned:
+            print(f"  {str(r.get('id', '?')):26s} {'; '.join(str(w) for w in r['warnings'][:2])}")
+
+    print(f"\n报告 {out}")
+    if sheet:
+        print(f"总览 {sheet}    先看这张，再用 inspect_regions 放大上面点名的项")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("image", type=Path)
@@ -420,7 +452,7 @@ def main() -> int:
     args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     if args.sheet:
         _render_sheet(image, results, args.sheet, args.margin)
-    print(json.dumps({"counts": counts, "out": str(args.out), "sheet": str(args.sheet) if args.sheet else None}, ensure_ascii=False))
+    _print_digest(results, counts, args.out, args.sheet)
     return 0
 
 

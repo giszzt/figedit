@@ -4,6 +4,8 @@
 
 卡片没写的参数就是不需要用的参数；卡片写了输出格式就照着读，不必先跑一遍看输出长什么样。
 
+**每个脚本跑完都把结论打印在屏幕上。**看屏幕就够了，不要再写代码去解析它写出来的 JSON。
+
 ---
 
 ## prepare_measurements.py
@@ -18,6 +20,22 @@
       `work/diagnostics/{ocr_overlay,style_overlay,geometry_overlay}.png`
       `work/measurement_report.md`
 注意  不计费，勘察提问期间就可以并行跑。`draft_manifest.json` 的 `elements` 恒为空，那是骨架不是草稿
+
+## measure.py
+用途  一次调用问完所有像素问题，同时出数字表和放大拼图。**不要为量尺寸手写 `python -c`**
+调用  `python scripts/measure.py <image> --q "名字:类型@参数" ... --sheet work/measure_sheet.png`
+类型  `info` 图片尺寸与色彩模式（`info@别的路径` 查其他文件）
+      `bbox@x,y,w,h` 窗口内墨迹紧边界，附带四边各裁掉多少
+      `color@x,y,w,h` 主色、均值、是不是单一实色
+      `clearance@x,y,w,h` 四边净空，贴边的边会点名
+      `alpha-bbox@路径` RGBA 文件里不透明像素的紧边界
+      `fontfit@x,y,w,h` 由该窗口渲染出的文字反算 font_size（拉丁与中日韩两个值）
+      `diff@路径,x,y,w,h` 某文件与源图某区域的缩放比、平均色距、对不对得上
+      `zoom@x,y,w,h` 不要数字，只把该窗口放大贴进 sheet
+参数  `--json 路径` 另存完整结果
+输出  每行一个查询的一句话结论；`--sheet` 是一张带标签的拼图，一次 Read 覆盖所有查询窗口
+注意  查询数量不限，**一次问十个跟问一个花的时间一样**。单个查询出错不影响其余查询
+      要看某处长什么样就用 `zoom`，不要自己裁图存盘再 Read
 
 ## probe_geometry.py
 用途  结构证据：面板/卡片的 bbox 与颜色、每行文字的槽位与字号色值

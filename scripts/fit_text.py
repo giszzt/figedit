@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -83,7 +84,23 @@ def main() -> int:
     result["review_count"] = sum(1 for item in result["items"] if item["status"] != "ok")
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    items_out = result["items"]
+    review = [i for i in items_out if i["status"] != "ok"]
+    print(f"文字 {len(items_out)} 条    需复核 {len(review)} 条")
+    if review:
+        print("\n放不下的，按溢出量排序：")
+        for item in sorted(review, key=lambda i: min(i["residual"]["w"], i["residual"]["h"]))[:15]:
+            print(
+                f"  {str(item.get('id', '?')):24s} 字号 {item['font_size']:<5} "
+                f"槽 {item['slot']['w']}x{item['slot']['h']}  实测 {item['measured']['w']:.0f}x{item['measured']['h']:.0f}  "
+                f"余量 w{item['residual']['w']:+.0f} h{item['residual']['h']:+.0f}"
+            )
+    print(f"\n报告 {args.out}    直接喂 manifest_edit.py --apply-fit")
     return 0
 
 

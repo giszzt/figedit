@@ -105,7 +105,14 @@ def prepare(
         "These are measurement artifacts only. Do not directly convert OCR candidates into final SVG elements.",
     ]
     (out_dir / "measurement_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
-    return {"out_dir": str(out_dir), "ocr": ocr.get("status"), "geometry": geometry_summary}
+    return {
+        "out_dir": str(out_dir),
+        "ocr": ocr.get("status"),
+        "geometry": geometry_summary,
+        "canvas": {"width": width, "height": height, "background": styles.get("background", "#ffffff")},
+        "ocr_items": len(ocr.get("items", [])),
+        "ocr_profile": ocr.get("selected_profile"),
+    }
 
 
 def scaffold(image_path: Path, name: str, root: Path) -> dict:
@@ -150,6 +157,46 @@ def scaffold(image_path: Path, name: str, root: Path) -> dict:
             "canvas": {"width": width, "height": height}, "manifest": str(manifest_path)}
 
 
+LOW_CONFIDENCE = 0.85
+
+
+def _print_digest(result: dict, out_dir: Path) -> None:
+    """A readable summary beats dumping the JSON: nobody should have to parse this back."""
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    canvas = result.get("canvas") or {}
+    print(f"画布   {canvas.get('width')}x{canvas.get('height')}   页底 {canvas.get('background')}")
+    print(f"OCR    {result.get('ocr')}   {result.get('ocr_items')} 条   档位 {result.get('ocr_profile')}")
+
+    geo = result.get("geometry")
+    if geo:
+        state = "弃权（照片/插画/海报，这里本就没有面板可找）" if geo.get("abstained") else "可用"
+        print(f"结构   面板 {geo.get('fill_regions')}   文字槽 {geo.get('text_slots')}   "
+              f"平面度 {geo.get('flat_design_score')}   {state}")
+    else:
+        print("结构   未探测（--no-geometry）")
+
+    ocr_path = out_dir / "ocr_results.json"
+    if ocr_path.is_file():
+        try:
+            items = json.loads(ocr_path.read_text(encoding="utf-8")).get("items", [])
+        except Exception:
+            items = []
+        weak = [i for i in items if (i.get("confidence") or 1.0) < LOW_CONFIDENCE]
+        if weak:
+            print(f"\n低置信文字 {len(weak)} 条，写进 manifest 前要核对：")
+            for i in sorted(weak, key=lambda i: i.get("confidence") or 0)[:12]:
+                text = (i.get("text") or "").replace("\n", " ")[:26]
+                print(f"  {str(i.get('id', '?')):14s} {i.get('confidence', 0):.2f}  {text}")
+
+    if result.get("scaffold"):
+        print(f"\n任务目录 {result['scaffold']['task_dir']}")
+    print(f"\n证据   {out_dir}")
+    print(f"总览图 {out_dir / 'diagnostics' / 'geometry_overlay.png'}   看这一张做整体校验，不要逐框打开")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("image", type=Path)
@@ -182,7 +229,7 @@ def main() -> None:
     )
     if scaffolded:
         result["scaffold"] = scaffolded
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    _print_digest(result, out_dir)
 
 
 if __name__ == "__main__":

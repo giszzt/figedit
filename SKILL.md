@@ -83,11 +83,19 @@ description: 将位图图形重建为高保真可编辑 SVG 与原生 PowerPoint
 python scripts/prepare_measurements.py input.png --init figure-task
 ```
 
-一次跑出 OCR、风格采样和结构证据（`work/geometry.json`：面板 bbox 与颜色、每行文字的槽位与字号色值）。看一次 `work/diagnostics/geometry_overlay.png` 做整体校验，别逐框打开。只读会改变 manifest 的证据：低置信文字、公式与断行、坐标冲突。
+一次跑出 OCR、风格采样和结构证据（`work/geometry.json`：面板 bbox 与颜色、每行文字的槽位与字号色值）。画布尺寸、OCR 条数、面板与文字槽数量、低置信文字清单直接打印在屏幕上，**不要再写代码去读这些 JSON**。看一次 `work/diagnostics/geometry_overlay.png` 做整体校验，别逐框打开。
+
+**此后任何像素问题都走 `measure.py`，一次问完。**紧边界、区域颜色、四边净空、透明图边界、反算字号、两图对齐残差，还有"我想看看这块长什么样"，都是它的查询类型。一次问十个和问一个花的时间一样，问完拿到一张数字表加一张放大拼图。**不要手写 `python -c` 数像素，也不要自己裁图存盘再打开看。**
+
+```powershell
+python scripts/measure.py input.png --q "logo:bbox@1850,1600,300,240" "hdr:color@0,0,2400,180" "t1:fontfit@340,881,275,31" "card:zoom@1290,1550,360,300" --sheet figure-task/work/measure_sheet.png
+```
 
 **结构证据是候选不是结论，也不改路由。**勘察锁定的路线不因为看到 overlay 就翻案。照片、插画、海报这类非平面设计图会标 `abstained: true` 并只给极少候选，这是设计行为：那里本就没有面板可找，该由人工量或走清版。各项候选的可信程度见 `references/scripts.md`。
 
 以下分支按概要执行，互不依赖，能并行就并行。**概要没指派到的分支直接跳过**——纯 SVG 图不跑任何生成，纯清版压平图不跑任何裁剪。
+
+确定性 SVG 图（白底流程图、架构图、论文插图，无 crop 无生成）三个分支一个都不进：备料就是上面那条取证命令加若干 `measure.py` 查询，跑完直接进组装。这类图的时间应当以分钟计。
 
 ### 有 crop 素材
 
@@ -181,6 +189,7 @@ PPTX 原生渲染只能调 `python scripts/render_pptx.py figure-task/out/editab
 
 | 阶段    | 脚本                                                                                                                                       |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 全程    | `measure.py` —— 一切像素问题的唯一入口，批量提问                                                                                     |
 | 备料·取证 | `prepare_measurements.py`（含 `--init` 脚手架）、`probe_geometry.py`                                                                            |
 | 备料·裁剪 | `snap_boxes.py`、`inspect_regions.py`、`crop_assets.py`                                                                                    |
 | 备料·生成 | `prepare_clean_plate_mask.py`、`generate_clean_plate.py`、`check_plate_registration.py`、`probe_palette.py`、`chroma_key.py`、`slice_grid.py` |
