@@ -32,10 +32,14 @@
       `fontfit@x,y,w,h` 由该窗口渲染出的文字反算 font_size（拉丁与中日韩两个值）
       `diff@路径,x,y,w,h` 某文件与源图某区域的缩放比、平均色距、对不对得上
       `zoom@x,y,w,h` 不要数字，只把该窗口放大贴进 sheet
-参数  `--json 路径` 另存完整结果
+参数  `--exclude-text work/ocr_results.json` —— `bbox` 忽略窗口里的文字像素
+      `--json 路径` 另存完整结果
 输出  每行一个查询的一句话结论；`--sheet` 是一张带标签的拼图，一次 Read 覆盖所有查询窗口
+      `bbox` 的量得结果用红框画在拼图上，看一眼就知道量对没量对
 注意  查询数量不限，**一次问十个跟问一个花的时间一样**。单个查询出错不影响其余查询
       要看某处长什么样就用 `zoom`，不要自己裁图存盘再 Read
+      **点图标必配 `--exclude-text`**：粗窗口几乎总会带进旁边的说明文字，
+      不排除的话量出来的是"图标加标题"的外接矩形，不是图标
 
 ## probe_geometry.py
 用途  结构证据：面板/卡片的 bbox 与颜色、每行文字的槽位与字号色值
@@ -88,6 +92,18 @@
 参数  `--stage svg|pptx|package`
 输出  `editable.svg`、`preview.png`、`quality_report.md`、`editability_report.md`、`diagnostics/`
 注意  `package` 不重建 SVG/PPTX，只更新证据；PPTX 早于 SVG 时必须先跑 `--stage pptx`
+
+## fix_worklist.py
+用途  把源图与成品的差异摊到每个元素上，产出按误差排序的工单
+调用  由 `compose_svg_package.py --stage svg` 自动运行，不必单独跑
+      单独跑用于复看已完成的包：`python scripts/fix_worklist.py source.png out/preview.png out/manifest.json --out out/diagnostics/fix_list.json --sheet out/diagnostics/fix_sheet.png`
+输出  `diagnostics/fix_list.json` 每项 `{id, type, bbox, mean_delta_e, times_baseline, hint}`
+      `diagnostics/fix_sheet.png` 误差最大的 12 个元素，上为源图下为成品
+      compose 的 stdout 直接打印前 10 条
+判据  门槛取"全图基线 ΔE 的 2 倍"与 12 的较大者。用基线做参照是因为
+      重打字、重画形状的图整体基线本来就高，固定阈值在这类图上会刷屏
+`hint`  整体没画出来 / 位置偏了 / 字号偏大偏小 / 画宽了画窄了 / 形状对得上颜色不符
+注意  报告性质，不是质量门。**验收时照工单改，不要自己再去逐块比对找差异**
 
 ## fit_text.py / pptx_text_fit.py
 用途  文字拟合与 PPTX 结构风险报告（换行、溢出、缺字、错位）

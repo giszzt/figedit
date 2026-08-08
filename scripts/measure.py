@@ -25,6 +25,7 @@ Names are free-form and echo back in both the table and the sheet.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -114,10 +115,15 @@ def q_info(path: Path) -> dict[str, Any]:
         return {"summary": f"{im.size[0]}x{im.size[1]} {im.mode}", "size": list(im.size), "mode": im.mode}
 
 
-def q_bbox(arr: np.ndarray, box: tuple[int, int, int, int]) -> dict[str, Any]:
+def q_bbox(arr: np.ndarray, box: tuple[int, int, int, int], text_mask: np.ndarray | None = None) -> dict[str, Any]:
     sub = crop(arr, box)
     background, _ = dominant_border_color(sub)
     mask = ink_mask(sub, background)
+    if text_mask is not None:
+        # A rough window around an icon almost always catches its caption, and a
+        # box drawn round both is the wrong crop. OCR already knows where the
+        # letters are, so exclude them from what counts as the object.
+        mask = mask & ~crop(text_mask[..., None], box)[..., 0]
     tb = tight_bbox(mask)
     if tb is None:
         return {"summary": "empty (no ink found)", "bbox": None}
@@ -229,7 +235,22 @@ def q_diff(arr: np.ndarray, args: str, canvas: tuple[int, int]) -> dict[str, Any
     }
 
 
-def run_query(q: dict[str, Any], arr: np.ndarray, source: Path, canvas: tuple[int, int]) -> dict[str, Any]:
+def load_text_mask(path: Path, shape: tuple[int, int]) -> np.ndarray:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    items = data.get("items", data) if isinstance(data, dict) else data
+    mask = np.zeros(shape, dtype=bool)
+    for item in items or []:
+        b = item.get("bbox") if isinstance(item, dict) else None
+        if not b:
+            continue
+        x, y = int(b.get("x", 0)), int(b.get("y", 0))
+        w, h = int(b.get("w", 0)), int(b.get("h", 0))
+        mask[max(0, y - 1): y + h + 1, max(0, x - 1): x + w + 1] = True
+    return mask
+
+
+def run_query(q: dict[str, Any], arr: np.ndarray, source: Path, canvas: tuple[int, int],
+              text_mask: np.ndarray | None = None) -> dict[str, Any]:
     qtype, args = q["type"], q["args"]
     if qtype == "info":
         return q_info(Path(args) if args else source)
@@ -242,7 +263,7 @@ def run_query(q: dict[str, Any], arr: np.ndarray, source: Path, canvas: tuple[in
     if qtype in {"bbox", "color", "clearance", "fontfit", "zoom"}:
         box = parse_box(args, canvas)
         if qtype == "bbox":
-            result = q_bbox(arr, box)
+            result = q_bbox(arr, box, text_mask)
         elif qtype == "color":
             result = q_color(arr, box)
         elif qtype == "clearance":
@@ -261,7 +282,17 @@ def tile_image(q: dict[str, Any], result: dict[str, Any], source_img: Image.Imag
     window = result.get("window")
     if window:
         x, y, w, h = window
-        return source_img.crop((x, y, x + w, y + h))
+        tile = source_img.crop((x, y, x + w, y + h))
+        measured = result.get("bbox")
+        if measured and len(measured) == 4:
+            # Show where the answer landed inside the window asked about, so the
+            # sheet confirms the number instead of only illustrating the query.
+            tile = tile.convert("RGB")
+            d = ImageDraw.Draw(tile)
+            mx, my, mw, mh = measured
+            d.rectangle([mx - x, my - y, mx - x + mw - 1, my - y + mh - 1],
+                        outline=(220, 30, 30), width=max(1, min(w, h) // 60))
+        return tile
     if q["type"] == "alpha-bbox" and q["args"]:
         try:
             with Image.open(q["args"]) as im:
@@ -334,6 +365,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("image", type=Path, help="source figure; windows are in its pixel coordinates")
     parser.add_argument("--q", nargs="+", required=True, metavar="QUERY", help="name:type@args, repeatable")
+    parser.add_argument("--exclude-text", type=Path, metavar="OCR",
+                        help="ocr_results.json; bbox then ignores caption pixels inside the window")
     parser.add_argument("--sheet", type=Path, help="write a labeled contact sheet of every query window")
     parser.add_argument("--json", type=Path, help="also write full results as JSON")
     args = parser.parse_args()
@@ -344,6 +377,11 @@ def main() -> None:
         source_img = im.convert("RGB")
     arr = np.asarray(source_img)
     canvas = source_img.size
+    text_mask = None
+    if args.exclude_text:
+        if not args.exclude_text.is_file():
+            parser.error(f"ocr file not found: {args.exclude_text}")
+        text_mask = load_text_mask(args.exclude_text, arr.shape[:2])
 
     queries: list[dict[str, Any]] = []
     results: list[dict[str, Any]] = []
@@ -356,7 +394,7 @@ def main() -> None:
             continue
         queries.append(q)
         try:  # one bad path must not cost the other answers
-            results.append(run_query(q, arr, args.image, canvas))
+            results.append(run_query(q, arr, args.image, canvas, text_mask))
         except Exception as exc:
             results.append({"summary": f"错误: {exc}", "error": str(exc)})
 
@@ -370,8 +408,6 @@ def main() -> None:
         build_sheet(queries, results, source_img, args.sheet)
         print(f"\nsheet  {args.sheet}")
     if args.json:
-        import json
-
         payload = [{"name": q["name"], "type": q["type"], **r} for q, r in zip(queries, results)]
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

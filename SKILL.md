@@ -88,8 +88,10 @@ python scripts/prepare_measurements.py input.png --init figure-task
 **此后任何像素问题都走 `measure.py`，一次问完。**紧边界、区域颜色、四边净空、透明图边界、反算字号、两图对齐残差，还有"我想看看这块长什么样"，都是它的查询类型。一次问十个和问一个花的时间一样，问完拿到一张数字表加一张放大拼图。**不要手写 `python -c` 数像素，也不要自己裁图存盘再打开看。**
 
 ```powershell
-python scripts/measure.py input.png --q "logo:bbox@1850,1600,300,240" "hdr:color@0,0,2400,180" "t1:fontfit@340,881,275,31" "card:zoom@1290,1550,360,300" --sheet figure-task/work/measure_sheet.png
+python scripts/measure.py input.png --exclude-text figure-task/work/ocr_results.json --q "logo:bbox@1850,1600,300,240" "hdr:color@0,0,2400,180" "t1:fontfit@340,881,275,31" "card:zoom@1290,1550,360,300" --sheet figure-task/work/measure_sheet.png
 ```
+
+量图标一律带 `--exclude-text`。粗窗口几乎总会把旁边的标题文字圈进来，不排除就会量成"图标加标题"的外接矩形。量得结果会用红框画在拼图上，一眼能看出量对没量对。
 
 **结构证据是候选不是结论，也不改路由。**勘察锁定的路线不因为看到 overlay 就翻案。照片、插画、海报这类非平面设计图会标 `abstained: true` 并只给极少候选，这是设计行为：那里本就没有面板可找，该由人工量或走清版。各项候选的可信程度见 `references/scripts.md`。
 
@@ -147,6 +149,10 @@ python scripts/manifest_edit.py manifest.json --patch figure-task/work/patch.jso
 
 ## 4 验收
 
+**compose 每次都会打印差异工单**——按误差排序、点名到元素 id、附带毛病类型（位置偏了、字号偏大、颜色不符、整个没画出来），外加一张 `diagnostics/fix_sheet.png` 把误差最大的十二个元素做成源图/成品上下对照。
+
+照工单改，不要自己再去逐块比对找差异。一轮就是「看工单和对照图 → 改 manifest → 重跑 compose」三步。
+
 每轮看 `preview.png` 与各报告；报告点名后只复查受影响区。最终至少看一次 SVG 总览。
 
 - **档 0 / `svg-primary`**：无 `math` 且 `pptx_text_fit.py` 无换行、溢出、缺字、错位报告。SVG 即验收，不打开 PowerPoint。
@@ -194,7 +200,7 @@ PPTX 原生渲染只能调 `python scripts/render_pptx.py figure-task/out/editab
 | 备料·裁剪 | `snap_boxes.py`、`inspect_regions.py`、`crop_assets.py`                                                                                    |
 | 备料·生成 | `prepare_clean_plate_mask.py`、`generate_clean_plate.py`、`check_plate_registration.py`、`probe_palette.py`、`chroma_key.py`、`slice_grid.py` |
 | 组装    | `draft_elements.py`、`manifest_edit.py`、`compose_svg_package.py`                                                                          |
-| 验收    | `fit_text.py`、`pptx_text_fit.py`、`render_pptx.py`                                                                                        |
+| 验收    | `fit_text.py`、`pptx_text_fit.py`、`render_pptx.py`；差异工单 `fix_worklist.py` 由 compose 自动运行                                              |
 | 审计    | `validate_manifest.py`、`quality_audit.py`、`audit_editability.py`                                                                         |
 
 命令行、输入输出格式与注意事项见 `references/scripts.md`。表外脚本由 `compose_svg_package.py` 内部调用，不直接运行。
