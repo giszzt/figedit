@@ -150,4 +150,3 @@ Contact sheet 全绿且没有报告告警时，不再逐项打开源图或单图
 **Manifest 记录**：`contamination`、`separation_strategy`、`edit_value`(high/medium/low)、`fidelity_requirement`、生成时的 `generation_provenance`、`review_status`，并说明为何选择压平或生成而不是提取。
 
 **拒收候选的条件**：轮廓或朝向实质性改变；缺失部分被凭空发明；出现标签或伪文字；科学或技术结构改变；高光和阴影与最终背景冲突；边缘仍有源图色光晕；候选更干净了但已经不能代表源对象。
-
