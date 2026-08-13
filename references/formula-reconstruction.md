@@ -1,14 +1,10 @@
-# Formula Reconstruction
+# 公式重建（Formula Reconstruction）
 
-Read this when a figure contains equations, inequalities, recurrences, fractions,
-summations, script-heavy symbols, Greek-letter expressions, or inline math inside
-titles, labels, legends, and captions. It explains how to author `math` elements
-so the compose step renders vector SVG math and editable PowerPoint equations.
+图形含方程、不等式、递推式、分式、求和、上下标密集符号、希腊字母表达式，或标题/标签/图例/图注里的行内数学时读本文件。它说明如何编写 `math` 元素，使合成步骤渲染出矢量 SVG 公式和可编辑的 PowerPoint 公式。
 
-## Math is a first-class semantic object
+## 数学是一等语义对象
 
-If a readable region is primarily an equation, inequality, recurrence, fraction,
-summation, script-heavy symbol, or Greek-letter expression, use a `math` element:
+可读区域主体是方程、不等式、递推、分式、求和、上下标密集符号或希腊字母表达式时，用 `math` 元素：
 
 ```json
 {
@@ -29,20 +25,11 @@ summation, script-heavy symbol, or Greek-letter expression, use a `math` element
 }
 ```
 
-Do not encode formulas as strings such as `A^{ep}_i` inside `type: "text"`.
-That preserves characters but loses the mathematical layout. The compose step
-uses `scripts/math_renderer.py` to render math elements as vector SVG paths with
-the original LaTeX stored in `data-latex`. For PPTX, `scripts/pptx_math.py`
-converts the same normalized LaTeX to MathML, transforms it to Office Math
-(OMML), strips the successfully converted SVG formula paths from the PPTX
-staging SVG, and injects editable equation objects into `editable.pptx`.
-Use plain `text` only for ordinary prose labels, code, file names, legends,
-and captions.
+不要把 `A^{ep}_i` 这类公式编码成 `type: "text"` 里的字符串。那样保住了字符，丢掉了数学排版。合成步骤用 `scripts/math_renderer.py` 把 math 元素渲染为矢量 SVG 路径，原始 LaTeX 存在 `data-latex`。PPTX 侧，`scripts/pptx_math.py` 把同一份规范化 LaTeX 转成 MathML，再转 Office Math（OMML），从 PPTX 暂存 SVG 中剥掉已成功转换的公式路径，把可编辑公式对象注入 `editable.pptx`。普通 `text` 只用于散文标签、代码、文件名、图例和图注。
 
-## Split inline math from prose
+## 行内数学从散文中拆出
 
-This rule applies to inline formulas as well as standalone formulas. For a
-mixed label such as `turn-level scope A^{intent}`, author two elements:
+本规则对行内公式和独立公式同样适用。`turn-level scope A^{intent}` 这类混排标签写成两个元素：
 
 ```json
 [
@@ -70,46 +57,34 @@ mixed label such as `turn-level scope A^{intent}`, author two elements:
 ]
 ```
 
-## Scan every text element before finalizing
+## 定稿前扫描每个文字元素
 
-Before finalizing the manifest, scan every `type: "text"` element for formula
-cues: TeX commands, `^`/`_` scripts, Unicode super/subscripts, Greek variables,
-large operators, relation symbols, arrows, fractions, recurrences, and indexed
-variables. If a symbol-like string is intentionally a literal method name,
-filename, code token, or prose label, keep it as text only with
-`formula_policy: "not-formula"` and a `formula_decision_reason`.
+定稿 manifest 前，扫描每个 `type: "text"` 元素找公式痕迹：TeX 命令、`^`/`_` 上下标、Unicode 上下标、希腊变量、大型运算符、关系符号、箭头、分式、递推式和带下标变量。符号样字符串确实是字面的方法名、文件名、代码 token 或散文标签时，保留为 text，但加 `formula_policy: "not-formula"` 和 `formula_decision_reason`。
 
-## Never silently drop a failed conversion
+## 绝不静默放过失败的转换
 
-If a formula cannot be converted to editable OMML, do not silently mark it as
-done. The PPTX exporter keeps that formula visible as vector artwork and writes
-the failure to `editable.pptx.math_report.json` and the `pptx_math_export`
-quality gate. Repair the LaTeX and rerun composition until every detected
-formula is editable, unless the user explicitly waives formula editability for a
-specific item.
+公式无法转成可编辑 OMML 时，不要静默标记完成。PPTX 导出器会把该公式保留为可见矢量图形，并把失败写进 `editable.pptx.math_report.json` 和 `pptx_math_export` 质量门。修复 LaTeX、重跑合成，直到每个检出公式都可编辑，除非用户对某项明确豁免。
 
-## Editable formulas must also stay visually placed
+## 可编辑公式必须同时保持视觉排位
 
-Formula reconstruction has two inseparable requirements:
+公式重建有两个不可分割的要求：
 
-1. the formula is semantic and editable (`math` in the manifest, editable Office Math in PPTX)
-2. the formula occupies the same visual slot as the source after SVG rendering and native PPTX export
+1. 公式语义化且可编辑（manifest 里是 `math`，PPTX 里是可编辑 Office Math）
+2. SVG 渲染和原生 PPTX 导出后，公式占据与源图相同的视觉槽位
 
-Do not raster-crop a formula to avoid layout difficulty. If an editable formula
-drifts, grows, shrinks, overlaps a connector, or shifts its baseline in
-PowerPoint, treat that as a layout defect and repair the manifest.
+不要为回避排位难度把公式裁成位图。可编辑公式在 PowerPoint 里漂移、变大、变小、压到连接线或基线偏移时，视为排位缺陷，修 manifest。
 
-For dense figures, record enough layout evidence to make repair reproducible:
+密集图形记录足够的布局证据，让修复可复现：
 
-- `source_region`: the formula's observed bounding box in source-image pixels
-- `x`, `y`, `w`, `h`: the intended placement slot, usually matching the source region after padding decisions
-- `font_size`: chosen to fit the slot after render, not merely copied from OCR height
-- `text_anchor` and `dominant_baseline`: explicit anchor choices
-- `baseline_y` when a formula must align with neighboring prose or a diagram axis
-- `layout_lock: "source-slot"` for formulas that must fit a tight region
-- `review_status: "verified"` only after visual checking
+- `source_region`：公式在源图像素中的观察包围盒
+- `x`、`y`、`w`、`h`：预期放置槽位，通常等于 padding 决策后的源区域
+- `font_size`：按渲染后适配槽位来选，不是照抄 OCR 高度
+- `text_anchor` 和 `dominant_baseline`：显式锚点选择
+- `baseline_y`：公式必须与相邻散文或图轴对齐时
+- `layout_lock: "source-slot"`：必须适配紧凑区域的公式
+- `review_status: "verified"`：仅在视检之后
 
-Example:
+示例：
 
 ```json
 {
@@ -131,11 +106,6 @@ Example:
 }
 ```
 
-When SVG and PPTX disagree, prefer adjusting the editable formula's layout
-constraints over accepting visual drift. Common repairs are reducing
-`font_size`, widening the slot if the source allows it, changing the anchor,
-splitting a mixed prose/formula line into finer elements, and aligning adjacent
-elements to a shared `baseline_y`.
+SVG 和 PPTX 表现不一致时，优先调整可编辑公式的布局约束，而不是接受视觉漂移。常见修法：减小 `font_size`、源图允许时加宽槽位、改锚点、把散文/公式混排行拆成更细的元素、相邻元素对齐到共享 `baseline_y`。
 
-`editable.pptx.math_report.json` proves editability, not placement. A successful
-OMML conversion is not sufficient for acceptance on dense formula figures.
+`editable.pptx.math_report.json` 证明可编辑性，不证明排位。密集公式图形上，OMML 转换成功不足以验收。

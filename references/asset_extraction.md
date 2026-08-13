@@ -1,154 +1,152 @@
-# Asset Extraction Rules
+# 素材提取规则（Asset Extraction Rules）
 
-## Purpose
+本文件是 crop 语义、异常触发和裁剪修复的唯一权威。总体路线先由 `routing.md` 的勘察锁定；不要先裁出全部小图再反推资产路线。
 
-Asset extraction preserves source-specific visual content in raster figures. Use it for pictorial objects that should look like the source, not like a newly invented SVG substitute.
+## 目的
 
-## Assets to Extract
+素材提取保留位图图形中的源图专有视觉内容。用于应当看起来和源图一样、而不是被新发明的 SVG 替代物取代的图形对象。
 
-Extract as assets when content is:
+## 应按素材身份处理的内容
 
-- photographic
-- screenshot-based
-- map or remote-sensing imagery
-- dense thumbnail grids
-- complex icon groups
-- custom pictograms or source-specific icons
-- detailed illustrations that are not central to editability
-- hand-drawn characters or props when style fidelity matters
-- logos or model marks where visual fidelity matters
-- product, clothing, person, object, terrain, city, drone, camera, database, document, folder, route, or avatar imagery
+内容属于以下类型时先锁定素材身份，再按可分离性决定 crop、regenerate-chroma、flatten 或区域保留：
 
-## Transparent Extraction
+- 照片性内容
+- 截图
+- 地图或遥感影像
+- 密集缩略图网格
+- 复杂图标组
+- 定制象形图或源图专有图标
+- 与可编辑性无关的精细插画
+- 风格保真重要的手绘角色或道具
+- 视觉保真重要的 logo 或模型标记
+- 产品、服装、人物、物体、地形、城市、无人机、相机、数据库、文档、文件夹、路线、头像类影像
 
-A standalone transparent PNG is produced by chroma regeneration
-(`chroma_regeneration.md`): the object is reproduced on a flat chroma sheet
-and keyed apart. This is the method on the `ai-clean-plate` route and handles
-composite, entangled, and plain pictorial objects alike. There is no
-salient-object matting step — the sheet background is a known flat color, so
-keying is exact and a rembg/U2-Net guess would only add failure modes.
+## 透明提取
 
-On the conventional route, an object that needs to be a raster asset is
-coordinate-cropped as a rectangle (`crop_assets.py`); assets on flat, white,
-or otherwise separable backgrounds need no alpha at all. Do not hand-roll
-GrabCut, color-difference, threshold, or rembg matting scripts to cut an
-object out of a natural background.
+独立透明 PNG 由 chroma 再生产出（`chroma_regeneration.md`）：对象复现在纯色 chroma sheet 上再键控分离。它既用于清版区域的 `full-extract/selective`，也用于普通 SVG 区域中明显污染、但需要独立存在的专有对象。没有显著性抠图这一步。
 
-## Cropping Scope
+只有裁剪窗为 `clean` 或合法 `clean-on-fill` 时，才用 `crop_assets.py` 从源图坐标裁剪矩形。明显污染对象不得先裁一轮再决定路线；整图能判定时直接写 `regenerate-chroma` 或 `flatten`。不要手搓 GrabCut、色差、阈值或 rembg 抠图脚本。
 
-Prefer cropping only the pictorial asset, not the whole surrounding tile, when surrounding components should remain editable.
+## 裁剪范围
 
-Typical split:
+周边组件应保持可编辑时，优先只裁图形素材本身，不裁整个周边区块。
 
-- rounded tile/background: redraw
-- label: retype
-- icon/thumbnail/screenshot: crop
-- arrow/connector: redraw
+典型拆分：
 
-## Cropping Rules
+- 圆角底块/背景：重画
+- 标签：重打
+- 图标/缩略图/截图：窗口干净才裁剪；污染时再生或压平
+- 箭头/连接线：重画
 
-1. Use source image coordinates.
-2. Prefer `source_region` in the manifest.
-3. Add padding:
-   - small icons: 3-8 px
-   - medium icons and thumbnails: 6-12 px
-   - large screenshots/maps: 0-16 px depending on visual boundary
-   - assets with shadow or blur: include the full shadow/blur region
-   - **flush-mounted assets** (tiles, thumbnails, or panels seated directly
-     inside another element's border, e.g. icon squares inside a colored
-     card): use a **negative pad** (`"pad": -2` to `-4`) to inset the crop
-     inside the tile's own boundary. Eyeballed boxes routinely catch a few
-     pixels of the neighboring border; insetting is cheaper and more reliable
-     than trying to hit the exact edge. Matting does not work here — a flat
-     dark tile is not a salient object.
-4. Avoid clipping strokes, shadows, texture, and edge pixels. On the contact
-   sheet, check the opposite failure too: thin slivers of neighboring borders
-   or card fills along any crop edge mean the box needs an inset or shift.
-5. Preserve original aspect ratio unless the target SVG intentionally masks or crops the asset.
-6. If an object sits on a colored card, include enough surrounding pixels to avoid edge artifacts or remove the background only when reliable.
-7. If an annotation crosses the asset, mark the crop as contaminated and do
-   not finalize it before applying a recovery strategy.
+## 裁剪规则
 
-## Precision Requirements
+1. 使用源图坐标。
+2. 优先用 manifest 的 `source_region`。
+3. 加 padding：
+   - 小图标：3–8 px
+   - 中等图标和缩略图：6–12 px
+   - 大截图/地图：0–16 px，视视觉边界而定
+   - 带阴影或模糊的素材：完整包含阴影/模糊区域
+   - **齐平嵌装素材**（直接嵌在其他元素边框内的图块、缩略图或面板，如彩色卡片里的图标方块）：用**负 padding**（`"pad": -2` 到 `-4`）把裁剪内缩进图块自身边界。目测框常会带进邻居边框几个像素；内缩比试图精确压线更便宜可靠。抠图在这里不适用——平色深图块不是显著对象。
+4. 避免切掉描边、阴影、纹理和边缘像素。Contact sheet 上也要查相反的失败：任何裁剪边上出现邻居边框或卡片填充的细条，说明框需要内缩或平移。
+5. 保持原始宽高比，除非目标 SVG 有意蒙版或裁切素材。
+6. 对象坐在彩色卡片上时，遵循 SKILL.md 裁剪窗检查的 `clean-on-fill` 规则：包含足够周边像素避免边缘伪影，且 manifest 用采样同色重画承载面。
+7. 标注穿过素材时，标记裁剪为 contaminated，在应用恢复策略（`asset_extraction.md` 的污染素材恢复一节）之前不得定稿。
 
-For each crop, verify:
+## 精度要求
 
-- the whole object is visible
-- no important edge is cut off
-- no unrelated neighboring object is included
-- the crop can be placed back at the target size without visible distortion
-- text that should remain editable is not unnecessarily baked into the crop
+每个裁剪都必须被覆盖核实，但证据默认来自一次整图判断和一次带 ID 的 contact sheet，不要求逐资产单独出图。覆盖检查：
 
-The current helper scripts do not perform perfect object segmentation. They
-crop rectangular `source_region` boxes supplied by the manifest, or use OpenCV
-color/edge density to propose rectangular candidates. `edge_check` is a warning
-system: it reports whether the cropped rectangle still has strong visual signal
-on the top, bottom, left, or right edge. It does not prove that the box is
-semantically exact, and it cannot reliably detect unrelated neighboring objects
-inside the crop.
+- 对象整体可见
+- 没有重要边缘被切掉
+- 不含无关的相邻对象
+- 放回目标尺寸无可见变形
+- 应保持可编辑的文字没有被不必要地烘进裁剪
 
-For high-value assets, use a three-pass crop:
+助手脚本不做完美对象分割，只裁 manifest 提供的矩形 `source_region`。`edge_check` 报告四边是否仍有强视觉信号；它不证明语义精确，也不能可靠检测窗口内的无关邻居。勘察负责初始语义，contact sheet 负责批量覆盖，`crop_window_consistency` 负责事后像素兜底。
 
-1. Set a coarse `source_region` from the source image at high zoom.
-2. Run composition and inspect `contact_sheet.png`,
-   `diagnostics/placement_overlay.png`, and `edge_check.needs_padding_sides`.
-3. Adjust the individual `source_region` edges and `pad`, then rerun until the
-   object is complete and neighboring labels, arrows, or icons are excluded.
+只有高价值且异常的素材使用三遍裁剪法：压盖、贴边、半透明/阴影边、低对比、整图看不清、contact sheet 可疑或质量报告告警。显然干净的常规资产一次裁剪即可。
 
-Do not accept `crop_status: verified` solely because the automated edge check
-is green. The final authority is visual comparison against the source and the
-source-overlay crop rectangle.
+1. 对异常区域做 1:1 放大，定粗略 `source_region`。
+2. 跑合成，检查 `contact_sheet.png`、`diagnostics/placement_overlay.png` 和 `edge_check.needs_padding_sides`。
+3. 调整各 `source_region` 的边和 `pad`，重跑直到对象完整、相邻标签/箭头/图标被排除。
+
+不要仅因自动边缘检查是绿的就接受 `crop_status: verified`。最终权威是整图/带框总览和 contact sheet 的视觉覆盖；三者出现矛盾时才单独放大。
 
 ## Contact Sheet
 
-Generate a contact sheet after cropping. The sheet should show:
+裁剪后生成一张 contact sheet，作为整批裁剪的默认视觉证据。内容包括：
 
-- asset ID
-- filename
-- source bounding box
-- cropped preview
-- optional status: `ok`, `needs-padding`, `wrong-region`, `background-issue`
+- 素材 ID
+- 文件名
+- 源包围盒
+- 裁剪预览
+- 可选状态：`ok`、`needs-padding`、`wrong-region`、`background-issue`
 
-Use it to catch:
+用它抓：
 
-- clipped assets
-- wrong region
-- missing edge pixels
-- accidental duplicate crops
-- crops with excessive surrounding background
-- visual assets that were not extracted but should have been
+- 被切边的素材
+- 错误区域
+- 缺失的边缘像素
+- 意外重复的裁剪
+- 带过多周边背景的裁剪
+- 该提取却没提取的视觉素材
 
-## Background Handling
+Contact sheet 全绿且没有报告告警时，不再逐项打开源图或单图。发现异常时汇总全部异常，一次修改窗口、一次重裁；不要在每个资产之间穿插 compose。
 
-If an asset has a non-transparent background:
+## 背景处理
 
-- preserve it if it is part of the original visual design
-- remove it only if background removal is reliable
-- otherwise crop with safe padding and align it onto the recreated panel
-- document uncertain background handling in the manifest
+素材有不透明背景时：
 
-## Replacement Readiness
+- 背景属于原始视觉设计的一部分就保留
+- 只在能可靠移除时移除背景
+- 否则带安全 padding 裁剪，对齐到重建的面板上
+- 不确定的背景处理记入 manifest
 
-Every asset should be replaceable by editing:
+## 可替换性
 
-- its file in `assets/`
-- its `<image>` dimensions and position
-- its manifest entry
+每个素材都应能通过编辑以下内容被替换：
 
-External restored or generated assets should use `source_mode: external`. The
-compose step copies them into the output assets directory instead of cropping
-the source again.
+- `assets/` 里的文件
+- 其 `<image>` 的尺寸和位置
+- 其 manifest 条目
 
-## Common Failure Modes
+外部恢复或生成的素材用 `source_mode: external`。合成步骤会把它们复制进输出素材目录，而不是重新裁源图。
 
-Avoid these failures:
+## 常见失败模式
 
-- redrawing a source-specific pictogram as a generic icon
-- cropping too tightly and cutting the object edge
-- including labels inside icon crops when labels should be editable
-- missing repeated icons because they looked simple
-- replacing a hand-drawn or paper-textured object with a flat SVG substitute
-- using one generic icon to replace multiple distinct source icons
-- calling a contaminated crop complete because the bounding box is accurate
-- erasing thin structures during alpha extraction
-- leaving source-colored halos around restored or generated assets
+避免：
+
+- 把源图专有象形图重画成通用图标
+- 裁得太紧切掉对象边缘
+- 标签应可编辑时却把标签裁进图标
+- 因为图标看着简单就漏掉重复出现的图标
+- 用扁平 SVG 替代物换掉手绘或纸纹对象
+- 用一个通用图标替换多个不同的源图图标
+- 因为包围盒准确就把污染裁剪称为完成
+- alpha 提取时抹掉细结构
+- 恢复或生成的素材周围留下源图色光晕
+
+## 污染素材恢复
+
+**触发条件（客观）**：Crop Window Check 判定某资产为 `contaminated`，或 `clean-on-fill` 的两个前提（承载面用采样实色重画、窗口不压边框/圆角/其他元素）不满足。
+
+污染指源像素混入了不需要的内容：印在对象上的标签或图注、引线箭头圆点、相邻对象或面板边界、部分遮挡、困在细结构内部的背景色、与场景绑定的辉光阴影反射烟雾或透明效果。直接裁剪会把污染一起保留，朴素的背景移除常常损伤对象本身。
+
+按此顺序取第一个可行项：
+
+1. **先试收窗或挪窗。**能在不切掉元素本体的前提下排除入侵物，就用更紧的窗口裁。这是最便宜的修复。
+2. **对象不需要独立移动且位于 AI 清版区域** → 压平留在该区域底板里，从底板移除可编辑标签和引线，对象本体留下。
+3. **对象需要独立存在，或位于普通 SVG 区域而旧标签/边框必须移除** → 在纯色 chroma 底上再生并键控分离（`chroma_regeneration.md`）。此路径不要求全图先走 AI 清版。
+
+**没有显著性抠图这一步。**用 rembg / U2-Net 或手搓 GrabCut / 差值 / 阈值脚本从自然的污染背景里抠对象，正是本门要杜绝的"切碎、鬼影"素材的来源。也不要把克隆涂抹或局部 inpaint 当作素材恢复的最终路径。
+
+编辑价值不足以支撑脆弱抠图时直接压平，常见于：成百上千精细交叠的对象、大面积透明或反射表面、与背景强绑定的阴影和大气效果、被多个标签部分遮挡的元素、永远不需要移动的装饰性对象。
+
+**区域底板替代方案**：逐个恢复大量污染素材之前，先问用户是否真的需要它们能移动。五个以上图形对象被标注穿过、细结构使 alpha 提取脆弱、阴影辉光把对象绑在背景上、逐个恢复会产生可见接缝、可编辑性主要集中在文字和标注上——满足其中数条时，为该区域生成清版底、只重建标注层。不要为了少量普通 SVG 区域中的污染图标生成整画布底板。
+
+**生成来源与要求的保真目标分开记录。生成素材绝不能被误报为未处理的源图裁剪。**
+
+**Manifest 记录**：`contamination`、`separation_strategy`、`edit_value`(high/medium/low)、`fidelity_requirement`、生成时的 `generation_provenance`、`review_status`，并说明为何选择压平或生成而不是提取。
+
+**拒收候选的条件**：轮廓或朝向实质性改变；缺失部分被凭空发明；出现标签或伪文字；科学或技术结构改变；高光和阴影与最终背景冲突；边缘仍有源图色光晕；候选更干净了但已经不能代表源对象。

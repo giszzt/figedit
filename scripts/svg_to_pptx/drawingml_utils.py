@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import math
+import sys
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
@@ -392,6 +393,19 @@ def parse_font_family(font_family_str: str) -> dict[str, str]:
     """
     if not font_family_str:
         return {'latin': 'Segoe UI', 'ea': 'Microsoft YaHei'}
+
+    var_match = re.search(r'var\(\s*(--font-[a-z0-9-]+)\s*\)', font_family_str, flags=re.I)
+    if var_match:
+        fallback = {
+            '--font-sans': 'Arial, Microsoft YaHei, sans-serif',
+            '--font-serif': 'Georgia, Times New Roman, SimSun, serif',
+            '--font-hand': 'Comic Sans MS, Microsoft YaHei, sans-serif',
+        }.get(var_match.group(1).lower(), 'Segoe UI, Microsoft YaHei, sans-serif')
+        print(
+            f'WARNING: unresolved CSS font variable {var_match.group(0)!r} reached PPTX export; using {fallback!r}',
+            file=sys.stderr,
+        )
+        font_family_str = fallback
 
     fonts = [f.strip().strip("'\"") for f in font_family_str.split(',')]
     latin_font = None

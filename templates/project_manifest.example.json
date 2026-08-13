@@ -14,6 +14,14 @@
     "reconstruction_intent": "editable-layout",
     "notes": "Reconstruct panels and text; crop dense maps, screenshots, logos, and source-specific visuals."
   },
+  "reconstruction_plan": {
+    "edit_scope": "text+structure",
+    "background_regions": [],
+    "validation_tier": "svg-primary",
+    "open_questions": [],
+    "closeup_ids": [],
+    "inventory": "figure-task/work/inventory.json"
+  },
   "panels": [
     {
       "id": "panel-left",
@@ -61,6 +69,7 @@
       "panel_id": "panel-left",
       "kind": "map",
       "decision": "crop",
+      "crop_window": "clean",
       "text_policy": "preserve-raster",
       "background_handling": "tight-crop",
       "crop_status": "verified",

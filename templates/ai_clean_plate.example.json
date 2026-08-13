@@ -14,37 +14,65 @@
     "reconstruction_intent": "clean-plate-plus-editable-overlay",
     "notes": "The background is a continuous visual field; crop + SVG cannot faithfully recover pixels hidden by foreground labels."
   },
-  "background_plan": {
-    "strategy": "ai-clean-plate",
-    "route_decision": {
-      "reason": "Foreground title text and callout marks sit on a continuous image field, so normal source crops or SVG redraw cannot reveal the hidden background.",
-      "crop_svg_recoverable": false
-    },
-    "plate_asset_id": "asset-clean-plate",
-    "generation_provenance": {
-      "role": "primary-clean-plate",
-      "backend": "Codex Image Gen",
-      "fallback_policy": "Codex Image Gen -> Labnana GPT-Image-2 -> Labnana Gemini/Nano Banana -> official provider API -> configured command",
-      "prompt_file": "work/clean-plate-prompt.txt",
-      "references": [
-        "work/assets/source.png"
-      ],
-      "output": "work/generated/clean-plate.png"
-    },
-    "candidate_review": {
-      "accepted": true,
-      "checks": {
-        "foreground_text_removed": true,
-        "annotation_marks_removed": true,
-        "background_inscriptions_handled_as_briefed": true,
-        "major_visual_identity_preserved": true,
-        "aspect_ratio_and_alignment_usable": true,
-        "no_patchwork_source_crops_needed": true
-      },
-      "notes": "Replace with observations from the accepted candidate."
-    },
-    "review_status": "verified"
+  "reconstruction_plan": {
+    "edit_scope": "text+structure",
+    "background_regions": [
+      {
+        "id": "scope-full-field",
+        "source_region": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 1080
+        },
+        "strategy": "ai-clean-plate",
+        "foreground_mode": "full-extract",
+        "reason": "Foreground labels and callouts obscure a continuous image field whose hidden pixels cannot be recovered by SVG."
+      }
+    ],
+    "validation_tier": "svg-primary",
+    "open_questions": [],
+    "closeup_ids": [],
+    "inventory": "figure-task/work/inventory.json"
   },
+  "background_plans": [
+    {
+      "scope_id": "scope-full-field",
+      "strategy": "ai-clean-plate",
+      "source_region": {
+        "x": 0,
+        "y": 0,
+        "w": 1920,
+        "h": 1080
+      },
+      "foreground_mode": "full-extract",
+      "foreground_mode_source": "user-choice",
+      "route_reason": "Editable labels and callouts overlap a continuous full-canvas field.",
+      "plate_asset_id": "asset-clean-plate",
+      "generation_provenance": {
+        "role": "primary-clean-plate",
+        "backend": "Codex Image Gen",
+        "prompt_file": "work/clean-plate-prompt.txt",
+        "references": [
+          "work/assets/source.png"
+        ],
+        "output": "work/generated/clean-plate.png"
+      },
+      "candidate_review": {
+        "accepted": true,
+        "checks": {
+          "foreground_text_removed": true,
+          "annotation_marks_removed": true,
+          "background_inscriptions_handled_as_briefed": true,
+          "major_visual_identity_preserved": true,
+          "aspect_ratio_and_alignment_usable": true,
+          "no_patchwork_source_crops_needed": true
+        },
+        "notes": "Replace with observations from the accepted candidate."
+      },
+      "review_status": "verified"
+    }
+  ],
   "panels": [],
   "assets": [
     {

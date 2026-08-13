@@ -64,6 +64,165 @@
         }
       }
     },
+    "reconstruction_plan": {
+      "type": "object",
+      "description": "Reconstruction plan from the survey pass. Expected on new tasks; legacy manifests use route_decision.",
+      "required": [
+        "edit_scope",
+        "validation_tier",
+        "open_questions"
+      ],
+      "properties": {
+        "edit_scope": {
+          "enum": [
+            "text-only",
+            "text+structure",
+            "selective-assets",
+            "full-extract"
+          ]
+        },
+        "background_regions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/backgroundRegion"
+          }
+        },
+        "validation_tier": {
+          "enum": [
+            "svg-primary",
+            "pptx-triggered"
+          ]
+        },
+        "open_questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/openQuestion"
+          }
+        },
+        "closeup_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inventory": {
+          "type": "string"
+        }
+      }
+    },
+    "route_decision": {
+      "type": "object",
+      "description": "Legacy planning lock. Deprecated: new tasks write reconstruction_plan instead.",
+      "required": [
+        "source",
+        "editability_depth",
+        "validation_tier",
+        "exception_ids"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 2
+        },
+        "source": {
+          "enum": [
+            "fresh-global-read",
+            "user-directive",
+            "global-read"
+          ]
+        },
+        "route_status": {
+          "enum": [
+            "ready",
+            "needs-user-input"
+          ]
+        },
+        "editability_depth": {
+          "enum": [
+            "text-only",
+            "text+structure",
+            "selective-assets",
+            "full-extract"
+          ]
+        },
+        "base_strategy": {
+          "const": "svg-rebuild"
+        },
+        "background_scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/backgroundScope"
+          }
+        },
+        "asset_groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assetRouteGroup"
+          }
+        },
+        "unresolved_decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unresolvedDecision"
+          }
+        },
+        "reconstruction_route": {
+          "enum": [
+            "regular-hybrid",
+            "ai-clean-plate"
+          ]
+        },
+        "validation_tier": {
+          "enum": [
+            "svg-primary",
+            "pptx-triggered"
+          ]
+        },
+        "exception_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "schema_version",
+            "route_status",
+            "base_strategy",
+            "background_scopes",
+            "asset_groups",
+            "unresolved_decisions"
+          ],
+          "properties": {
+            "source": {
+              "enum": [
+                "fresh-global-read",
+                "user-directive"
+              ]
+            }
+          }
+        },
+        {
+          "required": [
+            "reconstruction_route"
+          ],
+          "not": {
+            "required": [
+              "schema_version"
+            ]
+          },
+          "properties": {
+            "source": {
+              "enum": [
+                "global-read",
+                "user-directive"
+              ]
+            }
+          }
+        }
+      ]
+    },
     "panels": {
       "type": "array",
       "items": {
@@ -356,6 +515,19 @@
           "arrow_end": {
             "type": "boolean"
           },
+          "marker_start": {
+            "$ref": "#/$defs/markerSpec"
+          },
+          "marker_end": {
+            "$ref": "#/$defs/markerSpec"
+          },
+          "marker_mid": {
+            "$ref": "#/$defs/markerSpec"
+          },
+          "connector_clearance": {
+            "type": "number",
+            "minimum": 0
+          },
           "notes": {
             "type": "string"
           },
@@ -393,6 +565,12 @@
           "properties": {
             "reason": {
               "type": "string"
+            },
+            "source": {
+              "enum": [
+                "background-gate",
+                "user-directive"
+              ]
             },
             "crop_svg_recoverable": {
               "type": "boolean"
@@ -453,7 +631,27 @@
         },
         "review_status": {
           "type": "string"
+        },
+        "foreground_mode": {
+          "enum": [
+            "full-extract",
+            "selective",
+            "flatten"
+          ]
+        },
+        "foreground_mode_source": {
+          "enum": [
+            "user-choice",
+            "explicit-request",
+            "auto-default"
+          ]
         }
+      }
+    },
+    "background_plans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/backgroundPlanV2"
       }
     },
     "style_tokens": {
@@ -473,6 +671,451 @@
     },
     "quality_gates": {
       "type": "object"
+    }
+  },
+  "$defs": {
+    "sourceRegion": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "h": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "backgroundScope": {
+      "type": "object",
+      "required": [
+        "id",
+        "source_region",
+        "region_accuracy",
+        "field_type",
+        "strategy",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_region": {
+          "$ref": "#/$defs/sourceRegion"
+        },
+        "region_accuracy": {
+          "enum": [
+            "estimated-from-global-read",
+            "measured"
+          ]
+        },
+        "field_type": {
+          "enum": [
+            "continuous-field",
+            "self-contained-raster"
+          ]
+        },
+        "strategy": {
+          "enum": [
+            "ai-clean-plate",
+            "source-preserve-region"
+          ]
+        },
+        "foreground_mode": {
+          "enum": [
+            "flatten",
+            "selective",
+            "full-extract",
+            "pending-user-choice"
+          ]
+        },
+        "foreground_inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/foregroundInventoryItem"
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user_directive": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "ai-clean-plate"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "foreground_mode"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "foreground_mode": {
+                "const": "pending-user-choice"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "foreground_inventory"
+            ],
+            "properties": {
+              "foreground_inventory": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "source-preserve-region"
+              },
+              "field_type": {
+                "const": "continuous-field"
+              }
+            },
+            "required": [
+              "strategy",
+              "field_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "user_directive"
+            ]
+          }
+        }
+      ]
+    },
+    "assetRouteGroup": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "ids",
+        "separability",
+        "reason"
+      ],
+      "properties": {
+        "strategy": {
+          "enum": [
+            "redraw",
+            "crop",
+            "regenerate-chroma",
+            "flatten",
+            "preserve-raster",
+            "omit"
+          ]
+        },
+        "separability": {
+          "enum": [
+            "not-applicable",
+            "clean",
+            "clean-on-fill",
+            "contaminated",
+            "embedded-in-continuous-field"
+          ]
+        },
+        "observed_overlap": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "crop"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "separability": {
+                "enum": [
+                  "clean",
+                  "clean-on-fill"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "regenerate-chroma"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "separability": {
+                "const": "contaminated"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "separability": {
+                "const": "contaminated"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "observed_overlap"
+            ]
+          }
+        }
+      ]
+    },
+    "foregroundInventoryItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "resolved_strategy"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "const": "source-specific-visual"
+        },
+        "resolved_strategy": {
+          "enum": [
+            "pending-user-choice",
+            "flatten",
+            "regenerate-chroma"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "unresolvedDecision": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "question"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "foreground-depth",
+            "raster-preservation",
+            "fidelity-tradeoff"
+          ]
+        },
+        "scope_id": {
+          "type": "string"
+        },
+        "asset_id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        }
+      }
+    },
+    "backgroundPlanV2": {
+      "type": "object",
+      "required": [
+        "scope_id",
+        "strategy",
+        "source_region",
+        "foreground_mode",
+        "foreground_mode_source",
+        "route_reason",
+        "plate_asset_id",
+        "generation_provenance",
+        "candidate_review"
+      ],
+      "properties": {
+        "scope_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "const": "ai-clean-plate"
+        },
+        "source_region": {
+          "$ref": "#/$defs/sourceRegion"
+        },
+        "foreground_mode": {
+          "enum": [
+            "full-extract",
+            "selective",
+            "flatten"
+          ]
+        },
+        "foreground_mode_source": {
+          "enum": [
+            "user-choice",
+            "explicit-request",
+            "auto-default"
+          ]
+        },
+        "route_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "plate_asset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generation_provenance": {
+          "type": "object"
+        },
+        "candidate_review": {
+          "type": "object",
+          "required": [
+            "accepted"
+          ],
+          "properties": {
+            "accepted": {
+              "const": true
+            }
+          }
+        },
+        "review_status": {
+          "type": "string"
+        }
+      }
+    },
+    "markerSpec": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "style": {
+          "enum": [
+            "solid-triangle",
+            "open-chevron",
+            "circle",
+            "diamond"
+          ]
+        },
+        "size": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "at": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "backgroundRegion": {
+      "type": "object",
+      "required": [
+        "id",
+        "source_region",
+        "strategy",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source_region": {
+          "$ref": "#/$defs/sourceRegion"
+        },
+        "strategy": {
+          "enum": [
+            "ai-clean-plate",
+            "source-preserve-region"
+          ]
+        },
+        "foreground_mode": {
+          "enum": [
+            "flatten",
+            "selective",
+            "full-extract",
+            "pending-user-choice"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "user_directive": {
+          "type": "string"
+        }
+      }
+    },
+    "openQuestion": {
+      "type": "object",
+      "required": [
+        "id",
+        "question"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "scope_id": {
+          "type": "string"
+        }
+      }
     }
   }
 }

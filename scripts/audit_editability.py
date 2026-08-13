@@ -75,7 +75,8 @@ def audit(manifest_path: Path, ocr_path: Path | None = None) -> dict[str, Any]:
         candidate = out_dir / "ocr_results.json"
         ocr_path = candidate if candidate.exists() else None
     ocr_items = []
-    if ocr_path and ocr_path.exists():
+    ocr_evidence_available = bool(ocr_path and ocr_path.exists())
+    if ocr_evidence_available:
         ocr_items = json.loads(ocr_path.read_text(encoding="utf-8")).get("items", [])
 
     elements = manifest.get("elements", [])
@@ -146,9 +147,15 @@ def audit(manifest_path: Path, ocr_path: Path | None = None) -> dict[str, Any]:
         risk_status = "review"
     if formula_text_leaks:
         risk_status = "review"
+    # Missing OCR evidence means text_lift_ratio and asset_text_risks never
+    # ran — that is "unavailable", not "ok". A green gate here would silently
+    # disable the number-one baked-text check.
+    if not ocr_evidence_available and risk_status == "ok":
+        risk_status = "unavailable"
 
     return {
         "status": risk_status,
+        "ocr_evidence": "available" if ocr_evidence_available else "missing",
         "readable_ocr_count": len(readable),
         "svg_text_count": len(text_elements),
         "math_element_count": len(math_elements),
@@ -169,6 +176,7 @@ def write_report(out_dir: Path, result: dict[str, Any]) -> None:
         "# Editability Audit",
         "",
         f"- Status: `{result.get('status')}`",
+        f"- OCR evidence: {result.get('ocr_evidence')}",
         f"- Readable OCR candidates: {result.get('readable_ocr_count')}",
         f"- SVG text elements: {result.get('svg_text_count')}",
         f"- SVG math elements: {result.get('math_element_count')}",

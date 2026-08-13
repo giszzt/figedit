@@ -1,222 +1,132 @@
-# Chroma Regeneration
+# Chroma 再生（Chroma Regeneration）
 
-The method for turning in-scope foreground objects into clean transparent PNG
-assets on the AI (`ai-clean-plate`) route: ask a reference-capable image model
-to reproduce the target elements on a known solid chroma background, then key
-the background out and slice the elements apart.
+把无法干净裁剪、但需要独立存在的前景对象变成透明 PNG：让支持参考图的图像模型把目标元素复现在已知纯色 chroma 底上，然后键控掉底色、把元素切分开。
 
-## The Foreground Method on the AI Route
+## 适用范围
 
-On `ai-clean-plate` with `foreground_mode: full-extract` or `selective`, the
-foreground is **generated, then keyed apart** — it is never cropped from the
-original image and never passed through salient-object matting:
+以下两种情况都使用本方法：
 
-1. Build a reference sheet: lay the in-scope elements out on a flat chroma
-   background in a known grid (their layout is authored, so their cells are
-   known).
-2. Ask the image model to re-print that sheet cleanly (elements reproduced
-   exactly, background pure flat chroma).
-3. `chroma_key.py` removes the flat background by color — exact edges,
-   decontaminated holes, no guessing — and `slice_grid.py` separates each
-   element by connected components.
+- `ai-clean-plate` 区域且 `foreground_mode: full-extract/selective`。
+- 普通 SVG 区域中，源图专有对象明显压盖卡片、边框、文字、箭头或邻居，无法干净裁剪，但需要独立保留。
 
-This works because the sheet background is a single controlled color, so
-keying is deterministic and precise. Salient-object matting (rembg / U2-Net)
-has no role here: it would *guess* a foreground mask on a background that is
-already exactly known, only adding failure modes (eaten thin structures,
-ghosted rings). Do not run it, and do not improvise GrabCut/background-
-difference/threshold scripts either.
+进入本路线后，前景是**生成后键控分离**的——绝不把污染源区域当最终裁剪，绝不经过显著性抠图：
 
-Anything can be AI-regenerated — photos, people, illustrations, icons, badges,
-logos, screenshots, charts, maps, composite multi-part objects (a photo inside
-a flag-colored ring, a badge overlapping a disc) — with no content-category
-approval gate. Quality depends on the model and prompt, so the fix for a hard
-element is a sharper preserve-the-element prompt, not a refusal or a detour to
-the original image.
+1. 构建参考 sheet：把范围内元素按已知网格铺在纯色 chroma 底上（布局是自己排的，所以每个格子位置已知）。
+2. 让图像模型干净地重印这张 sheet（元素精确复现，背景为纯平 chroma 色）。
+3. `chroma_key.py` 按颜色移除纯色底——边缘精确、孔洞去污、无猜测——`slice_grid.py` 按连通域把元素分开。
 
-On the **conventional** (non-AI) route, in-scope objects that need to be raster
-assets are coordinate-cropped as rectangles from the source (`crop_assets.py`),
-not matted; assets on flat/white/separable backgrounds need no alpha.
+这套方法有效是因为 sheet 背景是单一受控颜色，键控是确定性的、精确的。显著性抠图（rembg / U2-Net）在这里没有位置：它会在一个已经完全已知的背景上"猜"前景蒙版，只会增加失败模式（吃掉细结构、留下鬼影圆环）。不要运行它，也不要临时编写 GrabCut/背景差值/阈值脚本。
 
-Routing authority stays with `element_decision_matrix.md` and
-`contaminated_asset_recovery.md`. This file defines how to execute the
-regeneration route once selected.
+万物皆可 AI 再生——照片、人物、插画、图标、徽章、logo、截图、图表、地图、复合多部件对象（旗色环里的照片、压在圆盘上的徽章）——没有内容类别审批门。质量取决于模型和提示词，所以难对付的元素要的是更锋利的"保持原样"提示词，不是拒绝，也不是绕回原图。
 
-## Honesty Rules
+没有污染、窗口为 `clean/clean-on-fill` 的素材仍从源图坐标裁剪。背景路线是 SVG 或清版，不决定 chroma 资格；可分离性与编辑价值才决定。
 
-- A regenerated asset is an approximation. Record `asset_fidelity:
-  "approximate-ok"`; upgrade to `"source-close"` only after side-by-side
-  review confirms close identity. Never label it `source-preserve`.
-- Any foreground content is a valid regeneration target — photos, people,
-  illustrations, icons, badges, logos, screenshots, charts, maps. There is no
-  content-category approval gate; regeneration quality is a function of the
-  model and prompt, so the fix for a hard case is a sharper, more specific
-  preserve-the-element prompt, not a refusal. When exact source pixels genuinely
-  carry the meaning and must not drift (a data chart read for its values, a
-  compliance logo), keep that object flattened in the clean plate or, on a
-  conventional route, coordinate-crop it as an opaque rectangle — do not chase
-  pixel-exactness with a fragile cutout.
-- Every regenerated asset records `generation_provenance` (backend, prompt
-  file, reference image, output sheet). A manifest entry without provenance
-  fails review.
+路由权归 `element_decision_matrix.md` 和 `asset_extraction.md` 的污染素材恢复一节。本文件只定义再生路线选定后如何执行。
 
-## Inventory Completeness and Reuse
+## 诚实规则
 
-Always inventory **all** movable foreground pictorial elements — including
-small instruments, ground objects, and minor marks — so the extraction scope
-can be decided over a concrete list. On clean-plate routes the extraction
-scope itself is set by the Foreground Depth Decision in
-`background_reconstruction.md` (`full-extract` / `selective` / `flatten`).
+- 再生素材是近似物。记录 `asset_fidelity: "approximate-ok"`；只有并排比对确认高度一致后才升级为 `"source-close"`。绝不标 `source-preserve`。
+- 任何前景内容都是合法的再生对象——照片、人物、插画、图标、徽章、logo、截图、图表、地图。没有内容类别审批门；再生质量是模型和提示词的函数，难例的修法是更具体的"保持原样"提示词，不是拒绝。当源像素本身承载含义、绝不能漂移时（按数值读取的数据图表、合规 logo），干净时才坐标裁剪；污染时把对象压平留在清版底里，或让用户明确接受包含其承载区域的不可编辑栅格保留——不要用脆弱的抠图去追求像素级精确。
+- 每个再生素材都记录 `generation_provenance`（后端、提示词文件、参考图、输出 sheet）。没有来源记录的 manifest 条目不通过复查。
 
-Once extraction is chosen for a set of elements, do not cherry-pick within
-it, and do not ration elements per sheet: one generation call costs the same
-regardless of how many elements the sheet carries. **Default to a single
-foreground sheet holding the entire inventory** — the common case is exactly
-two generation calls, one clean plate plus one sheet, whether that sheet
-carries 5 elements or 40. Lay them out with clear gutters and generate. Split
-into a second sheet only if the model visibly fails to reproduce them all on
-one — elements dropped, merged, or rendered too coarsely to read — not on a
-pre-set count or pixel budget. The plate's remove list and the regeneration
-inventory must mirror each other exactly: everything removed from the plate
-is either rebuilt as SVG/text or regenerated as an asset, and everything kept
-flattened stays out of both lists.
+## 清单完整性与复用
 
-Repeated elements are regenerated **once**. When the same icon or mark appears
-in several places in the source, put one instance on the sheet and place it
-multiple times with several `image` elements referencing the same `asset_id`.
-Never spend sheet slots or crops on duplicates.
+始终盘点**全部**可移动的前景图形元素——包括小型仪器、地面物体和次要标记——让提取范围建立在具体清单之上。清版底路线上，提取范围本身由 `background_reconstruction.md` 的前景深度决策（`full-extract` / `selective` / `flatten`）决定。
+
+一旦为一组元素选定了提取，不要在组内挑挑拣拣，也不要按 sheet 配给元素：一次生成调用的成本与 sheet 上有多少元素无关。**默认一张前景 sheet 装下整份清单**——常见情形恰好是两次生成调用，一张清版底加一张 sheet，无论 sheet 上是 5 个还是 40 个元素。留出清晰的间隔排好，然后生成。
+
+**单张优先是强制的，不是偏好。** 拆分只能发生在**已经生成过一张全量 sheet 并判定失败之后**，失败必须落到具体元素（哪几个丢了 / 糊了 / 并了 / 整版被缩微复现）。以下理由一律不成立，因为它们都是先验估计而非观察：元素数量多、源图标尺寸小、预计渲染太小、按面板或语义分组更整齐、以往同类图拆过。记录拆分时必须写明被拒 sheet 的文件路径和失败元素清单（写入 `generation_provenance`）。
+
+两条边界，不要拿来当拆分借口，也不要用禁令堵死它们：
+
+- **与色相分区不冲突**：只有重建计划的 `open_questions` 已清空、用户检查点已解决后，`probe_palette.py --boxes` 才按客观撞色判据在生成前划分 sheet，属于执行规划且必要（见下文 Pipeline 第 1 步）。检查点前的预算只按整图保守估计；本节禁止的是按数量或尺寸臆测拆分。
+- **缩微复现是合法的"观察到的失败"**：以全图为参考生成 sheet 时，模型可能把整版缩微复现（见下文"参考粒度规则"）。真的发生了，就是拆分或改用分区参考图重生的正当理由。
+
+重复出现的元素只再生**一次**。同一图标或标记在源图多处出现时，sheet 上放一个实例，用多个 `image` 元素引用同一 `asset_id` 多次放置。绝不为重复项浪费 sheet 格子或裁剪。
+
+底板的移除清单和再生清单必须严格互为镜像：从底板移除的每样东西，要么重建为 SVG/文字，要么再生为素材；保持压平的东西不出现在任何一边。
 
 ## Pipeline
 
-1. **Probe**: `python scripts/probe_palette.py source.png` selects a chroma
-   color guaranteed far from the source palette. If no candidate is safe,
-   probe only the target asset regions with `--region`, or fall back to
-   flatten. The key color is chosen **per sheet**: if one element's own colors
-   are close to the sheet's key hue, move that element to a separate sheet
-   with a different key color instead of accepting a collision. The keying
-   step relies on this guarantee — it removes every key-hued pixel anywhere in
-   the sheet (edges, cast shadows, and background showing through enclosed
-   holes), so a same-hue element would be damaged.
-2. **Brief and generate**: write a prompt file per sheet (see framework
-   below) and invoke a reference-capable backend per
-   `references/image_backend_policy.md`. The source image must be attached as
-   the reference / edit target; a text-only prompt cannot reproduce
-   source-specific elements.
-3. **Key**: `python scripts/chroma_key.py --input sheet_raw.png --out
-   sheet.png --color "<probe result>" --scale 2`. Non-empty `warnings` in the
-   report is a review trigger.
-4. **Slice** (grid sheets only): `python scripts/slice_grid.py sheet.png
-   out_dir --pad 12 --prefix ic`. Inspect the contact sheet: every element
-   whole, none merged, none missing.
-5. **Review**: compare each keyed element against its source counterpart side
-   by side. Apply the rejection criteria below per element; regenerate only
-   the rejected ones.
-6. **Record**: enter accepted assets in the manifest with `source_mode:
-   "external"` pointing at the keyed PNG, `decision: "regenerate-chroma"`,
-   fidelity and provenance fields, and normal target placement from the
-   source-image bbox of the original element.
+1. **探测与分区**：先跑 `python scripts/probe_palette.py source.png` 选出远离源图色板的候选键色；**凡走再生路线，必须再带 `--boxes` 跑逐元素撞色检查**：
 
-## Job Forms
+   ```
+   python scripts/probe_palette.py source.png --boxes icon_boxes.json --out sheet_plan.json
+   ```
 
-### Single-element re-print
+   整图模式的 `safe: true` 只保证**背景可分离**，不保证**前景不掉色**——键控会移除 sheet 上任何与键色同色相方向的像素（边缘、投影、封闭孔洞里透出的背景），所以与键色同色系的元素会被静默损伤，且 `chroma_key` 的边缘指标对此完全失明。`--boxes` 检查每个元素的饱和主色与各候选键色的色相夹角，输出张数最少的分区方案（`sheet_plan.sheets`），保证没有元素与自己所在 sheet 的键色撞色。**分区必须在第一次生成调用之前完成**——撞色一旦烘进成品只能重生，没有后期补救手段。
 
-For one large complex asset (an illustration with shadows, a device drawing
-entangled with the background). Ask the model to reproduce exactly that
-element, alone, filling most of the canvas, on the chroma background. Key the
-result and place it directly; no slicing.
+   若没有任何候选键色安全，就只对目标素材区域用 `--region` 探测，或退回 flatten。
 
-**Reference granularity rule**: for single or few-element jobs, attach a
-tight region crop of the element (contamination included) as the reference,
-not the full source image. With the full figure as reference, models tend to
-reproduce the whole layout in miniature instead of the one element — a
-repeatedly observed failure. The full source is the right reference only for
-the clean plate and for grid sheets covering elements spread across the
-figure.
+   候选键色的默认配对：**暖色元素配绿键（#00ff00），绿色或紫色元素配洋红键（#ff00ff）**——暖色物体在洋红底上边缘会烘进粉色 spill，反之亦然。
 
-### Grid batch regeneration
+2. **写简报并生成**：每张 sheet 写一个提示词文件（见下文框架），按 `references/image_generation.md` 调用支持参考图的后端。源图必须作为参考/编辑目标附上；纯文字提示词无法复现源图专有元素。
 
-For many elements (icons, markers, pictograms, medallions). One generation
-call reproduces all of them laid out on the chroma background with clear
-gutters (a regular grid is ideal but any layout with separation works —
-slicing is connected-component based). Put the whole inventory on one sheet;
-do not cap the count. Split into a second sheet only if a single sheet visibly
-fails — elements dropped, merged, or too coarse to read.
+3. **键控**：`python scripts/chroma_key.py --input sheet_raw.png --out sheet.png --color "<probe 结果>" --scale 2`。注意：报告的 `edge_fringe_fraction` 和多数 `warnings` **只验边缘，不验元素内部**——报告干净不等于视觉干净。除 warnings 外必须核对 **`component_hue_drift`**（逐连通域的键控前后主色对比，同色系元素被脱色/删除的唯一自动检测器），并逐资产比较"源区域饱和主色 vs 抠出素材饱和主色"，主色跳色一律拒收、按第 1 步分区方案换键色重生。
 
-### Crop transfer
+4. **切分**（仅网格 sheet）：`python scripts/slice_grid.py sheet.png out_dir --pad 12 --prefix ic`。检查 contact sheet：每个元素完整、无合并、无缺失。**发现同一图标被切成多块**（多部件图标：终端窗+分离的刷新箭头、锤头+底座、相机+气泡这类，内部有键色间隙）——不要用碎块，改用 `--cells` 按已知格子框重切：
 
-For a single element that needs to be a standalone transparent asset: crop
-the element coarsely from the source (dirt and all), then ask the model to
-reproduce **the content of this crop** on the chroma background, unchanged.
-Because the reference is already isolated, drift risk is the lowest of the
-regeneration forms — this is the preferred form for a lone element.
+   ```
+   python scripts/slice_grid.py sheet.png out_dir --cells cells.json --pad 12
+   ```
 
-## Prompt Framework
+   sheet 布局是自己排的，格子框天然已知；`--cells` 对每个格子做区域裁剪加 alpha 收边，一个格子必出一个完整文件。
 
-Every sheet prompt is written to a file (recorded in provenance) and contains
-these blocks, adapted to the case — never a fixed boilerplate:
+5. **复查**：每个键控出的元素与源图对应物并排比对。逐元素套用下面的拒收标准；只重生被拒的。
 
-**Edit target.** State that the attached source image is the sole reference
-and edit target, and identify exactly which element(s) to reproduce, by
-position and description ("the astronaut figure at the upper right", "the
-five small tower icons along the bottom").
+6. **登记**：验收的素材进 manifest，`source_mode: "external"` 指向键控后的 PNG，`decision: "regenerate-chroma"`，加保真与来源字段，目标位置取源图中原元素的 bbox。
 
-**Reproduction constraints.** Same silhouette, orientation, proportions,
-colors, internal details, and rendering style as the source. No
-reinterpretation, no style transfer, no added parts, no simplification.
+## 任务形态
 
-**Background.** The entire background must be exactly the flat color
-`#xxxxxx`, with no gradient, texture, shadow cast onto it, or vignette.
-Element shadows that belong to the asset itself must be kept attached to the
-element, not spread across the background. **Enclosed holes and gaps inside
-elements must also show the pure background color** (a ring's center, the
-space between tripod legs, negative space in letterforms) — this is what
-makes interior transparency possible after keying.
+### 单元素重印
 
-**Edge quality.** This block decides whether the keyed edges are clean;
-write it explicitly every time. Ask for crisp, sharply defined element edges
-against the background: no glow, no feathered halo, no outer stroke, and no
-die-cut sticker border unless the source element actually has one. The
-pilot's most common defect was the model adding white sticker outlines that
-the source did not have.
+用于单个大型复杂素材（带投影的插画、与背景缠结的设备图）。让模型精确复现该元素，单独、占满画布大部、置于 chroma 底上。键控后直接放置，不切分。
 
-**Exclusions.** Do not include surrounding labels, leader lines, callout
-dots, arrows, neighboring objects, or any text that is not physically part of
-the element. Do not add captions, watermarks, or invented text.
+**参考粒度规则**：单元素或少元素任务，参考图附该元素的紧凑区域裁剪（连污染一起），不附完整源图。以全图为参考时，模型倾向于把整版布局缩微复现，而不是画那一个元素——这是反复观察到的失败。完整源图只适合作清版底和覆盖全图分布元素的网格 sheet 的参考。
 
-**Layout (grid sheets).** Elements arranged with clear gaps, none touching or
-overlapping, each fully inside the canvas, no grid lines drawn.
+### 网格批量再生
 
-**Reject-if.** State the rejection criteria in the prompt so the model
-optimizes for them, and apply them yourself on review.
+用于多个元素（图标、标记、象形图、徽章）。一次生成调用把它们全部铺在 chroma 底上，留出清晰间隔（规则网格最理想，但任何有间隔的布局都行——切分是按连通域的）。整份清单放一张 sheet，不设数量上限。只有单张明显失败（元素丢失、合并、糊到读不清）才拆第二张。
 
-## Rejection Criteria
+### 裁剪转印
 
-Reject a candidate element when:
+用于需要成为独立透明素材的单个元素：先从源图粗裁该元素（连脏东西一起），再让模型把**这个裁剪的内容**原样复现在 chroma 底上。参考图已经是孤立的，漂移风险是各种再生形态里最低的——孤立元素优先用这个形态。
 
-- silhouette, orientation, or proportions differ visibly from the source
-- colors or internal details are reinterpreted rather than reproduced
-- parts are invented, dropped, or duplicated
-- labels, arrows, pseudo-text, or neighbor fragments are baked in
-- the background is not flat key color (gradients and cast shadows break keying)
-- keying leaves fringe or eats content (see `chroma_key.py` report warnings)
-- elements on a grid sheet touch, overlap, or run off the canvas
+## 提示词框架
 
-Rejection is per element: keep the good ones, regenerate the rest in a new
-sheet. Two failed regeneration rounds for the same element usually mean the
-prompt is underspecified, not that regeneration is wrong — tighten the
-preserve-the-element wording (name the exact parts, colors, and layout to
-reproduce) and retry as a single-element crop transfer. If it still drifts,
-fall back to crop-with-documented-dirt or leave the element flattened in the
-clean plate.
+每张 sheet 的提示词写成文件（记入 provenance），包含以下模块，按案例调整——绝不是固定套话：
 
-One frequent partial defect does not require rejection: models often add
-labels or captions to the sheet despite the prohibition. If the elements
-themselves are clean and separated, keep the sheet and discard the label
-components at slicing time (they are rebuilt as editable SVG text anyway) —
-`slice_grid.py` output makes them easy to identify on the contact sheet, or
-slice by region. Reject only when labels overlap the elements.
+**编辑目标。** 声明附带的源图是唯一参考和编辑目标，按位置和描述准确指认要复现哪些元素（"右上角的宇航员图形"、"底部一排五个小塔图标"）。
 
-## Manifest Entry Example
+**复现约束。** 与源图相同的轮廓、朝向、比例、颜色、内部细节和渲染风格。不重新诠释、不风格迁移、不加零件、不简化。
+
+**背景。** 整个背景必须是纯平色 `#xxxxxx`，无渐变、无纹理、无投到背景上的阴影、无暗角。属于素材自身的阴影必须贴着元素，不扩散到背景上。**元素内部的封闭孔洞和缝隙也必须显示纯背景色**（圆环中心、三脚架腿间、字形负空间）——这是键控后能获得内部透明的前提。
+
+**边缘质量。** 这一块决定键控边缘干不干净；每次都要明确写。要求元素边缘在背景上锐利清晰：无辉光、无羽化光晕、无外描边，除非源图元素本来就有，否则不要贴纸式白边。试点期最常见的缺陷就是模型加了源图没有的白色贴纸描边。
+
+**排除项。** 不要包含周边标签、引线、标注点、箭头、相邻对象或任何不属于元素本体的文字。不要加图注、水印或凭空发明的文字。
+
+**布局（网格 sheet）。** 元素间隔清晰、互不接触重叠、全部完整落在画布内、不画网格线。
+
+**拒收条件。** 把拒收标准写进提示词让模型对着优化，复查时自己也按它执行。
+
+## 拒收标准
+
+出现以下情况拒收该候选元素：
+
+- 轮廓、朝向或比例与源图有可见差异
+- 颜色或内部细节被重新诠释而非复现
+- 零件被发明、丢失或重复
+- 标签、箭头、伪文字或邻居碎片被烘进去
+- 背景不是纯平键色（渐变和投影会破坏键控）
+- 键控留下彩边或吃掉内容（见 `chroma_key.py` 报告的 warnings 与 `component_hue_drift`）
+- 网格 sheet 上元素接触、重叠或出画
+
+拒收按元素进行：好的留下，被拒的在新 sheet 里重生。同一元素连续两轮再生失败，通常说明提示词欠具体，不是再生路线错了——收紧"保持原样"的措辞（点名具体零件、颜色和布局），改用单元素裁剪转印重试。仍然漂移，退回"带记录的脏裁剪"或压平留在清版底。
+
+一种常见的局部缺陷不需要整张拒收：模型经常无视禁令给 sheet 加标签或图注。只要元素本身干净且分离，保留 sheet，切分时丢弃标签组件（它们反正会重建为可编辑 SVG 文字）——`slice_grid.py` 的 contact sheet 让它们很容易识别，或按区域切。只有标签压到元素时才拒收。
+
+## Manifest 条目示例
 
 ```json
 {
@@ -240,5 +150,4 @@ slice by region. Reject only when labels overlap the elements.
 }
 ```
 
-Placement (`x/y/w/h`) always comes from the element's bbox in the source
-image, measured in source pixels, regardless of the sheet layout.
+放置坐标（`x/y/w/h`）永远来自元素在源图中的 bbox，以源图像素计，与 sheet 布局无关。

@@ -10,9 +10,13 @@ Usage:
   python scripts/chroma_key.py --input sheet_raw.png --out sheet.png --color "#00ff00"
   python scripts/chroma_key.py --input sheet_raw.png --out sheet.png --color "#ff00ff" --scale 2
 
-The printed JSON report includes edge-quality warnings: residual key-colored
-fringe, or opaque content close to the key color (risk of holes). Treat a
-non-empty `warnings` list as a review trigger, not an automatic failure.
+The printed JSON report includes edge-quality warnings (residual key-colored
+fringe, opaque content close to the key color) plus a per-component
+`component_hue_drift` list that compares each element's dominant saturated
+color before and after keying — the edge metrics only inspect boundaries, so
+hue drift inside an element (a same-hue element damaged by despill or the hue
+sweep) is invisible to them. Treat a non-empty `warnings` list as a review
+trigger, not an automatic failure, and always check `component_hue_drift`.
 """
 from __future__ import annotations
 
@@ -55,6 +59,11 @@ def key_image(
         if bx2 - bx1 > 16 and by2 - by1 > 16 and (bx1 > 0 or by1 > 0 or bx2 < rgb.width or by2 < rgb.height):
             rgb = rgb.crop((bx1, by1, bx2, by2))
 
+    # Snapshot the (trimmed) original for the per-component hue-drift report:
+    # the final result is downscaled back to this resolution, so the two can
+    # be compared component by component.
+    orig_arr = np.asarray(rgb, dtype=np.float64)
+
     if scale > 1:
         rgb = rgb.resize((rgb.width * scale, rgb.height * scale), Image.LANCZOS)
     arr = np.asarray(rgb, dtype=np.float64)
@@ -86,11 +95,15 @@ def key_image(
         f3 = f[:, None]
         true_color[spill] = np.clip((arr[spill] - f3 * key) / np.maximum(1.0 - f3, 0.1), 0.0, 255.0)
 
-    # Global hue sweep. probe_palette guarantees that no legitimate content
-    # color shares the key's hue direction, so any key-hued pixel anywhere in
-    # the sheet is contamination: background showing through an enclosed hole,
-    # a shadow the model cast onto the key despite the brief, or antialiasing
-    # residue. Two tiers:
+    # Global hue sweep. This assumes no legitimate content color shares the
+    # key's hue direction — a guarantee that only holds when the sheet was
+    # planned with `probe_palette.py --boxes` (per-element hue-collision check
+    # and sheet partition). A sheet that skipped that check does NOT have this
+    # guarantee, and same-hue elements will be silently damaged here; the
+    # component_hue_drift report below is the detector for that case. Any
+    # key-hued pixel anywhere in the sheet is treated as contamination:
+    # background showing through an enclosed hole, a shadow the model cast
+    # onto the key despite the brief, or antialiasing residue. Two tiers:
     #   - strongly key-colored -> it IS background; make it transparent
     #     (fixes interior holes the old contour-band pass could not reach)
     #   - weakly key-tinted    -> shadow or edge residue; desaturate to gray
@@ -139,6 +152,11 @@ def key_image(
     fringe = float((fdist[band] < t1).mean()) if band_count else 0.0
     opaque_near_key = int(((fa >= 0.95) & (fdist < t0)).sum())
     content_fraction = float((fa >= 0.5).mean())
+    # Per-component hue drift: the only detector for a same-hue element that
+    # despill or the hue sweep silently repainted or desaturated. The edge
+    # metrics above cannot see this — they only inspect boundaries.
+    hue_drift = _component_hue_drift(orig_arr, fin[..., :3], fa, key_rgb, t1)
+
     warnings = []
     if fringe > 0.08:
         warnings.append(f"residual key-colored fringe on {fringe:.1%} of edge pixels; inspect edges")
@@ -146,6 +164,12 @@ def key_image(
         warnings.append(f"{opaque_near_key} opaque pixels are near the key color; content may contain the key color (holes risk)")
     if content_fraction < 0.005:
         warnings.append("almost nothing survived keying; wrong key color or empty sheet")
+    if hue_drift:
+        warnings.append(
+            f"{len(hue_drift)} component(s) changed dominant hue or lost saturation after keying; "
+            "a same-hue element was likely damaged by despill or the hue sweep — inspect these "
+            "components and re-plan the sheet with `probe_palette.py --boxes` (different key per hue group)"
+        )
     report = {
         "key_color": "#{:02x}{:02x}{:02x}".format(*key_rgb),
         "t0": t0,
@@ -155,9 +179,78 @@ def key_image(
         "edge_pixels": edge_count,
         "edge_fringe_fraction": round(fringe, 4),
         "opaque_near_key_pixels": opaque_near_key,
+        "component_hue_drift": hue_drift,
         "warnings": warnings,
     }
     return result, report
+
+
+def _dominant_saturated(pixels: np.ndarray) -> list | None:
+    """Dominant color among saturated pixels, or None for effectively
+    grayscale content (mirrors the definition in probe_palette.py)."""
+    if pixels.size == 0:
+        return None
+    px = pixels.reshape(-1, 3)
+    spread = px.max(axis=1) - px.min(axis=1)
+    saturated = px[spread > 40]
+    if len(saturated) < 30:
+        return None
+    quantized = (saturated // 32) * 32
+    colors, counts = np.unique(quantized, axis=0, return_counts=True)
+    return [int(v) for v in colors[int(np.argmax(counts))]]
+
+
+def _hue_delta_deg(a: list, b: list) -> float:
+    import colorsys
+
+    ha = colorsys.rgb_to_hsv(a[0] / 255.0, a[1] / 255.0, a[2] / 255.0)[0] * 360.0
+    hb = colorsys.rgb_to_hsv(b[0] / 255.0, b[1] / 255.0, b[2] / 255.0)[0] * 360.0
+    d = abs(ha - hb) % 360.0
+    return min(d, 360.0 - d)
+
+
+def _component_hue_drift(orig: np.ndarray, keyed: np.ndarray, alpha: np.ndarray, key_rgb: Tuple[int, int, int], t1: float) -> list:
+    """Compare each connected component's dominant saturated color before and
+    after keying. Components are found on the ORIGINAL content mask (pixels
+    Euclidean-far from the key), not on the final alpha — the hue sweep can
+    delete a same-hue element entirely, and a component that vanished from the
+    output must still be reported. `delta_hue_deg > 25`, saturation loss, or
+    low survival marks the component as damaged. Both arrays must share the
+    trimmed original resolution."""
+    from scipy import ndimage
+
+    drifts: list = []
+    content = np.sqrt(((orig - np.array(key_rgb, dtype=np.float64)) ** 2).sum(axis=2)) >= t1
+    labels, count = ndimage.label(content, structure=np.ones((3, 3), bool))
+    if not count:
+        return drifts
+    processed = 0
+    for index, slc in enumerate(ndimage.find_objects(labels), start=1):
+        if slc is None or processed >= 80:
+            continue
+        mask = labels[slc] == index
+        pixel_count = int(mask.sum())
+        if pixel_count < 200:
+            continue
+        processed += 1
+        in_dom = _dominant_saturated(orig[slc][mask])
+        if in_dom is None:
+            continue
+        opaque = mask & (alpha[slc] >= 0.9)
+        survival = float(opaque.sum()) / pixel_count
+        y0, x0 = slc[0].start, slc[1].start
+        bbox = [int(x0), int(y0), int(slc[1].stop - x0), int(slc[0].stop - y0)]
+        if survival < 0.4:
+            drifts.append({"bbox": bbox, "in_dominant": in_dom, "out_dominant": None, "delta_hue_deg": None, "removed": True, "survival": round(survival, 3)})
+            continue
+        out_dom = _dominant_saturated(keyed[slc][opaque])
+        if out_dom is None:
+            drifts.append({"bbox": bbox, "in_dominant": in_dom, "out_dominant": None, "delta_hue_deg": None, "desaturated": True})
+            continue
+        delta = _hue_delta_deg(in_dom, out_dom)
+        if delta > 25.0:
+            drifts.append({"bbox": bbox, "in_dominant": in_dom, "out_dominant": out_dom, "delta_hue_deg": round(delta, 1)})
+    return drifts
 
 
 def main() -> None:

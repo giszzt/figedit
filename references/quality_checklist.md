@@ -1,159 +1,200 @@
-# Quality Checklist
+# 质量清单（Quality Checklist）
 
-## Acceptance Dimensions
+本文件是交付放行条件的唯一权威。检查覆盖率与图片调用数分开：每个元素必须被覆盖，但一张整图、带 ID 总览或 contact sheet 可以同时覆盖整批；只有异常项需要独立 1:1 图。
 
-Evaluate the reconstruction across nine dimensions:
+## 验收维度
 
-1. information completeness
-2. structural accuracy
-3. text editability
-4. connector correctness
-5. visual asset fidelity
-6. crop precision
-7. background route integrity
-8. text and formula layout fidelity
-9. engineering maintainability
+沿九个维度评估重建：
 
-## Information Completeness
+1. 信息完整性
+2. 结构准确性
+3. 文字可编辑性
+4. 连接线正确性
+5. 视觉素材保真度
+6. 裁剪精度
+7. 背景路线完整性
+8. 文字与公式排位保真度
+9. 工程可维护性
 
-- [ ] Main title is present.
-- [ ] Section and panel titles are present.
-- [ ] Key labels and annotations are present.
-- [ ] Important visual examples, thumbnails, icons, screenshots, maps, logos, or source-specific marks are present.
-- [ ] No major object from the source figure is silently omitted.
+## 信息完整性
 
-## Structural Accuracy
+- [ ] 主标题在。
+- [ ] 节标题和面板标题在。
+- [ ] 关键标签和注释在。
+- [ ] 重要的视觉示例、缩略图、图标、截图、地图、logo 或源图专有标记在。
+- [ ] 源图没有任何主要对象被静默省略。
 
-- [ ] Layout topology matches the source figure.
-- [ ] Panels, cards, groups, and nesting relationships are correct.
-- [ ] Alignment and spacing are close enough to preserve reading order.
-- [ ] Table/grid structures are clear.
-- [ ] OpenCV candidate noise, texture lines, compression edges, duplicate segments, and false arrowheads are not present in the final SVG.
+## 结构准确性
 
-## Text Editability
+- [ ] 布局拓扑与源图一致。
+- [ ] 面板、卡片、分组和嵌套关系正确。
+- [ ] 对齐和间距足以保持阅读顺序。
+- [ ] 表格/网格结构清晰。
+- [ ] 任何检测器的候选噪声、纹理线、压缩边缘、重复线段和假箭头都没有进入最终 SVG。
 
-- [ ] Ordinary labels and annotations are SVG text, not image-only text.
-- [ ] Text is not converted to paths unless explicitly required.
-- [ ] Long labels do not overflow containers.
-- [ ] Uncertain text is marked in the manifest or report.
-- [ ] OCR fallback text is not accepted without source-image verification.
+## 文字可编辑性
 
-## Formula Rendering
+- [ ] 普通标签和注释是 SVG 文字，不是图片文字。
+- [ ] 未经明确要求，文字没有被转成路径。
+- [ ] 长标签不溢出容器。
+- [ ] 不确定的文字在 manifest 或报告中标注。
+- [ ] OCR 备选文字未经源图核实不接受。
+- [ ] editability 门不是 `unavailable`（OCR 证据缺失导致 text_lift_ratio 没算出来）；若是，已补测量工作目录重跑，或已人工核对无可编辑文字被烘进位图。
 
-- [ ] Every detected mathematical formula is a `math` element with normalized LaTeX.
-- [ ] Inline formulas inside titles, labels, captions, legends, nodes, and axis labels are split into separate `math` elements.
-- [ ] Plain text elements do not contain TeX syntax, Unicode super/subscripts, compact Greek-variable formulas, or formula operators unless explicitly marked `formula_policy: "not-formula"`.
-- [ ] Fractions, summations, scripts, Greek symbols, hats, and bars render as formula layout, not plain text.
-- [ ] Rendered formula groups retain `data-latex` for traceability.
-- [ ] `quality_report.md` shows formula leakage and PPTX math export gates.
-- [ ] Any formula listed in `editable.pptx.math_report.json` as a failure is repaired unless the user explicitly waives formula editability for that item.
-- [ ] Formula-heavy figures have been checked for visual placement after native PPTX export, not only for successful Office Math conversion.
+## 公式渲染
 
-## Text and Formula Layout Fidelity
+- [ ] 每个检出公式都是带规范化 LaTeX 的 `math` 元素。
+- [ ] 标题、标签、图注、图例、节点和轴标签里的行内公式被拆成独立 `math` 元素。
+- [ ] 纯文字元素不含 TeX 语法、Unicode 上下标、紧凑希腊变量式或公式运算符，除非明确标注 `formula_policy: "not-formula"`。
+- [ ] 分式、求和、上下标、希腊字母、帽/横线按公式排版渲染，不是纯文本。
+- [ ] 渲染后的公式组保留 `data-latex` 可追溯。
+- [ ] `quality_report.md` 显示公式泄漏和 PPTX math 导出门。
+- [ ] `editable.pptx.math_report.json` 中列为失败的公式都已修复，除非用户对该项明确豁免公式可编辑性。
+- [ ] 含 `math` 的图形做过一次原生 PPTX 排位检查，不只检查 Office Math 转换成功。
 
-- [ ] Small text and formulas occupy the same visual slots as the source image.
-- [ ] Dense labels, formulas, code snippets, and node captions do not overlap boxes, arrows, or neighboring text.
-- [ ] Mixed prose/formula lines share a consistent baseline.
-- [ ] Text boxes in PPTX do not overflow, wrap unexpectedly, or shift relative to SVG preview.
-- [ ] Office Math objects remain inside their intended bounding boxes after PowerPoint reflows them.
-- [ ] Formula editability is preserved; formulas are not replaced with raster crops to avoid layout work.
-- [ ] For high-density figures, the final PPTX has been opened or rendered for visual review before delivery.
+## 文字与公式排位保真度
 
-## Connector Correctness
+- [ ] 小文字和公式占据与源图相同的视觉槽位。
+- [ ] 密集标签、公式、代码片段和节点说明不与方框、箭头或相邻文字重叠。
+- [ ] 散文/公式混排行共享一致基线。
+- [ ] 静态文字回流审计没有未处理的溢出、意外换行、缺字或相邻碰撞风险。
+- [ ] 触发 PPTX 验证时，Office Math 对象仍在预期包围盒内，文本框没有结构性偏移。
+- [ ] 公式可编辑性保住了；没有为回避排位工作把公式换成位图裁剪。
+- [ ] 只有含 `math` 或静态审计报告结构风险时才原生渲染 PPTX；未触发的任务以 SVG 为视觉验收源。
 
-- [ ] Arrow directions match the source.
-- [ ] Connector endpoints point to the correct objects.
-- [ ] Dashed/solid line semantics are preserved when meaningful.
-- [ ] Feedback loops or branching structures are clear.
+## 连接线正确性
 
-## Visual Asset Fidelity
+- [ ] 箭头方向与源图一致。
+- [ ] 连接线端点指向正确对象。
+- [ ] 虚线/实线语义有意义时被保留。
+- [ ] 反馈回路或分支结构清晰。
 
-- [ ] The figure route was identified: simple text/shape, composite workflow, screenshot/UI/map/photo/chart body, formula-heavy, image-heavy/continuous background, or mixed.
-- [ ] If the route includes pictorial/raster/source-specific visual objects, an asset inventory exists for every icon, logo, screenshot, thumbnail, avatar, hand-drawn object, document/folder graphic, chart body, map body, model mark, or other source-specific visual object that must retain identity.
-- [ ] If the route is pure text/shape, `Assets: 0` is acceptable and documented by the route decision.
-- [ ] Source-specific icons and pictorial objects are preserved as cropped assets unless explicitly approved for redraw.
-- [ ] Custom visual objects were not replaced by generic approximations.
-- [ ] Logos/model marks retain source appearance.
-- [ ] Photos, screenshots, maps, thumbnails, and collages are preserved or intentionally flattened inside an accepted clean plate.
-- [ ] If `Assets: 0` or `Image elements: 0` appears for a route that contains raster/source-specific visuals, the manifest documents a clear `no-assets-needed` rationale; otherwise the result is not accepted.
+## 视觉素材保真度
 
-## Crop Precision
+- [ ] 图形路线已识别：简单文字/形状、复合工作流、截图/UI/地图/照片/图表主体、公式密集、图像密集/连续背景、或混合。
+- [ ] 路线含图形性/位图/源图专有视觉对象时，每个需要保持身份的图标、logo、截图、缩略图、头像、手绘对象、文档/文件夹图形、图表主体、地图主体、模型标记都有素材清单。
+- [ ] 纯文字/形状路线的 `Assets: 0` 可接受，且由路线决策记录在案。
+- [ ] 源图专有图标和图形对象保留为裁剪素材，除非明确批准重画。
+- [ ] 定制视觉对象没有被通用近似物替换。
+- [ ] Logo/模型标记保持源图外观。
+- [ ] 照片、截图、地图、缩略图和拼贴被保留，或有意压平在已验收清版底内。
+- [ ] 含位图/源图专有视觉的路线出现 `Assets: 0` 或 `Image elements: 0` 时，manifest 记录了明确的 `no-assets-needed` 理由；否则不验收。
 
-- [ ] Asset crops are not visibly clipped.
-- [ ] Asset crops do not include unrelated neighboring elements.
-- [ ] Padding is sufficient for strokes, shadows, and texture.
-- [ ] Assets are not stretched or distorted.
-- [ ] Contact sheet has been reviewed.
-- [ ] AI clean-plate overlays do not use large dirty source crops, old labels, callout residues, or rectangular patch seams.
+## 裁剪精度（裁剪窗）
 
-## Regenerated Assets (regenerate-chroma)
+- [ ] 每个坐标裁剪资产都有 `crop_window` 判定（clean / clean-on-fill / contaminated），判定来自整图或异常局部证据，不是默认值。
+- [ ] 没有 `crop_window: contaminated` 的资产仍用 `decision: "crop"`（`crop_window_consistency` 门会判 failed）。
+- [ ] `clean-on-fill` 的资产：manifest 用采样到的同一实色重画了承载面，且窗口不压卡片边框/圆角。
+- [ ] 素材裁剪没有可见切边。
+- [ ] 素材裁剪不含无关的相邻元素（不规整形状的外接矩形没有圈进邻居）。
+- [ ] 描边、阴影和纹理有足够的 padding。
+- [ ] 素材没有被拉伸或变形。
+- [ ] 一张带 ID 的 contact sheet 已覆盖全部裁剪资产；只有可疑 tile 被单独放大。
+- [ ] AI 清版底的叠层没有使用大块脏源图裁剪、旧标签、标注残留或矩形补丁接缝。
 
-- [ ] Every regenerated asset has `generation_provenance` (backend, prompt file, reference, sheet) and `asset_fidelity` of `approximate-ok` or reviewed `source-close`; none is labeled `source-preserve`.
-- [ ] Each element was compared side by side against its source counterpart: same silhouette, orientation, colors, and details; no invented or dropped parts; no baked-in labels or pseudo-text.
-- [ ] The `chroma_key.py` report shows no unresolved warnings (fringe, key-colored content, empty sheet), and enclosed holes inside elements are transparent, not tinted.
-- [ ] Any content category may be regenerated; there is no approval gate. Where exact source pixels must not drift (a chart read for its values, a compliance logo), the object was kept flattened in the plate or coordinate-cropped as an opaque rectangle, not chased with a fragile cutout.
-- [ ] The regeneration scope matches `foreground_mode` (full inventory under full-extract, exactly the named subset under selective, none under flatten), mirrors the clean-plate remove list, and repeated elements were regenerated once and placed by shared `asset_id`.
-- [ ] In-scope foreground objects were regenerated on a chroma sheet and keyed apart, not cropped from the original or separated with salient-object matting (rembg/U2-Net) or improvised GrabCut/difference/threshold scripts. `chroma_key.py` reports show no unresolved fringe/eaten-content warnings.
-- [ ] Foreground regeneration put the whole inventory on one sheet unless a single sheet visibly failed (elements dropped, merged, or too coarse to read). An absolute element-count cap or a per-element pixel budget is not a valid split reason.
+## 再生素材（regenerate-chroma）
 
-## Background Route Integrity
+- [ ] 生成前跑过 `probe_palette.py --boxes`，sheet 按色相分区，没有元素与所在 sheet 的键色撞色。
+- [ ] 每个再生素材有 `generation_provenance`（后端、提示词文件、参考、sheet）和 `asset_fidelity`（`approximate-ok` 或复查后的 `source-close`）；没有素材标 `source-preserve`。
+- [ ] 带 ID 的 sheet/contact sheet 已覆盖每个元素与源图对应物：轮廓、朝向、颜色、细节一致；无发明或丢失零件；无烘入标签或伪文字。异常 tile 已单独放大。
+- [ ] `chroma_key.py` 报告无未处理的 warnings（彩边、键色内容、空 sheet），`component_hue_drift` 已核对且无未处理的漂移/脱色/删除项，元素内封闭孔洞是透明的、无染色。
+- [ ] 任何内容类别都可再生；没有审批门。源像素绝不能漂移的对象（按数值读取的图表、合规 logo）压平留在底板或坐标裁剪为不透明矩形，没有用脆弱抠图硬追。
+- [ ] 再生范围与 `foreground_mode` 一致（full-extract 是全清单、selective 恰为点名子集、flatten 为零），与清版底移除清单互为镜像，重复元素只再生一次、按共享 `asset_id` 放置。
+- [ ] 范围内前景对象在 chroma sheet 上再生并键控分离，没有从原图裁剪，也没有用显著性抠图（rembg/U2-Net）或临时 GrabCut/差值/阈值脚本。
+- [ ] 前景再生把整份清单放在一张 sheet 上，除非单张明显失败（元素丢失、合并或糊到读不清）——产物目录里存在那张失败的全量 sheet 及失败元素记录。绝对数量上限或逐元素像素预算不是有效的拆分理由（色相分区除外）。
+- [ ] 多部件图标没有被连通域切分切碎；被切碎的用 `slice_grid.py --cells` 按格子重切过。
 
-- [ ] Conventional figures have no `background_plan`, unless `route_decision.source` is `user-directive`.
-- [ ] AI clean plate is used when clean crops plus simple deterministic SVG cannot faithfully reconstruct the continuous background field.
-- [ ] AI clean plate is not used merely because the figure is dense, icon-heavy, or poster-like; a route explicitly requested by the user and recorded as `route_decision.source: "user-directive"` passes this check.
-- [ ] Conventional routing is not justified by saying the agent can manually redraw scenery, texture, lighting, or multi-zone illustrated backgrounds; a user-directed conventional route is recorded with its stated fidelity cost.
-- [ ] AI clean plate has an accepted full-canvas plate, generation provenance, candidate review, and canvas alignment.
-- [ ] `background_plan.foreground_mode` and `foreground_mode_source` are recorded; the source is `user-choice` or `explicit-request` (quoting the user's wording), and `auto-default` appears only for unattended runs. Selecting a mode from the figure's characteristics while the user was available is a gate violation.
-- [ ] The plate's remove list matches the recorded mode.
-- [ ] The accepted plate is not the untouched source image with old foreground still visible.
-- [ ] The accepted plate is not a local blur/clone/fill/inpaint result disguised as image generation.
-- [ ] Foreground overlays after AI clean plate are mostly editable text, formulas, and simple marks.
-- [ ] Distinctive assets are cropped back only when identity matters, independent movement is useful, and the crop is clean.
-- [ ] Text-like background inscriptions are preserved or removed according to source analysis, not by a blanket "remove all text" rule.
+## 背景路线完整性
 
-## Engineering Maintainability
+- [ ] 交付说明附有重建路径概要，六个槽位齐全；实际执行与概要一致，不一致处已说明原因。
+- [ ] 概要在任何脚本运行前产出，且不含坐标；坐标在备料阶段才出现。
+- [ ] 备料只跑概要指派到的分支：纯 SVG 图没有生成调用，纯清版压平图没有裁剪与吸附步骤。
+- [ ] 各区域分别指派了底子来源（SVG 画 / AI 清版 / 整块保留），不用一个标签盖住整幅图。
+- [ ] 每个背景区域在勘察时给的是粗略 `source_region`，生成/合成前已量测收紧。
+- [ ] 简单确定性背景走 SVG；局部或全图连续场只为对应区域建立 `background_regions[]` 与 `background_plans[]`。
+- [ ] 连续场上需要可编辑前景、且源图未提供干净底时用了 AI 清版；完整区域栅格保留只有用户明确要求时才成立。
+- [ ] AI 清版没有仅因图形密集、图标多或海报感而使用；是否连续依赖相邻像素与遮挡恢复才是判据。
+- [ ] 每个 AI 清版区域都有已验收的区域底板、生成来源、候选复查和坐标对齐。
+- [ ] 底板通过配准检查（`check_plate_registration.py`，scale ≈ 1.00 / offset ≈ 0），或不通过时已重生。
+- [ ] 每个 AI 区域的 `foreground_mode` 和来源已记录；用户未说明编辑深度时保持 `pending-user-choice` 与非空 `open_questions`，用户确认前没有计费生成、裁剪或合成（OCR 不受此限）。
+- [ ] 检查点呈现的对象清单只含随深度变化的源图专有非结构对象；确认后每项在对象清单中已解析为 `flatten` 或 `regenerate-chroma`，并与 `assets[].decision` 一致。
+- [ ] 检查点呈现了具体的计费生成次数预算；交付说明含「预算 N 次 / 实际 M 次」对照，超出各次写明原因。
+- [ ] 底板移除清单与所记模式一致。
+- [ ] 验收底板不是旧前景仍可见的未处理源图。
+- [ ] 验收底板不是伪装成图像生成的本地模糊/克隆/填充/inpaint 结果。
+- [ ] AI 清版底之后的前景叠层以可编辑文字、公式和简单标记为主。
+- [ ] 有辨识度的素材先判身份、再判可分离性；只在独立移动有用且窗口干净时裁回，污染压盖的走再生或压平。
+- [ ] 类文字背景铭刻按源图分析决定保留或移除，不是一刀切"移除所有文字"。
 
-- [ ] SVG groups have semantic IDs.
-- [ ] Assets have meaningful filenames.
-- [ ] Manifest records element decisions and source/target boxes.
-- [ ] External and embedded SVG variants are generated when possible.
-- [ ] Native `editable.pptx` is generated, and `quality_report.md` shows `pptx_export: ok` when PowerPoint editability is requested.
-- [ ] Native `editable.pptx` formula export is checked separately from general PPTX export.
-- [ ] Native `editable.pptx` is not delivered as one large grouped object; ordinary text, shapes, connectors, and cropped assets are directly selectable, while only semantic atomic groups remain grouped.
-- [ ] Preview image is generated when rendering tools are available.
+## 工程可维护性
 
-## High-Priority Failure Conditions
+- [ ] SVG 分组有语义 ID。
+- [ ] 素材文件名有意义。
+- [ ] Manifest 记录了元素决策和源/目标框。
+- [ ] 外链和内嵌 SVG 变体都生成（条件允许时）。
+- [ ] 原生 `editable.pptx` 已生成，需要 PowerPoint 可编辑性时 `quality_report.md` 显示 `pptx_export: ok`。
+- [ ] 原生 `editable.pptx` 的公式导出与一般 PPTX 导出分开检查。
+- [ ] 原生 `editable.pptx` 不是一个巨大分组；普通文字、形状、连接线和裁剪素材可直接选中，只有语义原子组保持成组。
+- [ ] 仅在验证档位为 `pptx-triggered` 时生成原生 PPTX 预览；`svg-primary` 不因渲染工具可用就打开 PowerPoint。
 
-Fix before delivery if any of these occur:
+## SVG / PPTX 验证分档
 
-- missing panel or major visual group
-- wrong arrow direction or relationship
-- source-specific icon replaced with invented generic SVG
-- pictorial/raster/source-specific visual objects were not inventoried before manifest authoring
-- a route containing raster/source-specific visuals has `Assets: 0` or `Image elements: 0` without a documented reason
-- a pure text/shape route incorrectly performs unnecessary asset extraction
-- important crop clipped or misplaced
-- user-relevant text baked into raster when it should be editable
-- detected formulas represented as plain text approximations instead of math elements
-- formula-like content remains inside `type: "text"` and appears under `formula_text_leakage`
-- PPTX formulas visible only as vector artwork unless the user explicitly waived formula editability for those formulas
-- PPTX formulas are editable but visibly misplaced, oversized, baseline-shifted, or colliding with nearby content
-- dense text/formula figures are delivered without PPTX visual review
-- PPTX output requires the user to manually ungroup the whole figure or major layout layers before selecting normal elements
-- SVG cannot open in common tools
-- OpenCV raw candidates, OCR fallback garbage, draft-manifest lines, or false arrows appear in the final SVG
-- a continuous scene-like background with foreground overlays was routed conventional because the agent planned to approximate it with hand-authored SVG scenery
-- `ai-clean-plate` is silently downgraded to conventional after the gate selected it
-- `ai-clean-plate` result is a patchwork of large source crops over a generated background
-- source crops contain old labels, leader lines, or annotation residue that should have been rebuilt
+- [ ] 无 `math` 且静态文字回流审计全绿时，`reconstruction_plan.validation_tier` 为 `svg-primary`，最终 SVG 总览已验收，不额外打开 PowerPoint。
+- [ ] 含 `math` 或静态审计报告换行、溢出、缺字、碰撞、整体错位风险时，档位为 `pptx-triggered`，做过一次原生渲染。
+- [ ] 原生渲染只检查结构性问题：公式越槽、换行变化、内容截断、碰撞和整体错位。
+- [ ] 档 1 发现结构缺陷后批量修复，最多再原生渲染一次；没有为字体观感无限循环。
 
-## Repair Order
+以下不算缺陷，也不触发重做：字形光栅化和抗锯齿差异、笔画粗细、逗号/引号/括号亚像素位移、基线约 ±1 px、字距约 ±0.5 px、整体色彩管理差异。
 
-1. Restore missing information.
-2. Correct structure and connectors.
-3. Replace inappropriate redraws with cropped source assets.
-4. Remove detector/OCR noise from final elements.
-5. Fix clipped or inaccurate crops.
-6. Repair background route errors.
-7. Fix text, formula, and baseline alignment in SVG and PPTX.
-8. Improve visual polish.
+## 高优先级失败条件
+
+交付前必须修复：
+
+- 面板或主要视觉分组缺失
+- 箭头方向或关系错误
+- 源图专有图标被发明的通用 SVG 替换
+- 图形性/位图/源图专有视觉对象在编写 manifest 前未盘点
+- 含位图/源图专有视觉的路线出现 `Assets: 0` 或 `Image elements: 0` 且无书面理由
+- 纯文字/形状路线做了不必要的素材提取
+- 重要裁剪被切边或放错位置
+- 裁剪窗判定为 contaminated 的资产被坐标裁剪交付（带承载层或邻居像素的污染素材）
+- 用户相关的文字被烘进位图而本应可编辑
+- 检出公式被纯文本近似而不是 math 元素
+- 公式样内容留在 `type: "text"` 里并出现在 `formula_text_leakage` 下
+- PPTX 公式只以矢量图形可见，且用户未明确豁免
+- PPTX 公式可编辑但明显错位、过大、基线偏移或与相邻内容碰撞
+- 含 `math` 或静态审计报告结构风险的图形未做 PPTX 视检就交付
+- PPTX 输出要求用户手动解组整幅图或主要图层才能选中普通元素
+- SVG 无法在常见工具中打开
+- 任何检测器的原始候选、OCR 备选垃圾、草稿 manifest 线条或假箭头出现在最终 SVG
+- 带前景叠层的连续场景背景因"agent 计划手绘近似 SVG 风景"被路由为常规
+- 门选定 `ai-clean-plate` 后被静默降级为常规
+- `ai-clean-plate` 的结果是生成背景上的大块源图裁剪拼贴
+- 源图裁剪携带本应重建的旧标签、引线或标注残留
+
+## 修复顺序
+
+1. 恢复缺失信息。
+2. 修正结构和连接线。
+3. 用裁剪的源图素材替换不当重画。
+4. 从最终元素中清除检测/OCR 噪声。
+5. 修复切边、污染或不准的裁剪（含裁剪窗问题：收窗、改判、或转再生）。
+6. 修复背景路线错误。
+7. 修复 SVG 和 PPTX 的文字、公式与基线对齐。
+8. 视觉抛光。
+
+## 修复优先级
+
+告警收齐一批后按此顺序修，不按发现顺序修：
+
+1. 缺失信息
+2. 错误结构、箭头和连接关系
+3. 路线错误或静默降级
+4. 被错误重画、污染、切边或缺失的素材
+5. 检测 / OCR 噪声和公式文字泄漏
+6. 文字 / 公式槽位、换行、溢出和碰撞
+7. 视觉抛光
+
+局部修改后只复查受影响区和一次总览一致性，不重新逐项扫描未受影响区域。独立问题批量修复；只有相互影响的布局问题才拆轮。
+
+`package` 阶段不重建 SVG/PPTX，只更新证据、报告和打包状态。若 PPTX 早于 SVG，必须先运行 `--stage pptx`。

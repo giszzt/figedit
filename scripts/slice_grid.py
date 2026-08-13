@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 """Slice a keyed transparent regeneration sheet into individual asset PNGs.
 
-Elements are found by connected components on the alpha channel, so the sheet
-does not need a perfectly regular grid — any layout with clear transparent
-gutters between elements works. Each element is cropped to its alpha bounding
-box plus padding.
+Default mode finds elements by connected components on the alpha channel, so
+the sheet does not need a perfectly regular grid — any layout with clear
+transparent gutters between elements works. Each element is cropped to its
+alpha bounding box plus padding.
+
+Connected components assume "one element = one component". Multi-part icons
+whose parts are separated by keyed-out gaps (a terminal window plus detached
+refresh arrows, a gavel head plus its base) break that assumption and get cut
+into fragments. For those sheets use --cells: the sheet layout was authored,
+so the cell boxes are known — each cell is region-cropped and alpha-trimmed,
+bypassing component analysis entirely.
 
 Usage:
   python scripts/slice_grid.py sheet.png out_dir --pad 12 --prefix ic
   python scripts/slice_grid.py sheet_raw.png out_dir --color "#00ff00"   # key first, then slice
+  python scripts/slice_grid.py sheet.png out_dir --cells cells.json      # slice by known cell boxes
 
-Outputs: out_dir/<prefix>_NN.png, out_dir/<prefix>_contact_sheet.png, and a
-JSON listing (printed, and written with --report) with each element's bbox on
-the sheet.
+Outputs: out_dir/<prefix>_NN.png (or <id>.png in --cells mode with named
+cells), out_dir/<prefix>_contact_sheet.png, and a JSON listing (printed, and
+written with --report) with each element's bbox on the sheet.
 """
 from __future__ import annotations
 
@@ -26,21 +34,25 @@ from PIL import Image, ImageDraw
 
 
 def find_elements(sheet: Image.Image, min_area_fraction: float = 0.0003) -> List[Dict[str, int]]:
-    import cv2
+    from scipy import ndimage
 
     alpha = np.asarray(sheet)[:, :, 3]
-    mask = (alpha > 128).astype(np.uint8)
+    mask = alpha > 128
     # Bridge small internal gaps so one element stays one component.
-    kernel = np.ones((5, 5), dtype=np.uint8)
-    closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=2)
-    count, _, stats, _ = cv2.connectedComponentsWithStats(closed, connectivity=8)
+    closed = ndimage.binary_closing(mask, structure=np.ones((5, 5), bool), iterations=2)
+    labels, count = ndimage.label(closed, structure=np.ones((3, 3), bool))
     floor = max(64.0, min_area_fraction * mask.shape[0] * mask.shape[1])
     boxes = []
-    for i in range(1, count):
-        x, y, w, h, area = stats[i]
-        if area < floor:
-            continue
-        boxes.append({"x": int(x), "y": int(y), "w": int(w), "h": int(h), "area": int(area)})
+    if count:
+        areas = np.bincount(labels.ravel())
+        for index, slc in enumerate(ndimage.find_objects(labels), start=1):
+            if slc is None:
+                continue
+            area = int(areas[index])
+            if area < floor:
+                continue
+            y0, x0 = slc[0].start, slc[1].start
+            boxes.append({"x": int(x0), "y": int(y0), "w": int(slc[1].stop - x0), "h": int(slc[0].stop - y0), "area": area})
     boxes = _merge_detached_parts(boxes)
     boxes.sort(key=lambda b: (b["y"] // max(1, sheet.height // 8), b["x"]))
     return boxes
@@ -57,7 +69,9 @@ def _merge_detached_parts(boxes: List[Dict[str, int]]) -> List[Dict[str, int]]:
     exclamation mark's dot). Geometry alone cannot distinguish a detached part
     from a neighboring element, but size asymmetry can: absorb a component
     only when it is much smaller than its neighbor and sits close to it. Two
-    full-size elements are never merged, however close their boxes are."""
+    full-size elements are never merged, however close their boxes are.
+    Multi-part icons whose parts exceed this asymmetry are out of scope here —
+    slice those sheets with --cells instead."""
     merged = True
     while merged and len(boxes) > 1:
         merged = False
@@ -90,21 +104,7 @@ def _checkerboard(w: int, h: int, cell: int = 12) -> Image.Image:
     return Image.fromarray(np.dstack([tile] * 3), "RGB")
 
 
-def slice_sheet(sheet: Image.Image, out_dir: Path, pad: int = 12, prefix: str = "el") -> Dict[str, Any]:
-    out_dir.mkdir(parents=True, exist_ok=True)
-    boxes = find_elements(sheet)
-    items = []
-    for idx, box in enumerate(boxes):
-        x1 = max(0, box["x"] - pad)
-        y1 = max(0, box["y"] - pad)
-        x2 = min(sheet.width, box["x"] + box["w"] + pad)
-        y2 = min(sheet.height, box["y"] + box["h"] + pad)
-        crop = sheet.crop((x1, y1, x2, y2))
-        name = f"{prefix}_{idx:02d}.png"
-        crop.save(out_dir / name)
-        items.append({"file": name, "sheet_bbox": {"x": x1, "y": y1, "w": x2 - x1, "h": y2 - y1}, "alpha_bbox": box})
-
-    # Contact sheet on a checkerboard so transparency and cut edges are visible.
+def _save_contact_sheet(items: List[Dict[str, Any]], out_dir: Path, prefix: str) -> Path:
     cols = min(4, max(1, len(items)))
     thumb_w, thumb_h = 220, 170
     rows = (len(items) + cols - 1) // cols if items else 1
@@ -120,8 +120,72 @@ def slice_sheet(sheet: Image.Image, out_dir: Path, pad: int = 12, prefix: str = 
         draw.text((x, y + thumb_h + 8), item["file"], fill=(0, 0, 0))
     contact_path = out_dir / f"{prefix}_contact_sheet.png"
     board.save(contact_path)
+    return contact_path
 
+
+def slice_sheet(sheet: Image.Image, out_dir: Path, pad: int = 12, prefix: str = "el") -> Dict[str, Any]:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    boxes = find_elements(sheet)
+    items = []
+    for idx, box in enumerate(boxes):
+        x1 = max(0, box["x"] - pad)
+        y1 = max(0, box["y"] - pad)
+        x2 = min(sheet.width, box["x"] + box["w"] + pad)
+        y2 = min(sheet.height, box["y"] + box["h"] + pad)
+        crop = sheet.crop((x1, y1, x2, y2))
+        name = f"{prefix}_{idx:02d}.png"
+        crop.save(out_dir / name)
+        items.append({"file": name, "sheet_bbox": {"x": x1, "y": y1, "w": x2 - x1, "h": y2 - y1}, "alpha_bbox": box})
+
+    contact_path = _save_contact_sheet(items, out_dir, prefix)
     return {"count": len(items), "elements": items, "contact_sheet": str(contact_path)}
+
+
+def slice_cells(sheet: Image.Image, cells: Dict[str, Dict[str, int]], out_dir: Path, pad: int = 12, prefix: str = "el") -> Dict[str, Any]:
+    """Slice by known cell boxes: crop each cell, trim to its alpha bounding
+    box, pad, save. One cell = one output file, whatever the component count —
+    this is the rescue path for multi-part icons that connected-component
+    slicing would cut into fragments."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    items = []
+    arr = np.asarray(sheet)
+    for cell_id, box in cells.items():
+        cx1 = max(0, int(box["x"]))
+        cy1 = max(0, int(box["y"]))
+        cx2 = min(sheet.width, int(box["x"] + box["w"]))
+        cy2 = min(sheet.height, int(box["y"] + box["h"]))
+        cell_alpha = arr[cy1:cy2, cx1:cx2, 3]
+        ys, xs = np.where(cell_alpha > 16)
+        if len(xs) == 0:
+            items.append({"file": None, "id": cell_id, "warning": "cell contains no visible content"})
+            continue
+        x1 = max(0, cx1 + int(xs.min()) - pad)
+        y1 = max(0, cy1 + int(ys.min()) - pad)
+        x2 = min(sheet.width, cx1 + int(xs.max()) + 1 + pad)
+        y2 = min(sheet.height, cy1 + int(ys.max()) + 1 + pad)
+        crop = sheet.crop((x1, y1, x2, y2))
+        name = f"{cell_id}.png"
+        crop.save(out_dir / name)
+        items.append({"file": name, "id": cell_id, "sheet_bbox": {"x": x1, "y": y1, "w": x2 - x1, "h": y2 - y1}, "cell": {"x": cx1, "y": cy1, "w": cx2 - cx1, "h": cy2 - cy1}})
+
+    contact_items = [item for item in items if item.get("file")]
+    contact_path = _save_contact_sheet(contact_items, out_dir, prefix)
+    return {"count": len(contact_items), "elements": items, "contact_sheet": str(contact_path), "mode": "cells"}
+
+
+def _load_cells(path: Path) -> Dict[str, Dict[str, int]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    cells: Dict[str, Dict[str, int]] = {}
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, dict) and {"x", "y", "w", "h"} <= set(value):
+                cells[str(key)] = {k: int(value[k]) for k in ("x", "y", "w", "h")}
+        return cells
+    for idx, item in enumerate(data):
+        if not {"x", "y", "w", "h"} <= set(item):
+            continue
+        cells[str(item.get("id") or f"cell_{idx:02d}")] = {k: int(item[k]) for k in ("x", "y", "w", "h")}
+    return cells
 
 
 def main() -> None:
@@ -131,6 +195,7 @@ def main() -> None:
     parser.add_argument("--pad", type=int, default=12)
     parser.add_argument("--prefix", type=str, default="el")
     parser.add_argument("--color", type=str, default=None, help="if the sheet is not keyed yet, key this color first")
+    parser.add_argument("--cells", type=Path, default=None, help="cell boxes JSON ({id:{x,y,w,h}} or a list); slice by region-crop + alpha-trim instead of connected components")
     parser.add_argument("--report", type=Path, default=None)
     args = parser.parse_args()
 
@@ -144,7 +209,13 @@ def main() -> None:
     elif image.mode != "RGBA":
         raise SystemExit("Sheet has no alpha channel; pass --color to key it first.")
 
-    result = slice_sheet(image.convert("RGBA"), args.out_dir, pad=args.pad, prefix=args.prefix)
+    if args.cells:
+        cells = _load_cells(args.cells)
+        if not cells:
+            raise SystemExit(f"No usable cell boxes found in {args.cells}")
+        result = slice_cells(image.convert("RGBA"), cells, args.out_dir, pad=args.pad, prefix=args.prefix)
+    else:
+        result = slice_sheet(image.convert("RGBA"), args.out_dir, pad=args.pad, prefix=args.prefix)
     text = json.dumps(result, ensure_ascii=False, indent=2)
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

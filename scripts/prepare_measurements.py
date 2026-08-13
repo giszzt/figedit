@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare OCR/CV/style diagnostics for model-led SVG reconstruction."""
+"""Prepare OCR/style diagnostics for model-led SVG reconstruction."""
 
 from __future__ import annotations
 
@@ -16,11 +16,18 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from detect_ocr_paddle import save_ocr_outputs  # type: ignore
-from detect_primitives_cv import save_primitives_outputs  # type: ignore
 from sample_styles import save_style_outputs  # type: ignore
+from probe_geometry import probe as probe_geometry, draw_overlay as draw_geometry_overlay  # type: ignore
 
 
-def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False, ocr_profile: str = "v6_medium") -> dict:
+def prepare(
+    image_path: Path,
+    out_dir: Path,
+    lang: str = "ch",
+    gpu: bool = False,
+    ocr_profile: str = "v6_medium",
+    geometry: bool = True,
+) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     diagnostics = out_dir / "diagnostics"
     diagnostics.mkdir(parents=True, exist_ok=True)
@@ -31,8 +38,19 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
     shutil.copy2(image_path, source_copy)
 
     ocr = save_ocr_outputs(source_copy, out_dir / "ocr_results.json", diagnostics / "ocr_overlay.png", lang=lang, use_gpu=gpu, profile=ocr_profile)
-    primitives = save_primitives_outputs(source_copy, out_dir / "ocr_results.json", out_dir / "detected_primitives.json", diagnostics / "structure_overlay.png")
-    styles = save_style_outputs(source_copy, out_dir / "detected_primitives.json", out_dir / "style_tokens.json", diagnostics / "style_overlay.png")
+    styles = save_style_outputs(source_copy, None, out_dir / "style_tokens.json", diagnostics / "style_overlay.png")
+
+    geometry_summary: dict | None = None
+    if geometry:
+        payload, arr = probe_geometry(source_copy, out_dir / "ocr_results.json")
+        (out_dir / "geometry.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        draw_geometry_overlay(arr, payload, diagnostics / "geometry_overlay.png")
+        geometry_summary = {
+            "flat_design_score": payload["image_profile"]["flat_design_score"],
+            "abstained": payload["image_profile"]["abstained"],
+            "fill_regions": len(payload["fill_regions"]),
+            "text_slots": len(payload["text_slots"]),
+        }
 
     with Image.open(source_copy) as im:
         width, height = im.size
@@ -46,18 +64,22 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
             "complexity": "model-to-classify",
             "style_type": "image-derived",
             "reconstruction_mode": "model-led-hybrid",
-            "reconstruction_intent": "Use OCR/CV measurements only as evidence; model must author semantic manifest.",
+            "reconstruction_intent": "Use OCR/style measurements only as evidence; model must author semantic manifest.",
         },
         "assets": [],
         "elements": [],
         "style_tokens": styles,
         "diagnostics": {
+            # Keep this field when authoring the final manifest: the compose
+            # step copies ocr_results.json from here into the package so the
+            # editability gate can compute text_lift_ratio.
+            "measurement_workspace": str(out_dir),
             "ocr_overlay": "diagnostics/ocr_overlay.png",
-            "structure_overlay": "diagnostics/structure_overlay.png",
             "style_overlay": "diagnostics/style_overlay.png",
             "ocr_status": ocr.get("status"),
             "ocr_profile": ocr.get("selected_profile"),
-            "opencv_status": primitives.get("status"),
+            "geometry": "geometry.json" if geometry_summary else None,
+            "geometry_overlay": "diagnostics/geometry_overlay.png" if geometry_summary else None,
         },
         "quality_gates": {"semantic_manifest_required": {"status": "review"}},
     }
@@ -70,24 +92,144 @@ def prepare(image_path: Path, out_dir: Path, lang: str = "ch", gpu: bool = False
         f"- Working copy: {source_copy}",
         f"- Canvas: {width} x {height}",
         f"- OCR: {ocr.get('status')} ({len(ocr.get('items', []))} candidates; profile: {ocr.get('selected_profile')}; requested: {ocr.get('requested_profile')})",
-        f"- OpenCV: {primitives.get('status')} ({primitives.get('counts', {})})",
+    ]
+    if geometry_summary:
+        report += [
+            f"- Geometry: flat_design_score {geometry_summary['flat_design_score']}"
+            f"{' (ABSTAINED)' if geometry_summary['abstained'] else ''}; "
+            f"{geometry_summary['fill_regions']} fill regions, {geometry_summary['text_slots']} text slots",
+            "  Look at diagnostics/geometry_overlay.png once, then draft_elements.py to turn these into drafts.",
+        ]
+    report += [
         "",
-        "These are measurement artifacts only. Do not directly convert all OpenCV candidates into final SVG elements.",
+        "These are measurement artifacts only. Do not directly convert OCR candidates into final SVG elements.",
     ]
     (out_dir / "measurement_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
-    return {"out_dir": str(out_dir), "ocr": ocr.get("status"), "opencv": primitives.get("status")}
+    return {
+        "out_dir": str(out_dir),
+        "ocr": ocr.get("status"),
+        "geometry": geometry_summary,
+        "canvas": {"width": width, "height": height, "background": styles.get("background", "#ffffff")},
+        "ocr_items": len(ocr.get("items", [])),
+        "ocr_profile": ocr.get("selected_profile"),
+    }
+
+
+def scaffold(image_path: Path, name: str, root: Path) -> dict:
+    """Create the task directory, copy the source in, write a manifest skeleton."""
+    task_dir = (root / name).resolve()
+    work = task_dir / "work"
+    work.mkdir(parents=True, exist_ok=True)
+    (task_dir / "out").mkdir(parents=True, exist_ok=True)
+
+    local_source = task_dir / f"input{image_path.suffix.lower() or '.png'}"
+    shutil.copy2(image_path, local_source)
+    with Image.open(local_source) as im:
+        width, height = im.size
+
+    manifest_path = task_dir / "manifest.json"
+    if not manifest_path.exists():
+        # No reconstruction_plan block: its fields are closed enumerations
+        # (edit_scope, validation_tier) with no valid "to be decided" value, so
+        # a placeholder would only produce a manifest that fails validation.
+        # The plan is authored from the survey, before any element is written.
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "project": name,
+                    "source_image": str(local_source),
+                    "canvas": {"width": width, "height": height, "background": "#ffffff"},
+                    "classification": {
+                        "layout_topology": "model-to-classify",
+                        "complexity": "model-to-classify",
+                        "style_type": "image-derived",
+                        "reconstruction_mode": "model-led-hybrid",
+                    },
+                    "assets": [],
+                    "elements": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+    return {"task_dir": str(task_dir), "work": str(work), "source": str(local_source),
+            "canvas": {"width": width, "height": height}, "manifest": str(manifest_path)}
+
+
+LOW_CONFIDENCE = 0.85
+
+
+def _print_digest(result: dict, out_dir: Path) -> None:
+    """A readable summary beats dumping the JSON: nobody should have to parse this back."""
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    canvas = result.get("canvas") or {}
+    print(f"画布   {canvas.get('width')}x{canvas.get('height')}   页底 {canvas.get('background')}")
+    print(f"OCR    {result.get('ocr')}   {result.get('ocr_items')} 条   档位 {result.get('ocr_profile')}")
+
+    geo = result.get("geometry")
+    if geo:
+        state = "弃权（照片/插画/海报，这里本就没有面板可找）" if geo.get("abstained") else "可用"
+        print(f"结构   面板 {geo.get('fill_regions')}   文字槽 {geo.get('text_slots')}   "
+              f"平面度 {geo.get('flat_design_score')}   {state}")
+    else:
+        print("结构   未探测（--no-geometry）")
+
+    ocr_path = out_dir / "ocr_results.json"
+    if ocr_path.is_file():
+        try:
+            items = json.loads(ocr_path.read_text(encoding="utf-8")).get("items", [])
+        except Exception:
+            items = []
+        weak = [i for i in items if (i.get("confidence") or 1.0) < LOW_CONFIDENCE]
+        if weak:
+            print(f"\n低置信文字 {len(weak)} 条，写进 manifest 前要核对：")
+            for i in sorted(weak, key=lambda i: i.get("confidence") or 0)[:12]:
+                text = (i.get("text") or "").replace("\n", " ")[:26]
+                print(f"  {str(i.get('id', '?')):14s} {i.get('confidence', 0):.2f}  {text}")
+
+    if result.get("scaffold"):
+        print(f"\n任务目录 {result['scaffold']['task_dir']}")
+    print(f"\n证据   {out_dir}")
+    print(f"总览图 {out_dir / 'diagnostics' / 'geometry_overlay.png'}   看这一张做整体校验，不要逐框打开")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("image", type=Path)
-    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--init", metavar="NAME", help="scaffold <NAME>/{work,out} + manifest skeleton, then measure into <NAME>/work")
+    parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--lang", default="ch")
     parser.add_argument("--gpu", action="store_true")
+    parser.add_argument("--no-geometry", action="store_true", help="skip structure probing (OCR and styles only)")
     parser.add_argument("--ocr-profile", default="v6_medium", choices=["auto", "v6_medium", "v6_small", "v6_tiny", "v5_mobile"])
     args = parser.parse_args()
-    result = prepare(args.image.resolve(), args.out.resolve(), lang=args.lang, gpu=args.gpu, ocr_profile=args.ocr_profile)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+    image = args.image.resolve()
+    scaffolded = None
+    out_dir = args.out.resolve() if args.out else None
+    if args.init:
+        scaffolded = scaffold(image, args.init, args.root.resolve())
+        image = Path(scaffolded["source"])
+        out_dir = out_dir or Path(scaffolded["work"])
+    if out_dir is None:
+        parser.error("--out is required unless --init is given")
+
+    result = prepare(
+        image,
+        out_dir,
+        lang=args.lang,
+        gpu=args.gpu,
+        ocr_profile=args.ocr_profile,
+        geometry=not args.no_geometry,
+    )
+    if scaffolded:
+        result["scaffold"] = scaffolded
+    _print_digest(result, out_dir)
 
 
 if __name__ == "__main__":
